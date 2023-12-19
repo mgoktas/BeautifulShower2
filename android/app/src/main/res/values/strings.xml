@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">BeautifulShower</string>
+    <string name="server_client_id">269523057437-k4lltqd14ndmlh2gnbmij0qrk44e804u.apps.googleusercontent.com</string>
+    <string name="facebook_app_id">207033875775242</string>
+    <string name="facebook_client_token">75d203d97a5ecd0e5b5a5fb8c21c0d64</string>
 </resources>
