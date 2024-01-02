@@ -27,7 +27,12 @@ export const followers = []
 export const privacyPolicyUrl = 'https://www.freeprivacypolicy.com/live/0b82b9d1-fee6-4b94-88f1-a33906ad64d9'
 
 export const termsAndConditionsUrl = 'https://www.termsandconditionsgenerator.com/live.php?token=YBwUtsNzjCqub4lBmBqUBDou264zb41D'
+
 export const userLink = ''
+
+export const supportUrl = 'https://resetwill.netlify.app/support/beautifulshower'
+
+export const companyUrl = 'https://resetwill.netlify.app'
 
 export const linking = {
 

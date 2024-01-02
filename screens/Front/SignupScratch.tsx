@@ -104,7 +104,7 @@ const SignupScratch = ({navigation}) => {
         <View style={{backgroundColor: isSheetOn ? 'gray' : 'white'}}>
             <Space space={45}/>
             <Header isSheetOn={isSheetOn} isBlank={true} onPress={() => {navigation.goBack()}} />
-        <View style={styles.flexCnt}>
+            <View style={styles.flexCnt}>
             <ScrollView ref={scrollViewRef} style={{backgroundColor: 'transparent'}}>
     
                 <JoinLogo type={2} txt1={'HELP US FILL IN THE GAPS'} txt2={'Your information is secure with us. Users will be able to search for you by your name or email address.'} />
@@ -125,10 +125,10 @@ const SignupScratch = ({navigation}) => {
     
                 <Space space={30}/>
                 
-                <CustomInput isName={false} onChangeText={(txt) => {setPassword(txt)}} type={5}  txt={'PASSWORD'} />
+                <CustomInput isName={false} onChangeText={(txt) => {setPassword(txt)}} type={5} noText={true}  txt={'PASSWORD'} />
              
                 <Space space={20}/>
-             
+              
                 <CustomInput isName={false} onChangeText={(txt) => {setPassword2(txt)}} type={5}  txt={'PASSWORD'} />
                     
                 <Space space={20}/>
@@ -193,20 +193,17 @@ const SignupScratch = ({navigation}) => {
             <JoinLogo type={2} txt1={'HELP US FILL IN THE GAPS'} txt2={'Your information is secure with us. Users will be able to search for you by your name or email address.'} />
 
             <Space space={20}/>
-
-            <CustomInput type={1} txt={'FIRST NAME'} name={name} />
+            <CustomInput onChangeText={(txt) => {setName(txt)}} isName={true} type={1} txt={'FIRST NAME'}  />
             
-            <Space space={20}/>
+            <Space space={30}/>
         
-            <CustomInput type={1}  txt={'LAST NAME'} name={lastName} />
+            <CustomInput onChangeText={(txt) => {setLastName(txt)}} isName={true} type={1}  txt={'LAST NAME'} />
 
             <CustomSwitch onPress1={() => {setIsActive1(true); setIsActive2(false); setIsActive3(false)}} onPress2={() => {setIsActive1(false); setIsActive2(true); setIsActive3(false)}} onPress3={() => {setIsActive1(false); setIsActive2(false); setIsActive3(true)}} isActive1={isActive1} isActive2={isActive2} isActive3={isActive3} type={1}/>
+    
+            <Space space={30}/>
 
-            <Line space={30}/>
-
-            <Space space={20}/>
-
-            <CustomInput type={3}  txt={'EMAIL'} name={email} />
+            <CustomInput isName={false} onChangeText={(txt) => {setEmail(txt)}} type={1}  txt={'EMAIL'} />
 
             <Space space={20}/>
 

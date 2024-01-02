@@ -1,8 +1,8 @@
 import React, { Fragment, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react"
-import {  StyleSheet, View } from "react-native"
+import {  Alert, Keyboard, KeyboardAvoidingView, StyleSheet, View } from "react-native"
 import { Gesture, GestureDetector, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler"
 import Animated, { Extrapolate, interpolate, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated"
-import { CountryCnt, Discover, HeaderHome, InputBox, Line, PersonBox, SCREEN_HEIGHT, SheetButtons, SmallLine, SocialMediaCnt, Space, UserBox } from "../Utilities/Utilities"
+import { CountryCnt, Discover, HeaderHome, InputBox, Line, PersonBox, PersonCnt, SCREEN_HEIGHT, SheetButtons, SmallLine, SocialMediaCnt, Space, UserBox } from "../Utilities/Utilities"
 import { useFocusEffect } from "@react-navigation/native"
 import { verticalScaleAnti } from "../Utilities/Metrics"
 import { datablogs } from "../Data/Data"
@@ -11,19 +11,21 @@ import { GraphRequest, GraphRequestManager } from 'react-native-fbsdk-next';
 import { getDataNumber, getDataString, setData } from "../Storage/MMKV"
 import { addToFollowingList, checkUserFriends, removeFromFollowingList } from "../Storage/Azure"
 import firestore from '@react-native-firebase/firestore';
+import uuid from 'react-native-uuid';
+import { checkFollow, followPerson, getDate, unFollowPerson } from "./Functions"
 
 export type AddPersonSheetRefProps = {
     scrollTo: (destination: number) => void
     getSheetHeight: ()=> void
     itemAdded: ()=> void
-    openSheet2: ()=> void
-    
+    openSheet2: ()=> void   
   }
     
 export interface AddPersonSheetProps {
     connectCon: Function
     setSheet: Function
     isSheetOn: Boolean
+    email: String
   }
 
 export const AddPersonSheet = React.forwardRef<BottomSheetRefProps, BottomSheetProps>((props: AddPersonSheetProps, ref) => {
@@ -32,22 +34,11 @@ export const AddPersonSheet = React.forwardRef<BottomSheetRefProps, BottomSheetP
     const [isSwitchOn2, setIsSwitchOn2] = useState(getDataNumber('isContactsPermitted') == 1)
     const [isAlreadyChecked, setIsAlreadyChecked] = useState(getDataNumber('isContactsPermitted') == 1)
     const [isLoading, setIsLoading] = useState(true)
-    const [countries, setCountries] = React.useState([])
-    const [filteredDataSource, setFilteredDataSource] = useState([]);
+    const [users, setUsers] = React.useState([])
+    const [filteredDataSource, setFilteredDataSource] = useState(users);
     const [masterDataSource, setMasterDataSource] = useState([]);
     const [searchText, setSearchText] = useState('');
-    
-    const checkContacts = () => {
-    
-      checkUserFriends()
-    
-    }
-
-    useEffect(() => {
-
-      // checkContacts()
-
-    }, [])
+    const [email, setEmail] = React.useState(getDataString('email'))
 
     const translateY = useSharedValue(0)
     const MAX_TRANSLATE_Y = SCREEN_HEIGHT / 1.2
@@ -63,9 +54,6 @@ export const AddPersonSheet = React.forwardRef<BottomSheetRefProps, BottomSheetP
       return translateY.value
     }
     
-    // getSheetHeight() < 100 ? props.setSheet() : {}
-    
-    
     const checkSheet = async  () => {
 
       console.log('sheet is checking')
@@ -79,8 +67,6 @@ export const AddPersonSheet = React.forwardRef<BottomSheetRefProps, BottomSheetP
     }, 1000);
       
     }
-    
-    // props.isSheetOn ? checkSheet() : {}
     
     function function2 () {
 
@@ -121,148 +107,205 @@ export const AddPersonSheet = React.forwardRef<BottomSheetRefProps, BottomSheetP
         scrollTo(MAX_TRANSLATE_Y)
       }
     })
-
     
-      const rBottomSheetStyle = useAnimatedStyle(() => {
-        const borderRadius = interpolate(
-          translateY.value,
-          [-MAX_TRANSLATE_Y + 100, -MAX_TRANSLATE_Y],
-          [12, 5],
-          Extrapolate.CLAMP
-          )
+    const rBottomSheetStyle = useAnimatedStyle(() => {
+    const borderRadius = interpolate(
+      translateY.value,
+      [-MAX_TRANSLATE_Y + 100, -MAX_TRANSLATE_Y],
+      [12, 5],
+      Extrapolate.CLAMP
+      )
+      
+      return {
+        borderRadius,
+        transform: [{translateY: translateY.value}]
+      }
+    })   
+    
+    useEffect(() => {
+        scrollTo(60)
+        addUsers()
+    },[])
+
+    const addUsers = () => {
+
+      firestore()
+      .collection('Users')
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(doc => {
           
-          return {
-            borderRadius,
-            transform: [{translateY: translateY.value}]
-          }
-        })   
+          let docData = doc._data
+
+            setUsers(arr => [...arr, {
+              name: docData.firstname + ' ' + docData.lastname, 
+              email: docData.email,  
+            }])
+          
+       
+          });
+
+          console.log(users)
+                
+          setIsLoading(false)
+    
+      });
+    }
+
+      
+    const search = (text) => {
         
-        useEffect(() => {
-            scrollTo(60)
-            dataFetch()
-        },[])
+        setFilteredDataSource(users)
+        setMasterDataSource(users)
+        
+        try{
 
-
-        const dataFetch = async () => {
-          await dataFetch1()
+          if (text) {
+            const newData = masterDataSource.filter(
+            function (item, index) {
+              const itemData = item.name
+                  ? item.name.toUpperCase()
+                  : ''.toUpperCase();
+              const textData = text.toUpperCase();
+              return itemData.indexOf(textData) > -1;
+          })
+            console.log(filteredDataSource)
+            setFilteredDataSource(newData);
+          } else {
+              setTimeout(() => {
+              },500)
+              setFilteredDataSource([]);
+          }
+        }
+        catch(err){
+          console.log(err)
         }
 
-        const dataFetch1 = async () => {
 
-          await fetch('https://api.countrystatecity.in/v1/countries', {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                'X-CSCAPI-KEY': 'UG9lVktzWEswQ3lTSlJEN0tGODRNMkkxZllnTDVzcW5abTFYSm1MQg=='
-        },
-        })
-        .then(response => response.json())
-        .then(json => {
-            console.log(json)
-            setCountries(json)
-            setIsLoading(false)
-        })
-        .catch(error => {
-            console.error(error);
-        });
-  
-        
-  
+    };
+
+    const updateState = (name) => {
+      const newState = filteredDataSource.map(obj => {
+
+        if (obj.name == name) {
+          if (obj.id == 100){
+            
+            removeFromFollowingList(obj) //remove from my followings list
+          return {...obj, id: 10};
+          } else {
+
+            addToFollowingList(obj) //add to my followings list
+            return {...obj, id: 100};
+
           }
-          
-          const search = (text) => {
-            
-            // //check email
-            // function checkName(item) {
-            //     return item.name != myCountry.name;
-            // }
-    
-            setFilteredDataSource(countries)
-            setMasterDataSource(countries)
-            
-            if (text) {
-              const newData = masterDataSource.filter(
-              function (item, index) {
-                const itemData = item.name
-                    ? item.name.toUpperCase()
-                    : ''.toUpperCase();
-                const textData = text.toUpperCase();
-                return itemData.indexOf(textData) > -1;
-            })
-              setFilteredDataSource(newData);
-            } else {
-                setTimeout(() => {
-                    // setIsDisabled(true)
-                },500)
-                setFilteredDataSource([]);
-            }
-        };
 
-        const updateState = (name) => {
-          const newState = filteredDataSource.map(obj => {
-
-            if (obj.name == name) {
-              if (obj.id == 100){
-                
-                removeFromFollowingList(obj) //remove from my followings list
-              return {...obj, id: 10};
-              } else {
-
-                addToFollowingList(obj) //add to my followings list
-                return {...obj, id: 100};
-
-              }
-
-            }
-      
-            // 👇️ otherwise return the object as is
-            return obj;
-          });
-      
-          setFilteredDataSource(newState);
-        };
-    
+        }
+  
+        // 👇️ otherwise return the object as is
+        return obj;
+      });
+  
+      setFilteredDataSource(newState);
+    };
         
         
         return (
+
+          !isLoading ? 
+          <GestureHandlerRootView>
+          <GestureDetector gesture={gesture}>
+            <Animated.View style={[styles.bottomSheet, rBottomSheetStyle]}>
+              <View style={{justifyContent: 'space-between', flexDirection: 'column', flex: 1}}>
+                 
+               <SmallLine />
+
+               <SheetButtons
+
+                  onPressBack={() => { scrollTo(SCREEN_HEIGHT); props.setSheet(2) } } txt2={'Cancel'} txt1={''} type={6} title={'EDIT PROFILE'} txt={'Done'} onPress={undefined}/>
+
+
+                  <Space space={5}/>
+                  <InputBox onChangeText={(txt) => { setSearchText(txt); search(txt) } } txt={'Enter name or email address'} type={undefined} txt2={undefined} count={undefined} onChangeTextTitle={undefined} />
+                  <Line space={0} type={undefined}/>
+                   {
+
+              filteredDataSource.slice(0, 5).map((item, index) => (
+                  <Fragment  key={index}>
+                          <PersonCnt 
+                          isFollowing={checkFollow(email, item.email) == false || checkFollow(email, item.email) ==  true ? checkFollow(email, item.email) : false } 
+                          style={{ borderTopLeftRadius: index == 0 ? 10 : 0, borderTopRightRadius: index == 0 ? 10 : 0, borderBottomLeftRadius: index == (filteredDataSource.length - 1) ? 10 : 0, borderBottomRightRadius: index == (filteredDataSource.length - 1) ? 10 : 0 }} 
+                          txt={item.name} 
+                          onPress={async () => {
+                    if(await checkFollow(email, item.email) == false){
+                      followPerson(email, item.email)
+                    }
+
+                    if(await checkFollow(email, item.email) == true){
+                      unFollowPerson(email, item.email)
+                    }
+
+                  } } country={undefined}/>
+                  </Fragment>
+              ))
+                  }
+                   
+               <ScrollView>
+
+
+                {/* <View style={{display: searchText.length == 0 ? 'flex' : 'none'}}>
+                  <SocialMediaCnt isEnabled={isSwitchOn} toggleSwitch={() => { } } type={'feed'} onPress={undefined} isEnabledBot={undefined} isEnabledTop={undefined} onVlChngT={undefined} onVlChngB={undefined} />
+                  <Line space={0} type={undefined}/>
+                  <Line space={0} type={undefined}/>
+                  
+                  
+                  <SocialMediaCnt isEnabled={isSwitchOn2} toggleSwitch={() => { props.connectCon() } } type={'feedcon'} onPress={undefined} isEnabledBot={undefined} isEnabledTop={undefined} onVlChngT={undefined} onVlChngB={undefined} />
+                  <Line space={0} type={undefined}/>
+                  <Line space={0} type={undefined}/>
+                </View> */}
+                  
+
+                  {/* <UserBox name={'Shafira'} place={'Sekibo'} name2={'Zakia'} place2={'Iwu'} isFriend={false} isFriend2={true}/> */}
+                  <Space space={100}/>
+                  <Space space={100}/>
+                  <Space space={100}/>
+                
+                </ScrollView>
+                <Space space={200} />  
+              </View>
+            </Animated.View>
+          </GestureDetector>
+          </GestureHandlerRootView>
+          
+          :
+
           <GestureHandlerRootView>
             <GestureDetector gesture={gesture}>
               <Animated.View style={[styles.bottomSheet, rBottomSheetStyle]}>
                 <View style={{justifyContent: 'space-between', flexDirection: 'column', flex: 1}}>
                    
                  <SmallLine />
-                 
-                    <Space space={5}/>
-                    <InputBox onChangeText={(txt) => {setSearchText(txt); search(txt)}} txt={'Enter name or email address'} />
-                    <Line space={0}/>
-                     {
 
-                filteredDataSource.slice(0, 5).map((item, index) => (
-                    <Fragment  key={index}>
-                            <CountryCnt isFollowing={item.id == 100 ? true : false} style={{borderTopLeftRadius: index == 0 ? 10 : 0, borderTopRightRadius: index == 0 ? 10 : 0,borderBottomLeftRadius: index == (filteredDataSource.length -1) ? 10 : 0, borderBottomRightRadius: index  == (filteredDataSource.length -1) ? 10 : 0}} txt={item.name} onPress={() => {console.log('onPressed :', item.name); updateState(item.name) 
-                                // if(placeHolder){changeCountry(item)} 
-                                // else {
-                                //   chooseCountry(item)
-                                // }
-                              }}
-                                />
-                    </Fragment>
-                ))
-                    }
+                 <SheetButtons
+
+                    onPressBack={() => { scrollTo(SCREEN_HEIGHT); props.setSheet(2) } } txt2={'Cancel'} txt1={''} type={6} title={'EDIT PROFILE'} txt={'Done'} onPress={undefined}/>
+
+
+                    <Space space={5}/>
+                    <InputBox onChangeText={(txt) => { setSearchText(txt); search(txt) } } txt={'Enter name or email address'} type={undefined} txt2={undefined} count={undefined} onChangeTextTitle={undefined} />
+                    <Line space={0} type={undefined}/>
                      
                  <ScrollView>
 
 
                   <View style={{display: searchText.length == 0 ? 'flex' : 'none'}}>
-                    <SocialMediaCnt isEnabled={isSwitchOn} toggleSwitch={() => {}} type={'feed'} />
-                    <Line space={0}/>
-                    <Line space={0}/>
+                    <SocialMediaCnt isEnabled={isSwitchOn} toggleSwitch={() => { } } type={'feed'} onPress={undefined} isEnabledBot={undefined} isEnabledTop={undefined} onVlChngT={undefined} onVlChngB={undefined} />
+                    <Line space={0} type={undefined}/>
+                    <Line space={0} type={undefined}/>
                     
                     
-                    <SocialMediaCnt isEnabled={isSwitchOn2} toggleSwitch={() => {props.connectCon()}} type={'feedcon'} />
-                    <Line space={0}/>
-                    <Line space={0}/>
+                    <SocialMediaCnt isEnabled={isSwitchOn2} toggleSwitch={() => { props.connectCon() } } type={'feedcon'} onPress={undefined} isEnabledBot={undefined} isEnabledTop={undefined} onVlChngT={undefined} onVlChngB={undefined} />
+                    <Line space={0} type={undefined}/>
+                    <Line space={0} type={undefined}/>
                   </View>
                     
 
@@ -272,10 +315,11 @@ export const AddPersonSheet = React.forwardRef<BottomSheetRefProps, BottomSheetP
                     <Space space={100}/>
                   
                   </ScrollView>
+                  <Space space={200} />  
                 </View>
               </Animated.View>
             </GestureDetector>
-            </GestureHandlerRootView>
+          </GestureHandlerRootView>
           )
         })
 
@@ -382,13 +426,95 @@ export const AddPostSheet = React.forwardRef<AddPostSheetRefProps, AddPostSheetP
       
       const [countLeft, setCountLeft] = useState(200)
       const [postTxt, setPostTxt] = useState('')
+      const [postTitle, setPostTitle] = useState('')
 
       const postCollection = firestore().collection('Users');
 
-      const post = () => {
-        getDataString('email')
+      const post = async (postTitle, postTxt) => {
+        
+        const email = getDataString('email')
+
+        let user2 = await firestore().collection('Users').doc(email).get()
+
+        const user = user2._data
+        console.log(user2._data)
+
+        console.log(await user2._data.followercount)
+
+        await firestore()
+        .collection('Posts')
+        // .doc()
+        // .doc(uuid.v4()) // if not creates random id do it here.
+        .add({
+          postTitle: postTitle,
+          postTxt: postTxt,
+          id: email,
+          byWho: await user2._data.firstname + ' ' + await user2._data.lastname ,
+          postDate: getDate(new Date()),
+          followercount: await user2._data.followercount,
+        })
+        .then(async () => {
+
+          
+
+          scrollTo(SCREEN_HEIGHT); props.setSheet(2)
+          Alert.alert('Post created!', 'Your post is now shared with others!')
+
+        })
+        
       }
 
+      const postNew = async (postTitle, postTxt, email, name) => {
+        
+        await firestore()
+        .collection('Posts')
+        .add({
+          postTitle: postTitle,
+          postTxt: postTxt,
+          id: email,
+          byWho: name,
+          postDate: getDate(new Date()),
+          followercount: 0,
+        })
+        .then(async () => {
+
+          
+
+          scrollTo(SCREEN_HEIGHT); props.setSheet(2)
+          Alert.alert('Post created!', 'Your post is now shared with others!')
+
+        })
+      }
+
+      const addpost =  () => {
+        postNew('New T-Shirt', 'Check my new shirt!', 'ahmethkhkhk@gmail.com', 'Muhammet Rasit Goktas')
+        postNew('New Pants!', 'Check my new pants!', 'ahmethkhkhk@gmail.com', 'Muhammet Rasit Goktas')
+        postNew('Look at this guy!', 'Check my new friend!', 'mgoktashk@gmail.com', 'Muhammet Raşit Göktaş')
+        postNew('Be honest!', 'Check my new gf!', 'mgoktashk@gmail.com', 'Muhammet Raşit Göktaş')
+      }
+
+      useEffect(() => {
+        // addpost()
+      }, [])
+
+      const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+      useEffect(() => {
+        function onKeyboardDidShow(e: KeyboardEvent) { // Remove type here if not using TypeScript
+          setKeyboardHeight(e.endCoordinates.height);
+        }
+    
+        function onKeyboardDidHide() {
+          setKeyboardHeight(0);
+        }
+    
+        const showSubscription = Keyboard.addListener('keyboardDidShow', onKeyboardDidShow);
+        const hideSubscription = Keyboard.addListener('keyboardDidHide', onKeyboardDidHide);
+        return () => {
+          showSubscription.remove();
+          hideSubscription.remove();
+        };
+      }, []);
 
       return (
         <GestureHandlerRootView>
@@ -396,17 +522,26 @@ export const AddPostSheet = React.forwardRef<AddPostSheetRefProps, AddPostSheetP
             <Animated.View style={[styles.bottomSheetPost, rBottomSheetStyle]}>
               <View style={{justifyContent: 'space-between', flexDirection: 'column'}}>
 
+              <ScrollView >
               <SheetButtons
 
               onPress={() => {
-            post()
-            }}
+                post(postTitle, postTxt)
+                }}
               onPressBack={() => {scrollTo(SCREEN_HEIGHT); props.setSheet(2)}} txt2={'Cancel'} txt1={'Post'} type={6} title={'EDIT PROFILE'} txt={'Done'}/>
               
-              <PersonBox name={'Muhammet Rasit'}/>
+              <PersonBox name={'Muhammet Rasit'} onPress={undefined}/>
 
-              <InputBox onChangeText={(txt) => {setPostTxt(txt); setCountLeft(200-postTxt.length)}} type={'post'} txt={'Write something'} txt2={'Characters left'} count={countLeft} />
-          
+              <InputBox onChangeText={(txt) => {
+
+                if(postTxt.length < 201) {
+                  setPostTxt(txt); setCountLeft(200-postTxt.length)
+                }
+
+                
+                }} onChangeTextTitle={(txt) => {setPostTitle(txt)}} type={'post'} txt={'Write something'} txt2={'Characters left'} count={countLeft} />
+              </ScrollView>
+
               </View>
             </Animated.View>
           </GestureDetector>

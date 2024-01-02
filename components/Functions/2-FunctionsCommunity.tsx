@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Linking, Share } from "react-native";
+import { Linking, PermissionsAndroid, Platform, Share } from "react-native";
 import Contacts, { getContactsByEmailAddress } from 'react-native-contacts';
 
 
@@ -16,14 +16,49 @@ import Contacts, { getContactsByEmailAddress } from 'react-native-contacts';
   GetAllContactsRefProps
   >((props: GetAllContactsProps, ref) => {
 
+
     const getContacts = async () => {
-        try{
-            await Contacts.getAll().then(contacts => {
-             console.log(contacts)
+
+      try{
+        if(Platform.OS == 'android') {
+          PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
+            title: 'Contacts',
+            message: 'This app would like to view your contacts.',
+            buttonPositive: 'Please accept bare mortal',
+        })
+            .then((res) => {
+                console.log('Permission: ', res);
+                Contacts.getAll()
+                    .then((contacts) => {
+                        // work with contacts
+                        console.log(contacts);
+                    })
+                    .catch((e) => {
+                        console.log(e, 'sa');
+                    }); 
             })
-        } catch(err) {
-            console.log(err)
+            .catch((error) => {
+                console.error('Permission error: ', error);
+            });
         }
+  
+        if(Platform.OS == 'ios') {
+  
+          try{
+              await Contacts.getAll().then(contacts => {
+               console.log(contacts)
+              })
+          } catch(err) {
+              console.log(err)
+          }
+        }
+      }
+      catch(err){
+        console.log(err,'sda')
+      }      
+
+   
+      
       }
 
     const goTo = useCallback(async (url) => {

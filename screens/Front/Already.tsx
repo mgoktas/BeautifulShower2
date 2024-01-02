@@ -41,8 +41,7 @@ const Already = ({navigation}) => {
 
         <Space space={SCREEN_HEIGHT/6}/>
 
-        <AppleButtonWithHighlight isApple={true} onPress={() => { 
-                SignInWithApplePress(updateCredentialStateForUser); } } title={undefined} />
+        <AppleButtonWithHighlight isApple={true} onPress={() => { SignInWithApplePress(updateCredentialStateForUser); } } title={undefined} />
         <BottomText />
 
         <SignWith onPress={() => {LoginWithFacebook()}}  txt={'Facebook'} icon={'facebook'}/>

@@ -59,7 +59,6 @@ const Join = ({navigation}) => {
         <Header onPress={() => { navigation.goBack(); } } isBlank={undefined} isSheetOn={undefined} type={undefined} />
         
         <JoinLogo txt1={'NEVER FORGET YOUR SHOWER!'} txt2={'Sign Up however you wish and start breathing!'} type={undefined} />
-
   
         <Space space={SCREEN_HEIGHT/10}/>
         

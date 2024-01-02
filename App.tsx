@@ -48,6 +48,10 @@ import OneChallenge from './screens/Front/Back/OneChallenge';
 import AddContacts from './screens/Home/Tabs/AddContacts';
 import { getDataNumber } from './components/Storage/MMKV';
 import SplashScreen from './components/SplashScreen';
+import SplashScreen2 from './components/SplashScreen2';
+import UserProfile from './screens/Home/UserProfile';
+import { navigationRef, isReadyRef } from './components/RootNavigation';
+import * as RootNavigation from './components/RootNavigation';
 
 //navigators
 const Stack  = createNativeStackNavigator()
@@ -61,11 +65,12 @@ const Tabs = ({route}: { route: any}) => {
   return (
     <Tab.Navigator
         screenOptions={({ route }) => ({
-          tabBarStyle:{backgroundColor: 'white',
+          tabBarStyle:{
+          backgroundColor: 'red',
           left: 0,
           bottom: 0,
           right: 0},
-          // tabBarShowLabel: false,
+          tabBarShowLabel: false,
           tabBarIcon: ({ focused, color, size }) => {
 
             if (route.name === 'Feed') {
@@ -106,7 +111,6 @@ const Tabs = ({route}: { route: any}) => {
             //       : '#6C6A66'
             //   } />;}
           },
-          // tabBarStyle:{backgroundColor: route.name === 'Home' || 'Settings' ? 'white' : 'white'},
 
         })}
       >
@@ -115,7 +119,7 @@ const Tabs = ({route}: { route: any}) => {
       options={{
       tabBarLabel: 'Feed', 
       tabBarActiveTintColor: 'black',
-      tabBarStyle:{backgroundColor: 'transparent'},
+      tabBarStyle:{backgroundColor: 'white'},
       headerShown:false, 
       headerStyle:{backgroundColor: 'white'}, 
       headerTitleStyle:{color:'black'},
@@ -124,7 +128,7 @@ const Tabs = ({route}: { route: any}) => {
 
     <Tab.Screen  name='Community' component={Community}
       options={{
-      tabBarStyle:{backgroundColor: 'transparent'},
+      tabBarStyle:{backgroundColor: 'white'},
       tabBarActiveTintColor: 'black',
       tabBarLabel: 'Community', 
       headerShown:false, 
@@ -135,7 +139,7 @@ const Tabs = ({route}: { route: any}) => {
     
     <Tab.Screen  name='Activity' component={Activity}
       options={{
-      tabBarStyle:{backgroundColor: 'transparent'},
+      tabBarStyle:{backgroundColor: 'white'},
       tabBarActiveTintColor: 'black',
       tabBarLabel: 'Activity', 
       headerShown:false, 
@@ -147,7 +151,7 @@ const Tabs = ({route}: { route: any}) => {
       options={{
         tabBarLabel: 'My Goal', 
         tabBarActiveTintColor: 'black',
-        tabBarStyle:{backgroundColor: 'transparent'},
+        tabBarStyle:{backgroundColor: 'white'},
         headerShown:false, 
         headerStyle:{backgroundColor: 'white'}, 
         headerTitleStyle:{color:'black'},
@@ -158,7 +162,7 @@ const Tabs = ({route}: { route: any}) => {
       options={{
         tabBarLabel: 'Profile', 
         tabBarActiveTintColor: 'black',
-        tabBarStyle:{backgroundColor: 'transparent'},
+        tabBarStyle:{backgroundColor: 'white'},
         headerShown:false, 
         headerStyle:{backgroundColor: 'white'}, 
         headerTitleStyle:{color:'black'},
@@ -169,12 +173,60 @@ const Tabs = ({route}: { route: any}) => {
   )
 }
 
+const config = {
+  initialRouteName: 'Tabs',
+  screens: {
+    OnePost: {
+      path: 'onepost/:postId'
+    },
+  }
+}
+
+const linking = {
+
+  prefixes: ['beautifulshower://'],
+  config: config
+}
+
 function App(): JSX.Element {
+
+  const [initialUrl, setInitialUrl] = useState('')
+
+  useEffect(() => {
+      Linking.getInitialURL()
+      .then((url) => {
+        if (url) {
+
+  
+
+        }
+      })
+      .catch((e) => {})
+  })
+
+  useEffect(() => {
+    Linking.addEventListener('url', ({url}) =>{
+      if (url) {
+        
+
+
+      }
+    })
+  })
+  
+  useEffect(() => {
+  
+  return () => {
+      isReadyRef.current = false
+    };
+  },[]);
   
 
   return (
-    <NavigationContainer  fallback={<Text>Loading...</Text>}>
-      <Stack.Navigator initialRouteName={'SplashScreen'} screenOptions={{headerShown: false}}>
+    <NavigationContainer onReady={() => {
+      isReadyRef.current = true;
+}} ref={navigationRef}  linking={linking} fallback={<Text>Loading...</Text>}>
+      <Stack.Navigator initialRouteName={'Tabs'} screenOptions={{headerShown: false}} >
         
         <Stack.Screen name='First' component={First}/>
         <Stack.Screen name='Already' component={Already}/>
@@ -191,6 +243,7 @@ function App(): JSX.Element {
         <Stack.Screen name='CommunityGuidelines' component={CommunityGuidelines}/>
         <Stack.Screen name='EditProfile' component={EditProfile}/>
         <Stack.Screen name='FullProfile' component={FullProfile}/>
+        <Stack.Screen name='UserProfile' component={UserProfile}/>
         <Stack.Screen name='MgoktasPremium' component={MgoktasPremium}/>
         <Stack.Screen name='Notifications' component={Notifications}/>
         <Stack.Screen name='Notifications2' component={Notifications2}/>
@@ -203,6 +256,7 @@ function App(): JSX.Element {
         <Stack.Screen name='OneChallenge' component={OneChallenge}/>
         <Stack.Screen name='Connections' component={Connections}/>
         <Stack.Screen name='SplashScreen' component={SplashScreen}/>
+        <Stack.Screen name='SplashScreen2' component={SplashScreen2}/>
              
       </Stack.Navigator>
     </NavigationContainer>

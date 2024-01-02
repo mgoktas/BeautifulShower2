@@ -38,7 +38,7 @@ const Community = ({route, navigation}) => {
             
             <Space space={50} />
 
-            <Discover onPressLeft={() => {connectFriendsFromFacebook()}} onPressRight={() => {getContacts()}} title={'DISCOVER PEOPLE'} text21={'Contacts'} text22={'Follow people you know'} text11={'Facebook'} text12={'Follow friends from Facebook'} text3={'CONNECT'}  />
+            <Discover type={true} onPressLeft={() => {connectFriendsFromFacebook()}} onPressRight={() => {getContacts()}} title={'DISCOVER PEOPLE'} text21={'Contacts'} text22={'Follow people you know'} text11={'Facebook'} text12={'Follow friends from Facebook'} text3={true ? 'CONNECTED' : 'CONNECT'}  />
 
             <Space space={50} />
         
@@ -55,7 +55,6 @@ const Community = ({route, navigation}) => {
         </ScrollView>
 
         <ConnectToFacebookSheet ref={metaRef} />
-
 
     </SafeAreaView>
   );

@@ -2,12 +2,14 @@ import * as React from 'react';
 import { Text, View, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { PickerSheet, PickerSheetRefProps, toCms, toFeet } from '../../components/Functions/Functions';
-import { CustomButton, Line, Optionals, SCREEN_HEIGHT, SCREEN_WIDTH, Space, styles, WelcomeHeader } from '../../components/Utilities/Utilities';
+import { CustomButton, HeightPicker, Line, Optionals, SCREEN_HEIGHT, SCREEN_WIDTH, Space, styles, WelcomeHeader } from '../../components/Utilities/Utilities';
 import { RegisterNotification, RegisterNotificationRefProps } from '../../components/Functions/PermissionFunctions';
 import { Notifications } from 'react-native-notifications';
 import { updateUser, updateUser2 } from '../../components/Storage/Azure';
 import { getDataString, setData, updateUserMMKV2 } from '../../components/Storage/MMKV';
 import firestore from '@react-native-firebase/firestore';
+import { Picker } from '@react-native-picker/picker';
+import Dialog from "react-native-dialog";
 
 const Welcome = ({route, navigation}) =>  {
 
@@ -55,6 +57,7 @@ const Welcome = ({route, navigation}) =>  {
       ref?.current?.scrollTo(-1700)
       setTimeout(() => {
         setIsPickerOn(true)
+        setIsVisible(true)
       }, 300)
     }, [])
 
@@ -71,6 +74,7 @@ const Welcome = ({route, navigation}) =>  {
 
     const closeSheet = () => {
       setIsPickerOn(false)
+      setIsVisible(false)
     }
 
     const onUnitChange = (val) => {
@@ -140,11 +144,16 @@ const Welcome = ({route, navigation}) =>  {
             height: heightCm,
             weight: weight1*10 + weight2,
             goals: goals,
+            followercount: 0,
+            followingCount: 0,
+            followers: '',
+            followings: '',
+            bio: '',
         })
           .then(async () => {
             
             setData('isLogged', 1)
-            await navigation.navigate('Tabs') 
+            await navigation.navigate('SplashScreen2') 
   
           }) 
 
@@ -160,11 +169,38 @@ const Welcome = ({route, navigation}) =>  {
       setGoals(goals)
     }
 
+    function Range(a,b){
+      if (b === undefined) {
+        b = a;3
+        a = 1;
+      }
+      return [...Array(b-a+1).keys()].map(x => x+a);
+    }
+
+    const [isVisible, setIsVisible] = React.useState(false)
+
 
   return (
     <View style={[styles.pageWelcome, {backgroundColor:  isPickerOn ? 'gray' : 'white'}]}>
 
         <WelcomeHeader txt1={'WELCOME MUHAMMET'} txt2={"LET'S GET STARTED"} />
+        <Dialog.Container contentStyle={{borderRadius: 30}} visible={isVisible}>
+
+        {/* <Picker itemStyle={{width: '100%', backgroundColor: 'transparent',}} 
+                    style={{width: '100%', flexDirection: 'column', borderRadius: 10, justifyContent: 'center', alignSelf: 'flex-end', height: 120, backgroundColor: 'transparent', marginTop: 40, left: 120}}
+                    selectedValue={weight[0]}
+                    onValueChange={onWeightChangeLeft}>
+                {
+                  Range(34,770).map((item, index) =>
+                        <Picker.Item key={index} label={String(item)} value={item} />
+                        )
+                    }
+        </Picker> */}
+
+<HeightPicker onValueChangeLeftH={onValueChangeLeftH} onValueChangeRightH={onValueChangeRightH}  heightInFeet={heightInFeet} isW={isW} selectedIndex={null} onWeightChangeLeft={onWeightChangeLeft} weight={[weight1, weight2]}  onWeightChangeRight={onWeightChangeRight} isWSelected={isWSelected} unit={unit} onUnitChange={onUnitChange} onValueChange={onHeightChange} height={heightCm} isHeightSelected={!isHeightSelected} onPress={() => {closeSheet()}} type={1} values={Range(120,220)} values2={['cm', 'ft']} values3={["3","4'","5'","6'"]} values4={['0"','1"','2"','3"','4"','5"','6"','7"','8"','9"','10"','11"']} values5={Range(34,770)} values6={Range(0,9)} />
+
+
+        </Dialog.Container>
 
       <ScrollView>
 
@@ -203,7 +239,8 @@ const Welcome = ({route, navigation}) =>  {
         </View>
 
     <RegisterNotification ref={notRef} />
-    <PickerSheet onValueChangeLeftH={onValueChangeLeftH} onValueChangeRightH={onValueChangeRightH} heightInFeet={heightInFeet} isW={isW} weight={[weight1, weight2]} onWeightChangeLeft={onWeightChangeLeft} onWeightChangeRight={onWeightChangeRight} closeSheet={closeSheet} isWSelected={isWSelected} feet1={heightFt.split(' ')[0]} feet2={heightFt.split(' ')[1]} unit={unit} onUnitChange={onUnitChange} onHeightChange={onHeightChange} height={heightCm} isHeightSelected={isHeightSelected} ref={ref} />
+
+    {/* <PickerSheet onValueChangeLeftH={onValueChangeLeftH} onValueChangeRightH={onValueChangeRightH} heightInFeet={heightInFeet} isW={isW} weight={[weight1, weight2]} onWeightChangeLeft={onWeightChangeLeft} onWeightChangeRight={onWeightChangeRight} closeSheet={closeSheet} isWSelected={isWSelected} feet1={heightFt.split(' ')[0]} feet2={heightFt.split(' ')[1]} unit={unit} onUnitChange={onUnitChange} onHeightChange={onHeightChange} height={heightCm} isHeightSelected={isHeightSelected} ref={ref} /> */}
     </View>
   );
 };

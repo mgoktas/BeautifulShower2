@@ -6,6 +6,9 @@ import React, { useEffect, useRef, useState } from "react"
 import { FlashList } from "@shopify/flash-list"
 import { azureConstant, datablogs } from "../../../components/Data/Data"
 import { shareMyProfile } from "../../../components/Functions/2-FunctionsCommunity"
+import firestore from '@react-native-firebase/firestore';
+import { checkFollow, followPerson, unFollowPerson } from "../../../components/Functions/Functions"
+import { getDataString } from "../../../components/Storage/MMKV"
 
 
 export const Connections = ({route, navigation}) => {
@@ -16,107 +19,88 @@ export const Connections = ({route, navigation}) => {
     const [followings, setFollowings] = useState([])
     const flatlistRef = useRef()
     const [isLoading, setIsLoading] = useState(true)
+    const [email, setEmail] = React.useState(getDataString('email'))
+    const [users, setUsers] = React.useState([])
 
-    const changeFollowings = (name) => {
-      const newState = followings.map(obj => {
+    console.log(email)
 
-        if (obj.name == name.name) {
-          if (obj.id == 100){
-            
-            // removeFromFollowingList(obj) //remove from my followings list
-          return {...obj, id: 10};
-          } else {
+    const changeFollowings = async (user) => {
+      setFollowings((current) => 
+      current.filter((item) => item.email !== user.email)
+    );    
 
-            // addToFollowingList(obj) //add to my followings list
-            return {...obj, id: 100};
+    
+  
+      await unFollowPerson(email, user.email)
 
+  };
+
+
+    const changeFollowers = async (user) => {
+      setFollowers((current) => 
+      current.filter((item) => item.email !== user.email)
+    );    
+
+      await followPerson(email, user.email)
+
+};
+
+    const addUsers = async () => {
+
+      setFollowers([])
+      setFollowings([])
+
+      await firestore()
+      .collection('Users')
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(async (doc) => {
+          
+          let docData = doc._data
+
+          if(await checkFollow(email, docData.email)){
+            setFollowings(arr => [...arr, {
+              name: docData.firstname + ' ' + docData.lastname, 
+              email: docData.email,  
+            }])
           }
+          
+       
+          });
 
-        }
-  
-        // 👇️ otherwise return the object as is
-        return obj;
       });
-  
-      setFollowings(newState);
-    };
 
-    const changeFollowers = (name) => {
-      const newState = followers.map(obj => {
+      await firestore()
+      .collection('Users')
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(async (doc) => {
+          
+          let docData = doc._data
 
-        if (obj.name == name.name) {
-          if (obj.id == 100){
-            
-            // removeFromFollowingList(obj) //remove from my followings list
-          return {...obj, id: 10};
-          } else {
-
-            // addToFollowingList(obj) //add to my followings list
-            return {...obj, id: 100};
-
+          if(await checkFollow(docData.email, email)){
+            setFollowers(arr => [...arr, {
+              name: docData.firstname + ' ' + docData.lastname, 
+              email: docData.email,  
+            }])
           }
+          
+       
+          });
 
-        }
-  
-        // 👇️ otherwise return the object as is
-        return obj;
+          setIsLoading(false)
+    
       });
-  
-      setFollowers(newState);
-    };
-            
-    useEffect(() => {
-      dataFetch()
-  },[])
-
-  const dataFetch = async () => {
-    await dataFetch1()
-    await dataFetch2()
-  }
-
-  const dataFetch1 = async () => {
-
-    await fetch('https://api.countrystatecity.in/v1/countries', {
-      method: 'GET',
-      headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-CSCAPI-KEY': 'UG9lVktzWEswQ3lTSlJEN0tGODRNMkkxZllnTDVzcW5abTFYSm1MQg=='
-  },
-  })
-  .then(response => response.json())
-  .then(json => {
-      console.log(json)
-      setFollowers(json.slice(0,5))
-      setIsLoading(false)
-  })
-  .catch(error => {
-      console.error(error);
-  });
-
+      
     }
 
-    const dataFetch2 = async () => {
+    const unFollow = () => {
 
-      await fetch('https://api.countrystatecity.in/v1/countries', {
-        method: 'GET',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-CSCAPI-KEY': 'UG9lVktzWEswQ3lTSlJEN0tGODRNMkkxZllnTDVzcW5abTFYSm1MQg=='
-    },
-    })
-    .then(response => response.json())
-    .then(json => {
-        console.log(json)
-        setFollowings(json.slice(5,10))
-        setIsLoading(false)
-    })
-    .catch(error => {
-        console.error(error);
-    });
-  
-      }
+    }
+            
+    useEffect(() => {
+      addUsers()
+  },[])
 
     return (
         <SafeAreaView>

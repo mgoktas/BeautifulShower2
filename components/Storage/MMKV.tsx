@@ -75,10 +75,19 @@ export const deleteUserMMKV = () => {
 
 
 export const storage = new MMKV()
+export const storageNotifications = new MMKV()
 
 export const setData = (key, value) => {
     const keyIntitial = 'user.' + key
     storage.set(keyIntitial, value)
+}
+
+export const setDocId = (key, value) => {
+    storage.set(key, value)
+}
+
+export const setNotifId = (key, value) => {
+    storageNotifications.set(key, value)
 }
 
 export const getDataNumber = (key) => {

@@ -16,6 +16,7 @@ import { useRef } from "react"
 import { verticalScale } from "./Metrics"
 import Animated from "react-native-reanimated"
 import { isEnabled } from "react-native/Libraries/Performance/Systrace"
+import { goToProfile } from "../Functions/Functions"
 
 export const {height: SCREEN_HEIGHT, width: SCREEN_WIDTH} = Dimensions.get('window')
 
@@ -389,7 +390,7 @@ export const HeightPicker = ({heightInFeet, onValueChangeLeftH, onValueChangeRig
     
         unit == 1 && isW ?     <View style={{flexDirection: 'row'}}>
             <View style={[styles.locationSwitchItemCnt, {alignSelf: 'flex-end'}]}>
-                <TextButton onPress={onPress} txt={'DONE'} type={undefined}/>
+                <TextButton onPress={onPress} txt={'00'} type={undefined}/>
             </View>
         <Picker itemStyle={{width: '100%', backgroundColor: 'transparent',}} 
                 style={{width: '30%', flexDirection: 'column', borderRadius: 10, justifyContent: 'center', alignSelf: 'flex-end', height: 120, backgroundColor: 'transparent', marginTop: 40, left: 60}}
@@ -427,7 +428,7 @@ export const HeightPicker = ({heightInFeet, onValueChangeLeftH, onValueChangeRig
         <View style={[ {flexDirection: 'column', marginTop: 5}]}>
             <Space space={10}/>
         <View style={[{justifyContent: 'flex-end', flexDirection: 'row'}]}>
-                <TextButton onPress={onPress} txt={'DONE'} type={undefined}/>
+                <TextButton onPress={onPress} txt={'111'} type={undefined}/>
         </View>
         <Space space={10}/>
         <Line space={0}/>
@@ -435,7 +436,7 @@ export const HeightPicker = ({heightInFeet, onValueChangeLeftH, onValueChangeRig
         <View style={{flexDirection: 'row'}}>
     
             <Picker itemStyle={{width: '100%', backgroundColor: 'transparent',}} 
-                    style={{width: '25%', flexDirection: 'column', borderRadius: 10, justifyContent: 'center', alignSelf: 'flex-end', height: 120, backgroundColor: 'transparent', marginTop: 40, left: 120}}
+                    style={{width: '100%', flexDirection: 'column', borderRadius: 10, justifyContent: 'center', alignSelf: 'flex-end', height: 120, backgroundColor: 'transparent', marginTop: 40, left: 120}}
                     selectedValue={weight[0]}
                     onValueChange={onWeightChangeLeft}>
                 {
@@ -476,7 +477,7 @@ export const HeightPicker = ({heightInFeet, onValueChangeLeftH, onValueChangeRig
         <View style={[ {flexDirection: 'column', marginTop: 5}, styles.shadow]}>
         <Space space={10}/>
     <View style={[{justifyContent: 'flex-end', flexDirection: 'row'}]}>
-        <TextButton onPress={onPress} txt={'DONE'} type={undefined}/>
+        <TextButton onPress={onPress} txt={'22'} type={undefined}/>
     </View>
     <Space space={10}/>
     <Line space={0}/>
@@ -1355,7 +1356,7 @@ export const OneGoalInput = ({type, onPress, txt, onChangeText}) => {
         </TO>
         :
         <View style={styles.oneGoalInput}>
-            <TextInput onChangeText={onChangeText} placeholderTextColor={'gray'} placeholder={txt} style={[styles.oneGoalInputText, {color: 'black'}]}>
+            <TextInput onChangeText={onChangeText} placeholderTextColor={'gray'} placeholder={txt} style={[styles.oneGoalInputText, {color: 'black', height: 50}]}>
             </TextInput>
             <Text style={[styles.oneGoalInputText, {color: 'black'}]}>
                 {/* Kcal */}
@@ -1365,7 +1366,7 @@ export const OneGoalInput = ({type, onPress, txt, onChangeText}) => {
     )
 }
 
-export const HeaderHome = ({onPress, txt, title, type, onPressBack, onPress0, onPress1, onPress2, onPressShare, onPressTDots}) => {
+export const HeaderHome = ({onPressR, onPress, txt, title, type, onPressBack, onPress0, onPress1, onPress2, onPressShare, onPressTDots}) => {
  
     return (
         type == 'goals' ?
@@ -1538,6 +1539,7 @@ export const HeaderHome = ({onPress, txt, title, type, onPressBack, onPress0, on
                     {title}
                 </Text>
                 <View style={styles.headerHomeIconsCnt}>
+                    
                     <TO activeOpacity={.8} onPress={onPress0}>
                         <IconI size={25} name={'person-add-outline'}/>
                     </TO>
@@ -1546,6 +1548,9 @@ export const HeaderHome = ({onPress, txt, title, type, onPressBack, onPress0, on
                     </TO>
                     <TO activeOpacity={.8} onPress={onPress2}>
                         <IconI size={25} name={'notifications-outline'}  />
+                    </TO>
+                    <TO activeOpacity={.8} onPress={onPressR}>
+                        <IconI size={25} name={'refresh-outline'}  />
                     </TO>
 
                 </View>
@@ -1659,6 +1664,13 @@ export const StartButtonActivity = ({txt1, txt2, txt3, onPress, hasStarted}) => 
 )}
 
 export const ProfilePerson = ({type, onPress, imageSource}) => (
+    type == 'up' ? 
+    <V style={styles.profilePersonBackCnt}>
+        <V style={{width: '100%', height: SCREEN_HEIGHT/5, justifyContent: 'center'}}>
+        <IconM style={styles.profilePersonIcon} name={'pencil-outline'} size={30} />
+        </V>
+    </V>
+    :
 
     type == 2 && imageSource ?
 
@@ -1682,8 +1694,62 @@ export const ProfilePerson = ({type, onPress, imageSource}) => (
     </V>
 )
 
-export const ProfilePersonIt = ({isSecary, txt1, txt2, txt3, txt4, txt5, txt6, type, onPressAvatar, imageSource, onPressProfile}) => (
-    
+export const ProfilePersonIt = ({isFollowing, isSecary, txt1, txt2, txt3, txt4, txt5, txt6, type, onPressAvatar, imageSource, onPressProfile, onPressFollow}) => (
+    type == 'userp' ?
+    <View style={styles.profilePersonItCnt}>
+    <View style={styles.profilePersonColCnt}>
+        <TO activeOpacity={.8} onPress={onPressAvatar} style={styles.profilePersonImageCnt}>
+            <ImageBackground style={{width: 140, height: 140, borderRadius: 40, justifyContent: 'center'}} borderRadius={80} source={{uri :imageSource}}>
+            <IconI name={'person-outline'}  style={[styles.profilePersonImage, {display: imageSource !== undefined ? 'none' : 'flex'}]} color={'#a5a5a5'} size={80} />
+            </ImageBackground>
+        </TO>
+        <Text style={styles.profilePersonName}>{txt1}</Text>
+        <View style={styles.profilePersonCountryCnt}>
+            <CountryFlag isoCode={txt2} size={12} />
+            <Text style={styles.profilePersonItCountryText}>{txt3}</Text>
+        </View>
+        <Text style={styles.profilePersonItBioText}>
+            {txt4}
+        </Text>
+        <View style={styles.profilePersonItInfoCnt}>
+            <Text style={styles.profilePersonInfoText}>{txt5} FOLLOWERS</Text>
+            <View style={styles.profilePersonInfoVLine}></View>
+            <Text style={styles.profilePersonInfoText}>{txt6} FOLLOWING</Text>
+        </View>
+        <TO activeOpacity={.8} onPress={onPressFollow} style={styles.profilePersonButtonCnt}>
+            <Text style={[styles.profilePersonButtonText, {textAlign: 'center'}]}>{isFollowing ? 'Following' : 'Follow' }</Text>
+        </TO>
+    </View>
+</View>
+:
+    type == 'up' ? 
+    <View style={styles.profilePersonItCnt}>
+    <View style={styles.profilePersonColCnt}>
+        <TO activeOpacity={.8} onPress={onPressAvatar} style={styles.profilePersonImageCnt}>
+            <V style={{width: 140, height: 140, borderRadius: 40, justifyContent: 'center'}} borderRadius={80}>
+            <IconI name={'person-outline'}  style={[styles.profilePersonImage, {display: 'flex'}]} color={'#a5a5a5'} size={80} />
+            </V>
+        </TO>
+        <Text style={styles.profilePersonName}>{txt1}</Text>
+        <View style={styles.profilePersonCountryCnt}>
+            {/* <CountryFlag isoCode={txt2} size={12} /> */}
+            <Text style={styles.profilePersonItCountryText}>{txt3}</Text>
+        </View>
+        <Text style={styles.profilePersonItBioText}>
+            {txt4}
+        </Text>
+        <View style={styles.profilePersonItInfoCnt}>
+            <Text style={styles.profilePersonInfoText}>{txt5} FOLLOWERS</Text>
+            <View style={styles.profilePersonInfoVLine}></View>
+            <Text style={styles.profilePersonInfoText}>{txt6} FOLLOWING</Text>
+        </View>
+        <TO activeOpacity={.8} onPress={onPressProfile} style={styles.profilePersonButtonCnt}>
+            <Text style={styles.profilePersonButtonText}>VIEW FULL PROFILE</Text>
+            <Icon style={styles.startButtonActivityButtonIcon} name={'long-arrow-right'} size={20} color={'white'}/>
+        </TO>
+    </View>
+</View>
+    :
     type == 2 && imageSource ?
     <ImageBackground source={imageSource} style={[styles.profilePersonImageCnt2, {backgroundColor: '#a5a5a5'}]}>
         <IconI name={'person-outline'}  style={styles.profilePersonImage} size={60} />
@@ -1704,7 +1770,7 @@ export const ProfilePersonIt = ({isSecary, txt1, txt2, txt3, txt4, txt5, txt6, t
         </TO>
         <Text style={styles.profilePersonName}>{txt1}</Text>
         <View style={styles.profilePersonCountryCnt}>
-            <CountryFlag isoCode={txt2} size={12} />
+            {/* <CountryFlag isoCode={txt2} size={12} /> */}
             <Text style={styles.profilePersonItCountryText}>{txt3}</Text>
         </View>
         <Text style={styles.profilePersonItBioText}>
@@ -2303,7 +2369,7 @@ export const SmallLogo = ({}) => {
     )
 }
 
-export const CustomInput = ({txt, name, type, email, onChangeText, isName, txt1, name1, lastname1}) => (
+export const CustomInput = ({noText, txt, name, type, email, onChangeText, isName, txt1, name1, lastname1, isPassword}) => (
     type == 'bio' ?
     <View style={[styles.customBtnCnt, {width: '85%', marginVertical: 10}]}>
         <View style={{flexDirection: 'row'}}>
@@ -2348,11 +2414,13 @@ export const CustomInput = ({txt, name, type, email, onChangeText, isName, txt1,
         </View>
         <View style={styles.customBtnlineH2}>
         </View>
-        <TextInput secureTextEntry={true} placeholder={txt1}  autoCapitalize={isName ? 'words' : 'none'} onChangeText={onChangeText} placeholderTextColor={'gray'} style={{position: 'absolute', top: 10, left: 15, height: 30, opacity: 2, zIndex: 2}}>
+        <TextInput secureTextEntry={true} placeholder={txt1}  autoCapitalize={isName ? 'words' : 'none'} onChangeText={onChangeText} placeholderTextColor={'gray'} style={{position: 'absolute', top: 0, left: 15, height: 50, opacity: 2, zIndex: 2, width: SCREEN_HEIGHT / 1.5}}>
 
         </TextInput>
         <Line space={0}/>
-        <DescriptiveText txt={'Min. 8 char, incl. 1 uppercase and 1 lowercase letter, 1 number and 1 special character'}/>
+        <View style={{display: noText ? 'none' : 'flex'}}>
+            <DescriptiveText txt={'Min. 8 char, incl. 1 uppercase and 1 lowercase letter, 1 number and 1 special character'}/>
+        </View>
     </View>
     :
     type == 4 ?
@@ -2439,6 +2507,7 @@ export const CustomInput = ({txt, name, type, email, onChangeText, isName, txt1,
     </View> 
     :
     <View style={styles.customBtnCnt}>
+        
         <View style={{flexDirection: 'row'}}>
             <View style={styles.customBtnlineH}>
             </View>
@@ -2454,14 +2523,12 @@ export const CustomInput = ({txt, name, type, email, onChangeText, isName, txt1,
             <View style={styles.customBtnlineV2}>
             </View>
         </View>
-        <TextInput defaultValue={name1} placeholder={txt1}  autoCapitalize={isName ? 'words' : 'none'} onChangeText={onChangeText} placeholderTextColor={'gray'} style={{position: 'absolute', top: 0, left: 15, height: 50, opacity: 2, zIndex: 2, width: SCREEN_HEIGHT / 1.5}}>
+        <TextInput secureTextEntry={isPassword ? true : false} defaultValue={name1} placeholder={txt1}  autoCapitalize={isName ? 'words' : 'none'} onChangeText={onChangeText} placeholderTextColor={'gray'} style={{position: 'absolute', top: 0, left: 15, height: 50, opacity: 2, zIndex: 2, width: SCREEN_HEIGHT / 1.5}}>
 
         </TextInput>
         <Line space={0}/>
         <Line space={0}/>
         <Line space={0}/>
-
-
 
     </View>
 )
@@ -2687,15 +2754,20 @@ export const LineBwCell = ({isFull, isDarkModeOn, isOnTask, isSettings}) => {
     )
 }
 
-export const InputBox = ({txt, type, txt2, count, onChangeText}) => {
+export const InputBox = ({txt, type, txt2, count, onChangeText, onChangeTextTitle}) => {
     return (
 
         type == 'post' ? 
         <View>
         <View style={{marginHorizontal: 20, marginVertical: 10, backgroundColor: 'white', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderBottomColor: 'black'}}>
                         
-            <TextInput onChangeText={onChangeText} placeholderTextColor={'gray'} style={{alignSelf: 'center', width: '90%', height: 40,}} placeholder={txt}/>
+            <TextInput onChangeText={onChangeTextTitle} placeholderTextColor={'gray'} style={{alignSelf: 'center', width: '90%', height: 40}} placeholder={'Title'}/>
 
+        </View>
+        <View style={{marginHorizontal: 20, marginVertical: 10, backgroundColor: 'white', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderBottomColor: 'black'}}>
+                        
+            <TextInput multiline={true} onChangeText={onChangeText} placeholderTextColor={'gray'} style={{alignSelf: 'center', width: '90%', height: 80,}} placeholder={txt}/>
+            
         </View>
             <Text style={{ width: '90%', marginLeft: 20, fontSize: 12, color: '#363132'}}>
                 {txt2}: {count}
@@ -2713,7 +2785,7 @@ export const InputBox = ({txt, type, txt2, count, onChangeText}) => {
     )
 }
 
-export const CountryCnt = ({isFollowing, txt, onPress, country, style }) => {
+export const PersonCnt = ({isFollowing, txt, onPress, country, style }) => {
 
     return (
       <TouchableOpacity 
@@ -2792,9 +2864,9 @@ export const PersonBox = ({name, onPress}) => {
     )
 }
 
-export const OneNotification = ({txt1, txt2}) => {
+export const OneNotification = ({txt1, txt2, onPress, closePost}) => {
     return(
-        <View style={{flexDirection:'row'}}>
+        <TouchableOpacity onPress={onPress} activeOpacity={.8} style={{flexDirection:'row'}}>
             <ImageBackground width={50} height={50} style={{width:50, height: 50, margin: 30, borderRadius: 300}} borderRadius={40} source={require('../images/logo.png')}>
 
             </ImageBackground>
@@ -2810,7 +2882,13 @@ export const OneNotification = ({txt1, txt2}) => {
                 </Text>
 
             </View>
-        </View>
+
+            <TouchableOpacity onPress={() => {closePost(item)}}>
+                <IconF5 color={'gray'} size={20} name='times'/>
+              </TouchableOpacity>
+
+
+        </TouchableOpacity>
     )
 }
 
@@ -2934,7 +3012,13 @@ export const Choose = ({count, count2, selectedIndex, onPress1, onPress2}) => {
 
 export const NoOneYet = ({txt, onPress, type}) => {
     return (
-
+        type == 'feed' ? 
+        <View>
+            <Text style={{marginLeft: type == 2 ? 35 : 31, marginRight: 70, opacity: .8, alignSelf: type == 2 ? 'flex-start' :  'flex-end', flexDirection: 'column', left: type == 2 ? 0 : 0}}>
+                {txt}
+            </Text>
+        </View>
+        :
 
         
         <View>
@@ -2968,29 +3052,33 @@ export const FollowerList = ({onClick, navigation, changeFollowings, changeFollo
     const renderItemBlog = ({ item, index }) => {
 
         const renderFollower = ({item, index}, changeFollowers) => (
-            <View>
+            <TO onPress={() => {goToProfile(navigation, item.email)}}>
                 <View style={{flexDirection: 'row', alignItems: 'center', alignContent: 'center', marginVertical: 10}}>
                 <IconI size={20} style={{width: '15%', alignSelf: 'center', marginLeft: 30}} name="person-outline"/>
                 <Text style={{width: '35%', alignSelf: 'center'}}>
                     {item.name}
                 </Text>
-                <SmallButton isFollowing={item.id == 100 ? true : false} onPress={() => {changeFollowers(item)}} txt={'FOLLOW'} txt2={'UNFOLLOW'}/>
+                <View style={{opacity: 20, zIndex: 20}}>
+                    <SmallButton isFollowing={item.id == 100 ? true : false} onPress={() => {changeFollowers(item)}} txt={'FOLLOW'} txt2={'UNFOLLOW'}/>
+                </View>
                 </View>
                 <Line type={2} />
-            </View>
+            </TO>
         )
 
         const renderFollowing = ({item, index}, changeFollowers) => (
-            <View>
+            <TO onPress={() => {goToProfile(navigation, item.email)}}>
                 <View style={{flexDirection: 'row', alignItems: 'center', alignContent: 'center', marginVertical: 10}}>
                 <IconI size={20} style={{width: '15%', alignSelf: 'center', marginLeft: 30}} name="person-outline"/>
                 <Text style={{width: '35%', alignSelf: 'center'}}>
                     {item.name}
                 </Text>
-                <SmallButton isFollowing={item.id == 100 ? true : false} onPress={() => {changeFollowings(item)}} txt={'FOLLOW'} txt2={'UNFOLLOW'}/>
+                <View style={{opacity: 20, zIndex: 20}}>
+                    <SmallButton isFollowing={item.id == 100 ? true : false} onPress={() => {changeFollowings(item)}} txt={'FOLLOW'} txt2={'UNFOLLOW'}/>
+                </View>
                 </View>
                 <Line type={2} />
-            </View>
+            </TO>
         )
 
         return (
@@ -3006,8 +3094,8 @@ export const FollowerList = ({onClick, navigation, changeFollowings, changeFollo
                     <Line type={3}/>
                 <ScrollView>
 
-                <FlashList showsHorizontalScrollIndicator={false} pagingEnabled={true} horizontal={false} renderItem={item =>renderFollower(item, changeFollowers)} estimatedItemSize={10} data={followers} extraData={data[0].amIFollowing}>
-                </FlashList>
+                <FlatList showsHorizontalScrollIndicator={false} pagingEnabled={true} horizontal={false} renderItem={item =>renderFollower(item, changeFollowers)} estimatedItemSize={10} data={followers} extraData={data[0].amIFollowing}>
+                </FlatList>
                     
                 </ScrollView>
             </View> 
@@ -3017,7 +3105,7 @@ export const FollowerList = ({onClick, navigation, changeFollowings, changeFollo
                 <Text></Text>
                 <View>
                     <NoOneYet type={2}  onPress={onPressText} txt={"You're not following anybody yet. Discover people to get inspired."} />
-                    <View style={{left: 100, top: -27}}>
+                    <View style={{left: 100, top: -15}}>
                         <SmallButton onPress={() => {navigation.navigate('Feed', {add: 'add'})}} txt2={'Add Friends'}/>
                     </View>
                 </View>
@@ -3025,8 +3113,8 @@ export const FollowerList = ({onClick, navigation, changeFollowings, changeFollo
             <View style={{width: SCREEN_WIDTH, height: SCREEN_WIDTH, opacity: isSheetOn ? .6 : 1,}}>
                     <Line type={3}/>
              <ScrollView>
-             <FlashList showsHorizontalScrollIndicator={false} pagingEnabled={true} horizontal={false} renderItem={item =>renderFollowing(item, changeFollowings)} estimatedItemSize={10} data={followings} extraData={data[0].amIFollowing}>
-            </FlashList>
+             <FlatList showsHorizontalScrollIndicator={false} pagingEnabled={true} horizontal={false} renderItem={item =>renderFollowing(item, changeFollowings)} estimatedItemSize={10} data={followings} extraData={data[0].amIFollowing}>
+            </FlatList>
             </ScrollView>
             </View> 
         )
@@ -3045,8 +3133,8 @@ export const FollowerList = ({onClick, navigation, changeFollowings, changeFollo
                         index: 1,
                         animated: true,
                       });}} selectedIndex={selectedIndex} count={0} count2={0}/>
-                <FlashList estimatedItemSize={5} ref={flatlistRef}  pagingEnabled={true} data={[0, 1]} renderItem={renderItemBlog} horizontal={true} keyExtractor={(item) => item} extraData={data} showsHorizontalScrollIndicator={false}>
-                </FlashList>
+                <FlatList estimatedItemSize={5} ref={flatlistRef}  pagingEnabled={true} data={[0, 1]} renderItem={renderItemBlog} horizontal={true} keyExtractor={(item) => item} extraData={data} showsHorizontalScrollIndicator={false}>
+                </FlatList>
 
         </View>
 
@@ -3518,7 +3606,7 @@ export const styles = StyleSheet.create({
         backgroundColor: 'black',
         flexDirection: 'row',
         marginVertical: 18,
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         height: 40,
         alignItems: 'center',
         paddingLeft: 10

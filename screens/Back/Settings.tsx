@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, ScrollView, Linking, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CustomButton, HeaderHome, Line, LineBwCell, SettingsBox, Space } from '../../components/Utilities/Utilities';
 import { LogOut } from '../../components/Functions/AuthFunctions';
 import { GetAllContacts, GetAllContactsRefProps } from '../../components/Functions/2-FunctionsCommunity';
 import { ConnectContactsRefProps } from '../../components/Functions/PermissionFunctions';
-import { privacyPolicyUrl, termsAndConditionsUrl } from '../../components/Data/Data';
+import { companyUrl, privacyPolicyUrl, supportUrl, termsAndConditionsUrl } from '../../components/Data/Data';
 
 const Settings = ({route, navigation}) => {
 
@@ -75,20 +75,38 @@ const Settings = ({route, navigation}) => {
             <Space space={15} />
           
             <SettingsBox onPress={
-              () => {
-                goTo('https://resetwill.netlify.app/support/beautifulshower');
+             async () => {
+
+                Platform.OS == 'ios' ? 
+                await goTo(supportUrl)
+                :
+                await Linking.openURL(supportUrl);
+
               }
             } type={4} icon={'message-text-outline'} icon2={true} isFirst={true}  title={'Support & Feedback'} />
             
             <LineBwCell isSettings={true} />
             <LineBwCell isSettings={true} />
 
-            <SettingsBox onPress={() => {goTo(termsAndConditionsUrl)}} icon={'pencil-sharp'} title={'Terms & Conditions'} />
+            <SettingsBox  onPress={
+             async () => {
+                Platform.OS == 'ios' ? 
+                await goTo(termsAndConditionsUrl)
+                :
+                await Linking.openURL(termsAndConditionsUrl);              }
+            } icon={'pencil-sharp'} title={'Terms & Conditions'} />
             
             <LineBwCell isSettings={true} />
             <LineBwCell isSettings={true} />
 
-            <SettingsBox onPress={() => {goTo(privacyPolicyUrl)}} icon={'lock-closed-outline'} title={'Privacy Policy'} />
+            <SettingsBox onPress={
+             async () => {
+              Platform.OS == 'ios' ? 
+              await goTo(privacyPolicyUrl)
+              :
+              await Linking.openURL(privacyPolicyUrl);
+                          }
+            } icon={'lock-closed-outline'} title={'Privacy Policy'} />
          
             {/* <LineBwCell isSettings={true} />
             <LineBwCell isSettings={true} />
@@ -98,7 +116,11 @@ const Settings = ({route, navigation}) => {
             <LineBwCell isSettings={true} />
             <LineBwCell isSettings={true} />
          
-            <SettingsBox type={5} onPress={() => {goTo('https://resetwill.netlify.app')}} title={'mgoktas & Premium'} />
+            <SettingsBox type={5} onPress={
+             async () => {
+                await Linking.openURL(companyUrl);
+              }
+            } title={'mgoktas & Premium'} />
         
             <CustomButton type={3} onPress={() => { LogOut(navigation) }} txt={'LOG OUT'}/>
 
