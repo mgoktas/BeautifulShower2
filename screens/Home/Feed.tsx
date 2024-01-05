@@ -121,6 +121,7 @@ const goTo = (email) => {
   goToProfile(navigation, email)
 }
 
+console.log(email)
 
   return (
 

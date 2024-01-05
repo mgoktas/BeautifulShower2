@@ -1582,47 +1582,37 @@ export const ActivityDuration = ({txt1, txt2, txt3, txt4, hr, min, sec}) => (
 )
 
  
-export const StartButtonActivity = ({txt1, txt2, txt3, onPress, hasStarted}) => {
+export const StartButtonActivity = ({txt1, txt2, txt3, txt4, txt5, onPress, onPress2, onPress3, hasStarted}) => {
     
-    const DateItemListList = ({item}) => {
-        return (
-          <View style={{width: Dimensions.get("screen").width}}>
-            <FlatList showsHorizontalScrollIndicator={false} pagingEnabled={false} horizontal={true} renderItem={item =>renderItem(item)} estimatedItemSize={10} data={[0,1]} extraData={true}>
-            </FlatList>
-          </View>
-        )
-      }
       
       const renderItem = ({ item, index }) => {
           return (
 
-            index == 1? 
-            <View>
-
-                <ClassicButton txt1={'RESUME'} txt2={'STOP'}/>
-
+            index == 0
+            ? 
+            <View style={{width: SCREEN_WIDTH, flexDirection: 'row'}}>
+                <TO onPress={onPress2} activeOpacity={.8} style={[styles.startButtonActivityButtonCnt, {width: '50%', backgroundColor: 'red', justifyContent: 'center'},]}>
+                    <View style={styles.startButtonActivityButtonCol1}>
+                        <Text style={styles.startButtonActivityButtonText1}>{txt4}</Text>
+                    </View>
+                </TO>
+                <TO onPress={onPress3} activeOpacity={.8} style={[styles.startButtonActivityButtonCnt, {width: '50%', backgroundColor: 'green', justifyContent: 'center'}]}>
+                    <View style={styles.startButtonActivityButtonCol1}>
+                        <Text style={styles.startButtonActivityButtonText1}>{txt5}</Text>
+                    </View>
+                </TO>
             </View>
-            :
+                :
             <View>
-
-                <TO onPress={onPress} activeOpacity={.8} style={[styles.startButtonActivityButtonCnt, {width: '85%'}]}>
+                <TO onPress={onPress} activeOpacity={.8} style={[styles.startButtonActivityButtonCnt, {width: '100%'}]}>
                     <View style={styles.startButtonActivityButtonCol1}>
                         <Text style={styles.startButtonActivityButtonText1}>{txt3}</Text>
                     </View>
                     <Icon style={styles.startButtonActivityButtonIcon} name={'long-arrow-right'} size={20} color={'white'}/>
                 </TO>
-
             </View>
             
           )
-      }
-  
-      const renderItems = ({ item, index }) => {
-  
-            return (
-              <DateItemListList item={item} />
-            )
-          
       }
     
     const flashlistRef = useRef()
@@ -1632,14 +1622,11 @@ export const StartButtonActivity = ({txt1, txt2, txt3, onPress, hasStarted}) => 
         hasStarted ? 
         <View style={[styles.startButtonActivityCnt,{height: hasStarted ? 55 : 60, top: 30, backgroundColor: 'white', marginVertical: 15}]}>
   
-        <View style={{width: SCREEN_WIDTH, height: 60, backgroundColor: 'black', marginHorizontal: 20}}>
 
-            <FlatList estimatedItemSize={2} ref={flashlistRef}  pagingEnabled={true} data={[{index:1},{index:2}]} renderItem={renderItems} horizontal={true} keyExtractor={(item) => item} extraData={'data'} showsHorizontalScrollIndicator={false}>
+            <FlatList keyExtractor={(item,index)=> index.toString()} estimatedItemSize={2} ref={flashlistRef}  pagingEnabled={true} data={[0,1]} renderItem={renderItem} horizontal={true} keyExtractor={(item) => item} extraData={'data'} showsHorizontalScrollIndicator={false}>
             </FlatList>
-        
-        </View>
-    
-        </View>        
+    </View> 
+      
         :
 
     <View style={[styles.startButtonActivityCnt,{height: hasStarted ? 55 : 60}]}>
@@ -1660,8 +1647,8 @@ export const StartButtonActivity = ({txt1, txt2, txt3, onPress, hasStarted}) => 
             <IconI style={styles.startButtonActivityIcon} name={'settings-outline'} size={28}/>
         </View>
     
-    </View>
-)}
+    </View> 
+    )}
 
 export const ProfilePerson = ({type, onPress, imageSource}) => (
     type == 'up' ? 
@@ -3727,15 +3714,22 @@ export const styles = StyleSheet.create({
     },
     startButtonActivityButtonCol1:{
         justifyContent: 'center',
+        padding: 10,
+        textAlign: 'center'
+    },
+    startButtonActivityButtonCol12:{
+        justifyContent: 'center',
         width: '70%',
-        padding: 10
+        padding: 10,
+        textAlign: 'center',
+        marginHorizontal: 10
     },
     startButtonActivityButtonCnt:{
         backgroundColor: 'black',
         height: '100%',
         width: '50%',
         flexDirection: 'row',
-        marginHorizontal: 10,
+        marginHorizontal: 20,
         justifyContent: 'space-between'
     },
     startButtonActivityMusicIconCnt:{

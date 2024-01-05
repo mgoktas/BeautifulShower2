@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react"
-import {  FlatList, Image, ScrollView, StyleSheet, Text, Touchable, TouchableOpacity, View, Animated, Dimensions, Easing, Share } from "react-native"
+import {  FlatList, Image, ScrollView, StyleSheet, Text, Touchable, TouchableOpacity, View, Animated, Dimensions, Easing, Share, Alert } from "react-native"
 import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler"
 import { Extrapolate, interpolate, runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { CustomButton, HeightPicker, InfoText, JoinLogo, Line, NoOneYet, OneNotification, SCREEN_HEIGHT, SCREEN_WIDTH, SmallButton, Space, SwitchBox, TextButton } from "../Utilities/Utilities"
@@ -786,6 +786,39 @@ const arr2 = '7bb2e8658e0887@crankymonkey.info e40f81658e088c@crankymonkey.info 
 
 
 
+}
+
+export const postShower = async (email, duration, type) => {
+        
+  let user = await firestore().collection('Users').doc(email).get()
+
+  await firestore()
+  .collection('Showers')
+  .add({
+    id: email,
+    duration: duration,
+    calBurned: duration * 1,
+  })
+  .then(async () => {
+
+        Alert.alert('Shower is done!', `You burned ${duration} calories`)
+
+  })
+
+  await firestore()
+  .collection('Showers')
+  .doc(email)
+  .update({
+    showerDidTimes: user._data.showerDidTimes + 1,
+    avgBathTime: user._data.avgBathTime + duration / user._data.showerDidTimes,
+    calBurned: user._data.calBurned + duration,
+})
+  .then(async () => {
+
+    
+
+  }) 
+  
 }
 
 const styles =  StyleSheet.create({

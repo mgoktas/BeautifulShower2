@@ -174,7 +174,7 @@ const Tabs = ({route}: { route: any}) => {
 }
 
 const config = {
-  initialRouteName: 'Tabs',
+  initialRouteName: 'Activity',
   screens: {
     OnePost: {
       path: 'onepost/:postId'
@@ -228,6 +228,7 @@ function App(): JSX.Element {
 }} ref={navigationRef}  linking={linking} fallback={<Text>Loading...</Text>}>
       <Stack.Navigator initialRouteName={'Tabs'} screenOptions={{headerShown: false}} >
         
+        <Stack.Screen name='Activity' component={Activity}/>
         <Stack.Screen name='First' component={First}/>
         <Stack.Screen name='Already' component={Already}/>
         <Stack.Screen name='Join' component={Join}/>
@@ -235,7 +236,6 @@ function App(): JSX.Element {
         <Stack.Screen name='Login' component={Login}/>
         <Stack.Screen name='SignupScratch' component={SignupScratch}/>
         <Stack.Screen name='Welcome' component={Welcome}/>
-        <Stack.Screen name='Goals' component={Goals}/>
         <Stack.Screen name='Tabs' component={Tabs}/>
         <Stack.Screen name='Settings' component={Settings}/>
         <Stack.Screen name='Account' component={Account}/>
