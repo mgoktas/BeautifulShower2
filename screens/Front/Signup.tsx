@@ -149,7 +149,7 @@ const Signup = ({route, navigation}) => {
                         } }
                         isClicked={true} txt1={'LOCATION'} txt2={country} type={2} open={undefined} date={undefined} onDateChange={undefined} onCancel={undefined} sdWghtLeft={undefined} sdWghtRight={undefined} oVCWLeft={undefined} oVCWRight={undefined} sdWgTp={undefined} heightSd={undefined} oVC={undefined}/>
                 
-                <LocationSwitch onDateChange={(date) => {setDate(date); setBirthDate(getDate(date)); console.log(date, getDate(date))}} date={date} type={'date'}  
+                <LocationSwitch onDateChange={(date) => {setDate(date); setBirthDate(getDate(date)); }} date={date} type={'date'}  
                 
                         onPress={() => {
 

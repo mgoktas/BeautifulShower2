@@ -130,7 +130,7 @@ const EditProfile = ({route, navigation}) => {
           <Space space={20}/>
           <Space space={20}/>
       
-          <LocationSwitch  onValueChange={(val, ind) => {setCountryIso(val); setCountry(countries[ind].name)}}  value={countryIso} values={countries} 
+          {/* <LocationSwitch  onValueChange={(val, ind) => {setCountryIso(val); setCountry(countries[ind].name)}}  value={countryIso} values={countries} 
           date={date}
           onPress={() => {
           
@@ -150,11 +150,13 @@ const EditProfile = ({route, navigation}) => {
           }}                  
           type={'location'}
           isClicked={true} txt1={'LOCATION'} txt2={country}/>
-                
+                 */}
                 <Space space={20}/>
                 <Space space={20}/>
             
-          <LocationSwitch onDateChange={(date) => {setDate(date); setBirthDate(getDate(date)); console.log(date, getDate(date))}} date={date} type={2}  
+
+
+          {/* <LocationSwitch onDateChange={(date) => {setDate(date); setBirthDate(getDate(date)); }} date={date} type={2}  
           
           onPress={() => {
           
@@ -171,14 +173,14 @@ const EditProfile = ({route, navigation}) => {
               }
           
           
-          }} isClicked={isClickedBirthdate}  txt1={'BIRTHDATE'} txt2={birthDate}/>
+          }} isClicked={isClickedBirthdate}  txt1={'BIRTHDATE'} txt2={birthDate}/> */}
 
           <Space space={20}/>
           <Space space={20}/>
 
-          <LocationSwitch 
+          {/* <LocationSwitch 
           
-          type={'weight'} onDateChange={(date) => {setDate(date); setBirthDate(getDate(date)); console.log(date, getDate(date))}} date={date}  
+          type={'weight'} onDateChange={(date) => {setDate(date); setBirthDate(getDate(date)); }} date={date}  
           
           sdWghtLeft={sdWghtLeft}
 
@@ -210,15 +212,15 @@ const EditProfile = ({route, navigation}) => {
               // }
           
           
-          }} isClicked={isClickedWeight}  txt1={'WEIGHT'} txt2={`${sdWghtLeft}.${sdWghtRight} kg`}/>
+          }} isClicked={isClickedWeight}  txt1={'WEIGHT'} txt2={`${sdWghtLeft}.${sdWghtRight} kg`}/> */}
 
           <Space space={20}/>
           <Space space={20}/>
 
 
-          <LocationSwitch 
+          {/* <LocationSwitch 
           
-          type={'height'} onDateChange={(date) => {setDate(date); setBirthDate(getDate(date)); console.log(date, getDate(date))}} date={date}  
+          type={'height'} onDateChange={(date) => {setDate(date); setBirthDate(getDate(date)); }} date={date}  
           
           heightSd={heightSd}  
           
@@ -247,7 +249,7 @@ const EditProfile = ({route, navigation}) => {
               // }
           
           
-          }} isClicked={isClickedHeight}  txt1={'HEIGHT'} txt2={`${heightSd} cm`}/>
+          }} isClicked={isClickedHeight}  txt1={'HEIGHT'} txt2={`${heightSd} cm`}/> */}
 
       <Space space={20}/>
       <Space space={20}/>

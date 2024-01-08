@@ -11,8 +11,6 @@ export const OnePost = ({route, navigation}) => {
 
     const {data, postId} = route.params
 
-    console.log(route.params)
-
     const [post, setPost] = React.useState({})
     const [isLoading, setIsLoading] = React.useState(true)
 

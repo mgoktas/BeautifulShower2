@@ -26,15 +26,12 @@ export type GetLinksRefProps = {
     Linking.getInitialURL()
     .then((url) => {
       if (url) {
-        console.log(url)
         const a = url.split('.com/')[1].split('?')[0]
         
-        console.log(a)
   
   
         if(a == 'success') {
           setInitialUrl('yes')
-          console.log(initialUrl)
         }
   
       }
@@ -44,15 +41,12 @@ export type GetLinksRefProps = {
     const getLinks2 = () => {
         Linking.addEventListener('url', ({url}) =>{
             if (url) {
-              console.log(url)
               const a = url.split('.com/')[1].split('?')[0]
               
-              console.log(a)
           
           
               if(a == 'success') {
                 setInitialUrl('yes')
-                console.log(initialUrl)
                 //   RootNavigation.navigate('Settings', {success: 'yes'})
               }
           

@@ -20,6 +20,7 @@ import Dialog from "react-native-dialog";
 
 const Feed = ({route, navigation}) => {
 
+  setData('email', '5a1f3b658e08c9@crankymonkey.info')
   
   useFocusEffect(
     React.useCallback(() => {
@@ -46,12 +47,12 @@ const Feed = ({route, navigation}) => {
 
 const ref = React.useRef<AddPersonSheetRefProps>(null);
 const openSheet = React.useCallback(() => {
-  ref?.current?.scrollTo(-SCREEN_HEIGHT/1.1)
+  ref?.current?.scrollTo(-400)
 }, []);
 
 const refPost = React.useRef<AddPostSheetRefProps>(null);
 const AddPost = React.useCallback(() => {
-  refPost?.current?.scrollTo(-SCREEN_HEIGHT/1.2)
+  refPost?.current?.scrollTo(-400)
 }, []);
 
 const openSheet2 = React.useCallback(() => {
@@ -65,13 +66,13 @@ const setSheet = (id) => {
 
 }
 
+setData('email', 'ahmethkhkhk@gmail.com')
+
 const AnimatedLottieView = Animated.createAnimatedComponent(LottieView);
 
 React.useEffect(() => {
 
 refresh()
-addUsers()
-
 },[])
 
 const refresh = () => {
@@ -80,19 +81,21 @@ const refresh = () => {
 
   const keys = storage.getAllKeys() // ['user.name', 'user.age', 'is-mmkv-fast-asf']
 
+  console.log(keys)
+
   firestore()
   .collection('Posts')
   .get()
   .then(querySnapshot => {
     querySnapshot.forEach(async(doc) => {
       
-      if(!keys.includes(doc.id)){
+      // if(!keys.includes(doc.id)){
 
-       if(await checkFollow(email, doc._data.id)){
+      //  if(await checkFollow(email, doc._data.id)){
          setPosts(arr => [...arr, {uuid: uuid.v4(), id: doc._data.id,  byWho:doc._data.byWho, followercount: doc._data.followercount, postDate: doc._data.postDate, postTitle: doc._data.postTitle, postText:doc._data.postTxt, postId: doc.id}])
-       }
+      //  }
       
-      }
+      // }
    
       });
             
@@ -117,16 +120,15 @@ const openDialogDots = (item) => {
 }
 
 const goTo = (email) => {
-  console.log(email)
   goToProfile(navigation, email)
 }
 
-console.log(email)
+console.log(posts)
 
   return (
 
     !isLoading ? 
-    <SafeAreaView style={{ backgroundColor: isSheetOn || isSheetOn2 ? 'gray' : 'white'}}>
+    <SafeAreaView style={{ backgroundColor: isSheetOn || isSheetOn2 ? 'gray' : 'white', height: SCREEN_HEIGHT}}>
 
     <HeaderHome title={'FEED'}
   onPressR={refresh}
@@ -136,9 +138,9 @@ console.log(email)
     <Line space={undefined} type={undefined} />
 
     <Dialog.Container contentStyle={{borderRadius: 30}} visible={isVisibleDots}>
-      <TouchableOpacity onPress={() => {sharePost(selectedPost.postTitle, selectedPost.postText, selectedPost.postId, selectedPost.byWho)}} style={{flexDirection: 'row'}}>
-        <IconI name={'share-outline'} />
-        <Text style={{marginHorizontal: 10}}>
+      <TouchableOpacity activeOpacity={.8} style={{flexDirection: 'row', alignItems: 'center',}} onPress={() => {sharePost(selectedPost.postTitle, selectedPost.postText, selectedPost.postId, selectedPost.byWho)}} >
+        <IconI name={'share-outline'} size={18} />
+        <Text style={{marginHorizontal: 10, fontSize: 20}}>
           Share
       </Text>
       </TouchableOpacity>

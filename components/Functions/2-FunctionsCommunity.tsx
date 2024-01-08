@@ -27,14 +27,11 @@ import Contacts, { getContactsByEmailAddress } from 'react-native-contacts';
             buttonPositive: 'Please accept bare mortal',
         })
             .then((res) => {
-                console.log('Permission: ', res);
                 Contacts.getAll()
                     .then((contacts) => {
                         // work with contacts
-                        console.log(contacts);
                     })
                     .catch((e) => {
-                        console.log(e, 'sa');
                     }); 
             })
             .catch((error) => {
@@ -46,7 +43,6 @@ import Contacts, { getContactsByEmailAddress } from 'react-native-contacts';
   
           try{
               await Contacts.getAll().then(contacts => {
-               console.log(contacts)
               })
           } catch(err) {
               console.log(err)
@@ -54,7 +50,7 @@ import Contacts, { getContactsByEmailAddress } from 'react-native-contacts';
         }
       }
       catch(err){
-        console.log(err,'sda')
+        console.log(err)
       }      
 
    

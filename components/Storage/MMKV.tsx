@@ -17,8 +17,6 @@ export const addUserToMMKV = (user) => {
 
 export const updateUserMMKV = (user) => {
 
-    console.log('user: ', user)
-
     try{
         setData('firstname', user.firstname)
         setData('lastname', user.lastname)

@@ -15,8 +15,6 @@ const Welcome = ({route, navigation}) =>  {
 
     // const {user} = route.params
     
-    console.log(getDataString('firstname'))
-
     const [isClickedFirst, setIsClickedFirst] = React.useState(false)
     const [isClickedSecond, setIsClickedSecond] = React.useState(false)
     const [isClickedThird, setIsClickedThird] = React.useState(false)
@@ -81,14 +79,11 @@ const Welcome = ({route, navigation}) =>  {
       if(val == 0){
         setUnit(0)
         setHeightCm(toCms(heightInFeet.split(' ')[0], heightInFeet.split(' ')[1]))
-        console.log(toCms(heightInFeet.split(' ')[0], heightInFeet.split(' ')[1]))
       } else {
         setUnit(1)
         setHeightCm(toFeet(heightCm))
         setHeightFt(toFeet(heightCm))
         setHeightInFeet(toFeet(heightCm))
-        console.log(heightCm)
-        console.log(heightInFeet)
       }
     }
 
@@ -135,6 +130,8 @@ const Welcome = ({route, navigation}) =>  {
           setData('height', heightCm)
           setData('weight', weight1*10 + weight2)
           setData('goals', goals)
+          setData('isSeenFirstNotif', 0)
+          
   
           firestore()
           .collection('Users')

@@ -56,11 +56,9 @@ export const AddPersonSheet = React.forwardRef<BottomSheetRefProps, BottomSheetP
     
     const checkSheet = async  () => {
 
-      console.log('sheet is checking')
       
      setTimeout(() => { 
 
-      console.log('sheet is checking every 1s')
 
       !props.isSheetOn ? setInterval(function2, 1000) : {}
     
@@ -84,7 +82,6 @@ export const AddPersonSheet = React.forwardRef<BottomSheetRefProps, BottomSheetP
     
     const openSheet2 = () => {
       checkSheet()
-      console.log('sheet is on')
     }
 
     useImperativeHandle(ref, () => ({ scrollTo, getSheetHeight, openSheet2 }), [scrollTo, getSheetHeight, openSheet2])
@@ -123,36 +120,9 @@ export const AddPersonSheet = React.forwardRef<BottomSheetRefProps, BottomSheetP
     })   
     
     useEffect(() => {
-        scrollTo(60)
-        addUsers()
+        scrollTo(200)
     },[])
 
-    const addUsers = () => {
-
-      firestore()
-      .collection('Users')
-      .get()
-      .then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-          
-          let docData = doc._data
-
-            setUsers(arr => [...arr, {
-              name: docData.firstname + ' ' + docData.lastname, 
-              email: docData.email,  
-            }])
-          
-       
-          });
-
-          console.log(users)
-                
-          setIsLoading(false)
-    
-      });
-    }
-
-      
     const search = (text) => {
         
         setFilteredDataSource(users)
@@ -169,7 +139,6 @@ export const AddPersonSheet = React.forwardRef<BottomSheetRefProps, BottomSheetP
               const textData = text.toUpperCase();
               return itemData.indexOf(textData) > -1;
           })
-            console.log(filteredDataSource)
             setFilteredDataSource(newData);
           } else {
               setTimeout(() => {
@@ -178,37 +147,11 @@ export const AddPersonSheet = React.forwardRef<BottomSheetRefProps, BottomSheetP
           }
         }
         catch(err){
-          console.log(err)
         }
 
 
     };
-
-    const updateState = (name) => {
-      const newState = filteredDataSource.map(obj => {
-
-        if (obj.name == name) {
-          if (obj.id == 100){
-            
-            removeFromFollowingList(obj) //remove from my followings list
-          return {...obj, id: 10};
-          } else {
-
-            addToFollowingList(obj) //add to my followings list
-            return {...obj, id: 100};
-
-          }
-
-        }
-  
-        // 👇️ otherwise return the object as is
-        return obj;
-      });
-  
-      setFilteredDataSource(newState);
-    };
-        
-        
+          
         return (
 
           !isLoading ? 
@@ -265,12 +208,9 @@ export const AddPersonSheet = React.forwardRef<BottomSheetRefProps, BottomSheetP
                   
 
                   {/* <UserBox name={'Shafira'} place={'Sekibo'} name2={'Zakia'} place2={'Iwu'} isFriend={false} isFriend2={true}/> */}
-                  <Space space={100}/>
-                  <Space space={100}/>
-                  <Space space={100}/>
+
                 
                 </ScrollView>
-                <Space space={200} />  
               </View>
             </Animated.View>
           </GestureDetector>
@@ -355,11 +295,8 @@ export const AddPostSheet = React.forwardRef<AddPostSheetRefProps, AddPostSheetP
   
   const checkSheet = async  () => {
 
-    console.log('sheet is checking')
     
     setTimeout(() => { 
-
-    console.log('sheet is checking every 1s')
 
     !props.isSheetOn ? setInterval(function2, 1000) : {}
   
@@ -381,7 +318,6 @@ export const AddPostSheet = React.forwardRef<AddPostSheetRefProps, AddPostSheetP
   
   const openSheet2 = () => {
     checkSheet()
-    console.log('sheet is on')
   }
 
   useImperativeHandle(ref, () => ({ scrollTo, getSheetHeight }), [scrollTo, getSheetHeight])
@@ -421,7 +357,7 @@ export const AddPostSheet = React.forwardRef<AddPostSheetRefProps, AddPostSheetP
       })   
       
       useEffect(() => {
-          scrollTo(60)
+        scrollTo(200)
       },[])
       
       const [countLeft, setCountLeft] = useState(200)
@@ -437,9 +373,7 @@ export const AddPostSheet = React.forwardRef<AddPostSheetRefProps, AddPostSheetP
         let user2 = await firestore().collection('Users').doc(email).get()
 
         const user = user2._data
-        console.log(user2._data)
 
-        console.log(await user2._data.followercount)
 
         await firestore()
         .collection('Posts')

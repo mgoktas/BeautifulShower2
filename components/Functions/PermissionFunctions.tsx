@@ -21,12 +21,10 @@ RegisterNotificationRefProps
   const [signinInProgress, setSigninInProgress] = useState(false)
       
   const SetNotifications = () => {
-    console.log('asdas')
     try{
       Notifications.registerRemoteNotifications();
       Notifications.events().registerRemoteNotificationsRegistered((event: Registered) => {
         // TODO: Send the token to my server so it could send back push notifications...
-        console.log("Device Token Received", event.deviceToken);
         setData('isNotificationsAllowed', 1)
     });
     Notifications.events().registerRemoteNotificationsRegistrationFailed((event: RegistrationError) => {
@@ -126,15 +124,12 @@ export type ConnectContactsRefProps = {
       try{
           setData('isContactsNotPermitted', 1)
           await Contacts.getAll().then(async contacts => {
-           console.log(contacts)
            
 
             contacts.map((key) => {
-              console.log(key.emailAddresses[0].email)
               setList(list => [...list,  key.emailAddresses[0].email])
             })
 
-            console.log(list)
 
             await checkUserFriends(list)
 

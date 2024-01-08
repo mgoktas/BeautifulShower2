@@ -45,9 +45,6 @@ const Profile = ({route, navigation}) => {
       avatarRef?.current?.scrollTo(-SCREEN_HEIGHT/6)
   }, [])
 
-  console.log(backgroundUrl)
-
-
 
 
   return (

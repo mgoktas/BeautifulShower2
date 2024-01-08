@@ -28,6 +28,8 @@ export const privacyPolicyUrl = 'https://www.freeprivacypolicy.com/live/0b82b9d1
 
 export const termsAndConditionsUrl = 'https://www.termsandconditionsgenerator.com/live.php?token=YBwUtsNzjCqub4lBmBqUBDou264zb41D'
 
+export const musicUrl = 'https://music.youtube.com'
+
 export const userLink = ''
 
 export const supportUrl = 'https://resetwill.netlify.app/support/beautifulshower'

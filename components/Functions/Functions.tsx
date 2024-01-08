@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react"
-import {  FlatList, Image, ScrollView, StyleSheet, Text, Touchable, TouchableOpacity, View, Animated, Dimensions, Easing, Share, Alert } from "react-native"
+import {  FlatList, Image, ScrollView, StyleSheet, Text, Touchable, TouchableOpacity, View, Animated, Dimensions, Easing, Share, Alert, ImageBackground } from "react-native"
 import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler"
 import { Extrapolate, interpolate, runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { CustomButton, HeightPicker, InfoText, JoinLogo, Line, NoOneYet, OneNotification, SCREEN_HEIGHT, SCREEN_WIDTH, SmallButton, Space, SwitchBox, TextButton } from "../Utilities/Utilities"
@@ -242,8 +242,6 @@ export const deleteAccount = () => {
 export const getImage = (email) => {
   const url = azureConstant + email
   
-  console.log(url)
-
   return url
 }
 
@@ -330,15 +328,37 @@ showsHorizontalScrollIndicator={false} pagingEnabled={false} horizontal={false} 
 
 }
 
-export const Notifications = ({notifications, isSheetOn, openDialog, closePost, }) => {
+export const NotificationsOnly = ({notifications, isSheetOn, openDialog, closePost, }) => {
     
 
 
-  const render = ({item, index}) => (
+  const renderPost = ({item, index}) => (
       <View>
           
-          <OneNotification closePost={closePost} onPress={() => {openDialog(item.id)}} txt1={`Someone has followed you! ${item.userName} `} txt2={'You have one more follower!'} />
-      
+          <TouchableOpacity onPress={() => {openDialog(item.id)}} activeOpacity={.8} style={{flexDirection:'row'}}>
+            <ImageBackground width={50} height={50} style={{width:50, height: 50, margin: 30, borderRadius: 300}} borderRadius={40} source={require('../images/logo.png')}>
+
+            </ImageBackground>
+
+            <View style={{justifyContent: 'center'}}>
+
+                <Text style={{fontWeight: '500'}}>
+                Someone has followed you! 
+                </Text>
+
+                <Text>
+                {item.title}
+                </Text>
+
+            </View>
+
+            <TouchableOpacity style={{position: 'absolute', right: 40, top: 10}} onPress={() => {closePost(item)}}>
+                <IconF5 color={'gray'} size={20} name='times'/>
+            </TouchableOpacity>
+
+        </TouchableOpacity>      
+    <Line space={undefined} type={undefined} />
+
       </View>
   )
 
@@ -352,15 +372,20 @@ export const Notifications = ({notifications, isSheetOn, openDialog, closePost, 
           <NoOneYet onPress={onPressText} txt={"There's no one here yet. Add friends to see others posts."} type={undefined} /> */}
       
       </View> :
-      <View style={{width: SCREEN_WIDTH, height: SCREEN_WIDTH, opacity: isSheetOn ? .6 : 1, }}>
-              <Line type={3} space={undefined}/>
-          <ScrollView>
 
-          <FlatList showsHorizontalScrollIndicator={false} pagingEnabled={false} horizontal={false} renderItem={item =>render(item)} estimatedItemSize={10} data={notifications} extraData={notifications.length}>
-          </FlatList>
-              
-          </ScrollView>
-      </View> 
+
+
+                <View>
+
+                  <FlatList
+
+keyExtractor={(item, index) => String(index)}
+
+nestedScrollEnabled={true}
+showsHorizontalScrollIndicator={true} pagingEnabled={false} horizontal={false} renderItem={item =>renderPost(item)} estimatedItemSize={10} data={notifications} extraData={notifications.length}>
+                  </FlatList>
+                  
+              </View>
   )
 
 }
@@ -549,9 +574,16 @@ export const removeFollow = (prevArrStr, email) => {
 
 export const followPerson = async (email, followWho) => {
 
+  console.log(email)
+  console.log(followWho)
+  
   const userme = await firestore().collection('Users').doc(email).get();
   const userthat = await firestore().collection('Users').doc(followWho).get();
 
+  console.log(userme._data.firstname)
+  console.log(userme._data.lastname)
+
+  console.log('asdB')
   await firestore()
   .collection('Notifications')
   .add({
@@ -559,7 +591,7 @@ export const followPerson = async (email, followWho) => {
     toWhom: followWho
   })
   .then(async () => {
-
+    console.log('asda')
   })
 
 
@@ -594,8 +626,6 @@ export const followPerson = async (email, followWho) => {
 
   }) 
   }
-
-
 
   if(userthat._data.followerCount == 0) {
 
@@ -632,8 +662,6 @@ export const followPerson = async (email, followWho) => {
 }
 
 export const unFollowPerson = async (email, followWho) => {
-
-  console.log(email, followWho)
 
   const userme = await firestore().collection('Users').doc(email).get();
   const userthat = await firestore().collection('Users').doc(followWho).get();
@@ -740,51 +768,15 @@ export const checkFollow = async (myemail, email) => {
 
   const followings = await userme._data.followings
 
+  console.log('followings: ',followings)
+
   const arr = await followings.split('//')
+
+  const checked = await arr.includes(email)
   
-  console.log(await arr.includes(email))
+  console.log(checked)
 
-  return await arr.includes(email)
-
-}
-
-export const addUsers = async () => {
-
-
-const arr = 'Ruby Hamilton Guillermo Rose Marilyn Cowan Zelma Sparks Zachary Chung Ollie Fischer Lakeisha Waller Mohammed Velasquez Jerrold Montgomery Josh Ortiz'.split(' ')
-const arr2 = '7bb2e8658e0887@crankymonkey.info e40f81658e088c@crankymonkey.info 4f567e658e08a6@crankymonkey.info 2ea044658e08b5@cashbenties.com ac83ab658e08ba@crankymonkey.info 7685ec658e08be@crankymonkey.info 3d6299658e08c2@cashbenties.com 0da90c658e08c6@cashbenties.com 5a1f3b658e08c9@crankymonkey.info d71c06658e08cc@crankymonkey.info'.split(' ')
-
-  for(let i=0; i<10; i++){
-    await firestore()
-    .collection('Users')
-    .doc(arr2[i])
-    .set({
-      showerdays: '{"monday":0,"tuesday":0,"wednesday":0,"thursday":0,"friday":1,"saturday":0,"sunday":0}',
-      height: 180,
-      weight: 600,
-      goals: '',
-      followercount: 0,
-      followingCount: 0,
-      followers: '',
-      followings: '',
-      bio: 'Welcome To My Page!',
-      birthdateDATE:getDDate(new Date()),
-      birthdateName: '1 Jan 2000',
-      email: arr2[i],
-      firstname: arr[0 + i * 2],
-      lastname: arr[1 + i * 2],
-      locationISO2: 'us',
-      locationName: 'United States',
-      gender: 'Not Specified',
-    })
-    .then(async () => {
-  
-  
-  
-    }) 
-  }
-
-
+  return await checked
 
 }
 
@@ -819,6 +811,17 @@ export const postShower = async (email, duration, type) => {
 
   }) 
   
+}
+
+export const getDaysLeftEndWeek = () => {
+  let date = new Date()
+  let day = date.getDay();
+  let remaining = day == 0 ? 1 : 8 - day
+  return remaining
+}
+
+export const getRemainingGoal = (one, two) => {
+  return one - two
 }
 
 const styles =  StyleSheet.create({

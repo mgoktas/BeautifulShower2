@@ -120,7 +120,6 @@ export type ChangeAvatarRefProps = {
         },
         (response) => {
           const file = response.assets[0]
-          console.log(response.assets[0]);
 
         props.avatarChosen ?  putImage(file, props.userEmail) : putBackgroundImage(file, props.userEmail)
         

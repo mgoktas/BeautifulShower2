@@ -16,7 +16,7 @@ const UserProfile = ({route, navigation}) => {
     
     const [myemail, setMymail] = React.useState(getDataString('email'))
     const [isLoading, setIsLoading] = React.useState(true)
-    const [isFollowing, setIsFollowing] = React.useState(checkFollow(myemail, email))
+    const [isFollowing, setIsFollowing] = React.useState(false)
     const [avatarChosen, setAvatarChosen] = React.useState(false)
     const [user, setUser] = React.useState({})
 
@@ -31,8 +31,6 @@ const UserProfile = ({route, navigation}) => {
     const func = async () => {
 
       const user = await firestore().collection('Users').doc(email).get();
-
-      console.log(user._data)
 
       if(user){
         setUser({
@@ -53,6 +51,14 @@ const UserProfile = ({route, navigation}) => {
   
   },[])
 
+  const check = async () => {
+    setIsFollowing(await checkFollow(myemail, email))
+  }
+
+  React.useEffect(() => {
+    check()
+  },[])
+
   return (
     !isLoading ? 
     <SafeAreaView>
@@ -63,7 +69,34 @@ const UserProfile = ({route, navigation}) => {
 
         <ProfilePerson imageSource={backgroundUrl} />
 
-        <ProfilePersonIt onPressFollow={() => {isFollowing ? unFollowPerson(myemail, email) : followPerson(myemail, email)}} isFollowing={isFollowing} type={'userp'} imageSource={avatarUrl} txt1={user.name} txt2={user.locationISO2} txt3={user.locationName} txt4={user.bio == '' ? user.bio : 'Welcome To My Page!'} txt5={user.followerCount} txt6={user.followingCount}/>
+        <ProfilePersonIt onPressChat={() => {navigation.navigate('ChatScreen')}} onPressFollow={ async () => {
+          console.log('hkjg')
+        if  (isFollowing){
+          
+            try{
+          await  unFollowPerson(myemail, email)
+            setIsFollowing(false)
+          }
+            catch(e){
+              console.log(e)
+            }
+          
+              
+        } else {
+          console.log('hkkhhlkjg')
+
+           try{
+             console.log('khj')
+         await  followPerson(myemail, email)
+         setIsFollowing(true)
+         }
+           catch(e){
+             console.log(e)
+           }
+         
+             
+        }
+          }} isFollowing={isFollowing} type={'userp'} imageSource={avatarUrl} txt1={user.name} txt2={user.locationISO2} txt3={user.locationName} txt4={user.bio == '' ? user.bio : 'Welcome To My Page!'} txt5={user.followerCount} txt6={user.followingCount}/>
 
         <ProfileBox txt1={'Premium Benefits'} txt2={'Go further with Premium'}/>
 

@@ -153,7 +153,7 @@ const SignupScratch = ({navigation}) => {
                         } }
                         isClicked={true} txt1={'LOCATION'} txt2={country} type={2} open={undefined} date={undefined} onDateChange={undefined} onCancel={undefined} sdWghtLeft={undefined} sdWghtRight={undefined} oVCWLeft={undefined} oVCWRight={undefined} sdWgTp={undefined} heightSd={undefined} oVC={undefined}/>
                 
-                <LocationSwitch onDateChange={(date) => {setDate(date); setBirthDate(getDate(date)); console.log(date, getDate(date))}} date={date} type={'date'}  
+                <LocationSwitch onDateChange={(date) => {setDate(date); setBirthDate(getDate(date)); }} date={date} type={'date'}  
                 
                         onPress={() => {
 
@@ -180,7 +180,7 @@ const SignupScratch = ({navigation}) => {
             <InfoText onPress={() => {openWelcome()}} />
             </View>
 
-            <AgreementSheet closeSheet={closeSheet} openWelcome={openWelcome} ref={ref}/>
+            {/* <AgreementSheet closeSheet={closeSheet} openWelcome={openWelcome} ref={ref}/> */}
      
         </View>
 :
@@ -188,6 +188,7 @@ const SignupScratch = ({navigation}) => {
         <Space space={45}/>
         <Header isSheetOn={isSheetOn} isBlank={true} onPress={() => {navigation.goBack()}} />
         <View style={styles.flexCnt}>
+    
         <ScrollView ref={scrollViewRef} style={{backgroundColor: 'transparent'}}>
 
             <JoinLogo type={2} txt1={'HELP US FILL IN THE GAPS'} txt2={'Your information is secure with us. Users will be able to search for you by your name or email address.'} />

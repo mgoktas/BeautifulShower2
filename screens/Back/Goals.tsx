@@ -42,7 +42,7 @@ const saveGoal = () => {
 
   return (
     <SafeAreaView>
-        <Header type={2} isBlank={false} onPress={() => {navigation.goBack()}} />
+        <Header onPressSave={saveGoal} type={2} isBlank={false} onPress={() => {navigation.goBack()}} />
 
         <Space space={30}/>
 

@@ -35,15 +35,11 @@ export const createAccount = async (firstname, lastname, gender, email, location
     
     else {
 
-    console.log(password)
-    console.log(password2)
-
       try {
 
         auth()
           .createUserWithEmailAndPassword(email, password)
           .then(async () => {
-            console.log('User account created & signed in!');
   
             await firestore()
             .collection('Users')
@@ -398,15 +394,12 @@ const state = uuid.v4();
 
     const { nonce } = response;
     const appleCredential = auth.AppleAuthProvider.credential(id_token, nonce);
-    console.log('FGSsuccesSGRs1')
   
     await auth().signInWithCredential(appleCredential);
 
     
       const email = await jwtDecode(id_token)
-      console.log(email.email)
       setData('email', email.email)
-      console.log(user != undefined)
 
       
       // user != undefined ==> apple not logined before
@@ -433,8 +426,6 @@ const state = uuid.v4();
           email : email.email
         })
         .then(async () => {
-
-          console.log('success0')
           
           await navigation.navigate('Signup',{
             email : email.email
@@ -448,7 +439,6 @@ const state = uuid.v4();
 
         try {
 
-          console.log(typeof user2.height == 'undefined')
           await navigation.navigate('Tabs') 
 
         }
@@ -469,7 +459,6 @@ const state = uuid.v4();
           })
           .then(async () => {
   
-            console.log('success0')
             
             await navigation.navigate('Signup',{
               firstname: 'Change',
@@ -493,10 +482,7 @@ const state = uuid.v4();
   }
   } catch (error) {
     console.log(error);
-    console.log('success5')
-
   if (error && error.message) {
-    console.log('success6')
     switch (error.message) {
       case appleAuthAndroid.Error.NOT_CONFIGURED:
         console.log("appleAuthAndroid not configured yet.");
@@ -536,7 +522,6 @@ SignWithFacebookRefProps
     try{
       LoginManager.logInWithPermissions(["public_profile"]).then(
         function(result) {
-          console.log(result)
           if (result.isCancelled) {
             console.log("Login cancelled");
           } else {
@@ -545,14 +530,10 @@ SignWithFacebookRefProps
                 console.log(data.accessToken.toString())
                 
                 const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
-
-                console.log('data.accessToken.toShtdhtring()')
                 // Sign-in the user with the credential
                 const user = await auth().signInWithCredential(facebookCredential)
 
                 const email = user.user.email
-
-                console.log('data.accessToken.toString()')
 
                   Profile.getCurrentProfile().then(
                   async function(currentProfile,) {
@@ -573,7 +554,6 @@ SignWithFacebookRefProps
 
                           try {
 
-                            console.log(typeof user2.height == 'undefined')
                             await navigation.navigate('Tabs') 
                 
                           }
@@ -668,9 +648,6 @@ export type SignWithGoogleRefProps = {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      console.log(userInfo)
-
-      
       
       const { idToken } = await GoogleSignin.signIn();
 
@@ -686,11 +663,8 @@ export type SignWithGoogleRefProps = {
       setData('lastname',  userInfo.user.familyName)
       setData('email' ,userInfo.user.email)
       
-      console.log(userInfo.user)
-
       try {
 
-        console.log(typeof user2.height == 'undefined')
         await navigation.navigate('Tabs') 
 
         Alert.alert('Succesful login','Welcome!')

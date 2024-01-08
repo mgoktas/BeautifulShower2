@@ -12,7 +12,7 @@ import IconMa from 'react-native-vector-icons/MaterialIcons'
 import CountryFlag from "react-native-country-flag"
 import DatePicker from "react-native-date-picker"
 import { FlashList } from "@shopify/flash-list"
-import { useRef } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { verticalScale } from "./Metrics"
 import Animated from "react-native-reanimated"
 import { isEnabled } from "react-native/Libraries/Performance/Systrace"
@@ -66,9 +66,28 @@ export const BottomTab = ({onPress1, onPress2, type, txt1, txt2, style}) => (
     </GestureHandlerRootView>
 )
 
-export const Header = ({onPress, isBlank, isSheetOn, type}) => {
+export const Header = ({onPress, isBlank, isSheetOn, type, onPressSave}) => {
  
     return (
+        type == 'goalset' ? 
+        <GestureHandlerRootView>
+    <View style={[styles.header, {backgroundColor: isSheetOn ? 'gray' : 'white', justifyContent: 'space-around'}]}>
+        <TouchableOpacity onPress={onPress} activeOpacity={.7} style={[styles.headerIconCnt, {display: isBlank ? 'none' : 'flex', marginStart: 0, left: -10}]}>
+            <Text style={styles.headerTextLeft}>
+                Cancel
+            </Text>
+        </TouchableOpacity>
+        <Text style={[styles.headerTextMiddle]}>
+            SET MY GOAL
+        </Text>
+        <TouchableOpacity onPress={onPressSave} activeOpacity={.7} style={[styles.headerIconCnt, {display: isBlank ? 'none' : 'flex', marginStart: 0, left: 10}]}>
+        <Text style={styles.headerTextRight}>
+                Save
+            </Text>
+        </TouchableOpacity>
+    </View>
+</GestureHandlerRootView> 
+        :
     type == 2 ? <GestureHandlerRootView>
     <View style={[styles.header, {backgroundColor: isSheetOn ? 'gray' : 'white', justifyContent: 'space-around'}]}>
         <TouchableOpacity onPress={onPress} activeOpacity={.7} style={[styles.headerIconCnt, {display: isBlank ? 'none' : 'flex', marginStart: 0, left: -10}]}>
@@ -225,6 +244,35 @@ export const BottomText = () => (
 )
 
 export const SignWith = ({isEnabled, txt, txt2, icon2, onPress, type, onValueChange, value}) => (
+    type == 'activity' ? 
+    <GestureHandlerRootView >
+    <View style={[styles.signWithCnt, {marginTop: txt == 'Facebook' ?  0 : 0}]} >
+        <View style={{flexDirection: 'row', alignItems: 'center', left: 30}}>
+
+            <IconMa size={32} color={txt == 'Cold Shower' ? 'black' : 'black'} name={txt == 'Cold Shower' ? 'severe-cold' : 'whatshot'} />            
+
+            <Text style={[styles.signWithTxt, {top: 0, left: 40, fontWeight: '600'}]}>
+                {txt}
+            </Text>
+
+            
+        </View>
+            <View style={{position: 'absolute', right: 30,}}>
+                
+                <View style={styles.smallSwitchItCnt}>
+                <Switch
+                trackColor={{false: '#f2f2f6', true: 'black'}}
+                thumbColor={false ? '#f5dd4b' : '#f4f3f4'}
+                ios_backgroundColor="gray"
+                value={isEnabled}
+                onValueChange={onValueChange}
+                />                
+                </View>
+
+            </View>
+    </View>
+</GestureHandlerRootView>
+    :
     type == 'feedcon' ? 
     <GestureHandlerRootView >
         <View style={[styles.signWithCnt, {marginTop: txt == 'Facebook' ?  0 : 0}]} >
@@ -1206,8 +1254,23 @@ export const Optionals = ({unit, toggleSwitchNotifications, isNotificationsEnabl
     </GestureHandlerRootView>
 )}
 
-export const SmallSwitch = ({toggleSwitch, isEnabled, txt1, txt2, type}) => {
+export const SmallSwitch = ({toggleSwitch, isEnabled, txt1, txt2, type, onVlChng}) => {
     return (
+        type == 'activity' ? 
+        <View style={styles.smallSwitchCnt}>
+        <View style={styles.smallSwitchTextsHead}>
+            <Text style={styles.smallSwitchText1}>{txt1}</Text>
+        </View>
+        <View style={styles.smallSwitchItCnt}>
+        <Switch
+        trackColor={{false: '#f2f2f6', true: 'black'}}
+        thumbColor={false ? '#f5dd4b' : '#f4f3f4'}
+        ios_backgroundColor="gray"
+        onValueChange={onVlChng}
+        value={isEnabled}/>                
+        </View>
+</View>
+        :
         type == 3 ? 
         <View style={styles.smallSwitchCnt}>
             <View style={styles.smallSwitchTextsHead}>
@@ -1276,6 +1339,43 @@ export const DayOptions = ({txt, isClicked, onPress}) => (
 
 export const OneGoal = ({selectedIndex, isClickedFirst, isClickedSec, isClickedThi, isClickedFou, onPressThi, onPressFou, onPressFirst, onPressSec, txt, txt21, txt22, txt31, txt32, icon1, icon2, type}) => {
     return (
+    type == 'goalset1' ? 
+    <View style={styles.oneGoalCnt}>
+    <Text style={styles.oneGoalHeader}>{txt}</Text>
+    <View style={styles.oneGoalsCnt}>
+        <TO activeOpacity={1} onPress={onPressFirst} style={[styles.oneGoalTsCnt, {borderColor: isClickedFirst ? 'black': 'gray'}]}>
+            <IconI name={icon1} color={isClickedFirst ? 'black': 'gray'} size={18} />
+            <Text style={[styles.oneGoalTx, {color: isClickedFirst ? 'black': 'gray'}]}>{txt21}</Text>
+        </TO>
+        <TO activeOpacity={1} onPress={onPressSec} style={[styles.oneGoalTsCnt, {borderColor: isClickedSec ? 'black': 'gray'}]}>
+            <IconF5 name={icon2} color={isClickedSec ? 'black': 'gray'} size={18} />
+            <Text style={[styles.oneGoalTx, {color: isClickedSec ? 'black': 'gray'}]}>{txt22}</Text>
+        </TO>
+    </View>
+</View>
+    :
+    type == 'goalset2' ? 
+    <View style={styles.oneGoalCnt}>
+        <Text style={styles.oneGoalHeader}>{txt}</Text>
+        <View style={styles.oneGoalsCnt}>
+            <TO activeOpacity={1} onPress={onPressSec} style={[styles.oneGoalTsCnt, {borderColor: isClickedSec ? 'black': 'gray'}]}>
+            <Text style={[styles.oneGoalTx, {color: isClickedSec ? 'black': 'gray'}]}>{txt22}</Text>
+                <Text style={styles.oneGoalTx}></Text>
+            </TO>
+        </View>
+    </View>
+    :
+    type == 'goalset3' ? 
+<View style={styles.oneGoalCnt}>
+        <Text style={styles.oneGoalHeader}>{txt}</Text>
+        <View style={styles.oneGoalsCnt}>
+            <TO activeOpacity={1} onPress={onPressSec} style={[styles.oneGoalTsCnt, {borderColor: selectedIndex == 2 ? 'black': 'gray'}]}>
+                <Text style={[styles.oneGoalTx, {color: selectedIndex == 2 ? 'black': 'gray'}]}>{txt22}</Text>
+                <Text style={styles.oneGoalTx}></Text>
+            </TO>
+        </View>
+    </View>
+    :
     type == 3  ? <View style={styles.oneGoalCnt}>
         <Text style={styles.oneGoalHeader}>{txt}</Text>
         <View style={styles.oneGoalsCnt}>
@@ -1356,7 +1456,9 @@ export const OneGoalInput = ({type, onPress, txt, onChangeText}) => {
         </TO>
         :
         <View style={styles.oneGoalInput}>
-            <TextInput onChangeText={onChangeText} placeholderTextColor={'gray'} placeholder={txt} style={[styles.oneGoalInputText, {color: 'black', height: 50}]}>
+            <TextInput
+                            keyboardType="numeric"
+                            onChangeText={onChangeText} placeholderTextColor={'gray'} placeholder={txt} style={[styles.oneGoalInputText, {color: 'black', height: 50}]}>
             </TextInput>
             <Text style={[styles.oneGoalInputText, {color: 'black'}]}>
                 {/* Kcal */}
@@ -1371,17 +1473,17 @@ export const HeaderHome = ({onPressR, onPress, txt, title, type, onPressBack, on
     return (
         type == 'goals' ?
         <GestureHandlerRootView>
-            <View style={[styles.headerHomeCnt, {justifyContent: 'center', left: -80}]}>
+            <View style={[styles.headerHomeCnt, {justifyContent: 'center', left: -78,}]}>
                     <Text style={[styles.headerHomeTitle, {marginTop: 10, marginBottom: 15, width: '50%', marginStart: 0}]} >
                         {title}
                     </Text>
                     <View>
-                    <TO activeOpacity={.7} onPress={onPressShare} style={[{position: 'absolute', left: 130, top: -15}]}>
+                    <TO activeOpacity={.7} onPress={onPressShare} style={[{position: 'absolute', left: 90, top: -15}]}>
                         <IconI name={'share-outline'} size={25} />
                     </TO>
-                    {/* <TO activeOpacity={.7} onPress={onPressTDots} style={{position: 'absolute', left: 130, top: -15}}>
-                        <IconM name={'dots-horizontal'} size={25} />
-                    </TO> */}
+                    <TO activeOpacity={.7} onPress={onPressR} style={[{position: 'absolute', left: 130, top: -15}]}>
+                        <IconI style={styles.startButtonActivityIcon} name={'settings-outline'} size={28}/>
+                    </TO>
                     </View>
             </View>
             <Line space={undefined} />
@@ -1582,73 +1684,232 @@ export const ActivityDuration = ({txt1, txt2, txt3, txt4, hr, min, sec}) => (
 )
 
  
-export const StartButtonActivity = ({txt1, txt2, txt3, txt4, txt5, onPress, onPress2, onPress3, hasStarted}) => {
+// export const StartButtonActivity = ({txt1, txt2, txt3, txt4, txt5, onPress, onPress2, onPress3, hasStarted, changeActive}) => {
     
-      
-      const renderItem = ({ item, index }) => {
-          return (
+//   const [visibleItems, setVisibleItems] = useState([]);
 
-            index == 0
-            ? 
-            <View style={{width: SCREEN_WIDTH, flexDirection: 'row'}}>
-                <TO onPress={onPress2} activeOpacity={.8} style={[styles.startButtonActivityButtonCnt, {width: '50%', backgroundColor: 'red', justifyContent: 'center'},]}>
-                    <View style={styles.startButtonActivityButtonCol1}>
-                        <Text style={styles.startButtonActivityButtonText1}>{txt4}</Text>
-                    </View>
-                </TO>
-                <TO onPress={onPress3} activeOpacity={.8} style={[styles.startButtonActivityButtonCnt, {width: '50%', backgroundColor: 'green', justifyContent: 'center'}]}>
-                    <View style={styles.startButtonActivityButtonCol1}>
-                        <Text style={styles.startButtonActivityButtonText1}>{txt5}</Text>
-                    </View>
-                </TO>
-            </View>
-                :
-            <View>
-                <TO onPress={onPress} activeOpacity={.8} style={[styles.startButtonActivityButtonCnt, {width: '100%'}]}>
-                    <View style={styles.startButtonActivityButtonCol1}>
-                        <Text style={styles.startButtonActivityButtonText1}>{txt3}</Text>
-                    </View>
-                    <Icon style={styles.startButtonActivityButtonIcon} name={'long-arrow-right'} size={20} color={'white'}/>
-                </TO>
-            </View>
+//     const viewabilityConfig = useRef({
+//         itemVisiblePercentThreshold: 90,
+//     }).current;
+    
+//     const onViewableItemsChanged = useCallback(({ viewableItems }) => {
+        
+//         console.log(viewableItems)
+       
+//         setVisibleItems(viewableItems.map(({ item, index }) => {
+//             if(index == 1){
+//                 changeActive()
+//             }
+//         }));
+
+//     }, []);
+    
+    
+//     const configref = useRef(viewabilityConfig)
+//     const itemschangedref = useRef(onViewableItemsChanged)
+      
+//       const renderItem = ({ item, index }) => {
+
+        
+//           return (
+
+//             index == 1
+//             ? 
+//             <View style={{width: SCREEN_WIDTH, flexDirection: 'row',}}>
+//                 <TO onPress={onPress2} activeOpacity={.8} style={[styles.startButtonActivityButtonCnt, {width: '40%', backgroundColor: 'red', justifyContent: 'center'},]}>
+//                     <View style={styles.startButtonActivityButtonCol1}>
+//                         <Text style={styles.startButtonActivityButtonText1}>{txt4}</Text>
+//                     </View>
+//                 </TO>
+//                 <TO onPress={onPress3} activeOpacity={.8} style={[styles.startButtonActivityButtonCnt, {width: '40%', backgroundColor: 'green', justifyContent: 'center'}]}>
+//                     <View style={styles.startButtonActivityButtonCol1}>
+//                         <Text style={styles.startButtonActivityButtonText1}>{txt5}</Text>
+//                     </View>
+//                 </TO>
+//             </View>
+//                 :
+//             <View style={{width: SCREEN_WIDTH, flexDirection: 'row',}}>
+//                 <TO onPress={onPress} activeOpacity={.8} style={[styles.startButtonActivityButtonCnt, {width: '90%', justifyContent: 'center'}]}>
+//                     <View style={styles.startButtonActivityButtonCol1}>
+//                         <Text style={styles.startButtonActivityButtonText1}>{txt3}</Text>
+//                     </View>
+//                     <Icon style={styles.startButtonActivityButtonIcon} name={'long-arrow-right'} size={20} color={'white'}/>
+//                 </TO>
+//             </View>
             
-          )
-      }
+//           )
+//       }
     
-    const flashlistRef = useRef()
+    
+//       const Toggle = () => {  
 
-    return (
+//   ref?.current?.scrollToIndex({ index: 1, animated: true })
+
+// }
+
+// useEffect(() => {
+//     Toggle()
+// },[])
+
+//     return (
+
     
-        hasStarted ? 
-        <View style={[styles.startButtonActivityCnt,{height: hasStarted ? 55 : 60, top: 30, backgroundColor: 'white', marginVertical: 15}]}>
+//         hasStarted ? 
+//         <View style={[styles.startButtonActivityCnt,{height: hasStarted ? 55 : 60, top: 30, backgroundColor: 'white', marginVertical: 15}]}>
   
 
-            <FlatList keyExtractor={(item,index)=> index.toString()} estimatedItemSize={2} ref={flashlistRef}  pagingEnabled={true} data={[0,1]} renderItem={renderItem} horizontal={true} keyExtractor={(item) => item} extraData={'data'} showsHorizontalScrollIndicator={false}>
-            </FlatList>
-    </View> 
+//             <FlatList 
+//         viewabilityConfig={configref.current}
+//         onViewableItemsChanged={itemschangedref.current}        
+//             inverted keyExtractor={(item,index)=> index.toString()} estimatedItemSize={2} ref={ref}  pagingEnabled={true} data={[0,1]} renderItem={renderItem} horizontal={true} keyExtractor={(item) => item} extraData={'data'} showsHorizontalScrollIndicator={false}>
+//             </FlatList>
+//     </View> 
       
-        :
+//         :
 
-    <View style={[styles.startButtonActivityCnt,{height: hasStarted ? 55 : 60}]}>
+//     <View style={[styles.startButtonActivityCnt,{height: hasStarted ? 55 : 60}]}>
   
-        <View style={[styles.startButtonActivityMusicIconCnt, {display: hasStarted ? 'none' : 'flex'}]}>
-            <IconI style={styles.startButtonActivityIcon} name={'musical-notes-outline'} size={32}/>
-        </View>
+//         <View style={[styles.startButtonActivityMusicIconCnt, {display: hasStarted ? 'none' : 'flex'}]}>
+//             <IconI style={styles.startButtonActivityIcon} name={'musical-notes-outline'} size={32}/>
+//         </View>
 
-        <TO onPress={onPress} activeOpacity={.8} style={[styles.startButtonActivityButtonCnt, {width: hasStarted ? '85%' : '50%'}]}>
-            <View style={styles.startButtonActivityButtonCol1}>
-                <Text style={styles.startButtonActivityButtonText1}>{hasStarted ? txt3 : txt1}</Text>
-                <Text style={[styles.startButtonActivityButtonText2,{display: hasStarted ? 'none' : 'flex'}]}>{txt2}</Text>
-            </View>
-            <Icon style={styles.startButtonActivityButtonIcon} name={'long-arrow-right'} size={20} color={'white'}/>
-        </TO>
+//         <TO onPress={onPress} activeOpacity={.8} style={[styles.startButtonActivityButtonCnt, {width: hasStarted ? '85%' : '50%'}]}>
+//             <View style={styles.startButtonActivityButtonCol1}>
+//                 <Text style={styles.startButtonActivityButtonText1}>{hasStarted ? txt3 : txt1}</Text>
+//                 <Text style={[styles.startButtonActivityButtonText2,{display: hasStarted ? 'none' : 'flex'}]}>{txt2}</Text>
+//             </View>
+//             <Icon style={styles.startButtonActivityButtonIcon} name={'long-arrow-right'} size={20} color={'white'}/>
+//         </TO>
 
-        <View style={[styles.startButtonActivitySettingsButton,{display: hasStarted ? 'none' : 'flex'}]}>
-            <IconI style={styles.startButtonActivityIcon} name={'settings-outline'} size={28}/>
-        </View>
+//         <View style={[styles.startButtonActivitySettingsButton,{display: hasStarted ? 'none' : 'flex'}]}>
+//             <IconI style={styles.startButtonActivityIcon} name={'settings-outline'} size={28}/>
+//         </View>
     
-    </View> 
-    )}
+//     </View> 
+
+//     )}
+
+    export type OfferSheetRefProps = {
+      };
+      
+      interface ChildProps {
+        txt1,
+        txt2, 
+        txt3, 
+        txt4, 
+        txt5, 
+        onPress, 
+        onPress2, 
+        onPress3, 
+        hasStarted, 
+        changeActive,
+        ref,
+        onPressRight,
+        onPressLeft,
+        onPressMusic
+      }
+      
+
+      export const StartButtonActivity = React.forwardRef<
+      OfferSheetRefProps,
+      ChildProps
+    >((props: ChildProps, ref) => {
+    
+        const [visibleItems, setVisibleItems] = useState([]);
+
+        const viewabilityConfig = useRef({
+            itemVisiblePercentThreshold: 90,
+        }).current;
+        
+        const onViewableItemsChanged = useCallback(({ viewableItems }) => {
+            
+            console.log(viewableItems)
+           
+            setVisibleItems(viewableItems.map(({ item, index }) => {
+                if(index == 1){
+                    props.changeActive()
+                }
+            }));
+    
+        }, []);
+        
+        
+        const configref = useRef(viewabilityConfig)
+        const itemschangedref = useRef(onViewableItemsChanged)
+          
+          const renderItem = ({ item, index }) => {
+    
+            
+              return (
+    
+                index == 1
+                ? 
+                <View style={{width: SCREEN_WIDTH, flexDirection: 'row',}}>
+                    <TO onPress={props.onPress2} activeOpacity={.8} style={[styles.startButtonActivityButtonCnt, {width: '40%', backgroundColor: 'red', justifyContent: 'center'},]}>
+                        <View style={styles.startButtonActivityButtonCol1}>
+                            <Text style={styles.startButtonActivityButtonText1}>{props.txt4}</Text>
+                        </View>
+                    </TO>
+                    <TO onPress={props.onPress3} activeOpacity={.8} style={[styles.startButtonActivityButtonCnt, {width: '40%', backgroundColor: 'green', justifyContent: 'center'}]}>
+                        <View style={styles.startButtonActivityButtonCol1}>
+                            <Text style={styles.startButtonActivityButtonText1}>{props.txt5}</Text>
+                        </View>
+                    </TO>
+                </View>
+                    :
+                <View style={{width: SCREEN_WIDTH, flexDirection: 'row',}}>
+                    <TO onPress={props.onPress} activeOpacity={.8} style={[styles.startButtonActivityButtonCnt, {width: '90%', justifyContent: 'center'}]}>
+                        <View style={styles.startButtonActivityButtonCol1}>
+                            <Text style={styles.startButtonActivityButtonText1}>{props.txt3}</Text>
+                        </View>
+                        <Icon style={styles.startButtonActivityButtonIcon} name={'long-arrow-right'} size={20} color={'white'}/>
+                    </TO>
+                </View>
+                
+              )
+          }
+        
+        
+
+    
+        return (
+    
+        
+            props.hasStarted ? 
+            <View style={[styles.startButtonActivityCnt,{height: props.hasStarted ? 55 : 60, top: 30, backgroundColor: 'white', marginVertical: 15}]}>
+      
+    
+                <FlatList 
+            viewabilityConfig={configref.current}
+            onViewableItemsChanged={itemschangedref.current}        
+                inverted keyExtractor={(item,index)=> index.toString()} estimatedItemSize={2} ref={ref}  pagingEnabled={true} data={[0,1]} renderItem={renderItem} horizontal={true} keyExtractor={(item) => item} extraData={'data'} showsHorizontalScrollIndicator={false}>
+                </FlatList>
+        </View> 
+          
+            :
+    
+        <View style={[styles.startButtonActivityCnt,{height: props.hasStarted ? 55 : 60}]}>
+      
+            <View style={[styles.startButtonActivityMusicIconCnt, {display: props.hasStarted ? 'none' : 'flex'}]}>
+                <IconI style={styles.startButtonActivityIcon} name={'musical-notes-outline'} size={32}/>
+            </View>
+    
+            <TO onPress={props.onPress} activeOpacity={.8} style={[styles.startButtonActivityButtonCnt, {width: props.hasStarted ? '85%' : '50%'}]}>
+                <View style={styles.startButtonActivityButtonCol1}>
+                    <Text style={styles.startButtonActivityButtonText1}>{props.hasStarted ? props.txt3 : props.txt1}</Text>
+                    <Text style={[styles.startButtonActivityButtonText2,{display: props.hasStarted ? 'none' : 'flex'}]}>{props.txt2}</Text>
+                </View>
+                <Icon style={styles.startButtonActivityButtonIcon} name={'long-arrow-right'} size={20} color={'white'}/>
+            </TO>
+    
+            <TO activeOpacity={.9} onPress={props.onPressRight} style={[styles.startButtonActivitySettingsButton,{display: props.hasStarted ? 'none' : 'flex'}]}>
+                <IconI style={styles.startButtonActivityIcon} name={'settings-outline'} size={28}/>
+            </TO>
+        
+        </View> 
+    
+        )}
+      );
 
 export const ProfilePerson = ({type, onPress, imageSource}) => (
     type == 'up' ? 
@@ -1681,7 +1942,7 @@ export const ProfilePerson = ({type, onPress, imageSource}) => (
     </V>
 )
 
-export const ProfilePersonIt = ({isFollowing, isSecary, txt1, txt2, txt3, txt4, txt5, txt6, type, onPressAvatar, imageSource, onPressProfile, onPressFollow}) => (
+export const ProfilePersonIt = ({isFollowing, isSecary, txt1, txt2, txt3, txt4, txt5, txt6, type, onPressAvatar, imageSource, onPressProfile, onPressFollow, onPressChat}) => (
     type == 'userp' ?
     <View style={styles.profilePersonItCnt}>
     <View style={styles.profilePersonColCnt}>
@@ -1705,6 +1966,9 @@ export const ProfilePersonIt = ({isFollowing, isSecary, txt1, txt2, txt3, txt4, 
         </View>
         <TO activeOpacity={.8} onPress={onPressFollow} style={styles.profilePersonButtonCnt}>
             <Text style={[styles.profilePersonButtonText, {textAlign: 'center'}]}>{isFollowing ? 'Following' : 'Follow' }</Text>
+        </TO>
+        <TO activeOpacity={.8} onPress={onPressChat} style={[styles.profilePersonButtonCnt, {display: true ? 'flex' : 'none'}]}>
+            <Text style={[styles.profilePersonButtonText, {textAlign: 'center'}]}>{'Start Chat' }</Text>
         </TO>
     </View>
 </View>
@@ -1926,8 +2190,8 @@ export const ProfileEdit = ({typee, name, lastname, countries, isActive1, isActi
                <ProfilePersonIt type={2} txt1={undefined} txt2={undefined} txt3={undefined} txt4={undefined} txt5={undefined} txt6={undefined} onPressAvatar={undefined} />
            </V>
            <V>
-               <CustomInput onChangeText={onChangeName} type={21} txt={'First Name'} name={name} email={undefined} isName={undefined} txt1={undefined} />
-               <CustomInput onChangeText={onChangeLastname} type={2} txt={'Last Name'} name={lastname} email={undefined} isName={undefined} txt1={undefined} />
+               <CustomInput onChangeText={onChangeName} type={'editprofilefn'} txt={'First Name'} name={name} email={undefined} isName={undefined} txt1={undefined} />
+               <CustomInput onChangeText={onChangeLastname} type={'editprofileln'} txt={'Last Name'} name={lastname} email={undefined} isName={undefined} txt1={undefined} />
            </V>
        </V>
        <CustomInput onChangeText={onChangeLastname} type={'bio'} txt={'Bio'} name={lastname} email={undefined} isName={undefined} txt1={undefined} />
@@ -2346,6 +2610,49 @@ export const SocialMediaCnt = ({onPress, isEnabled, toggleSwitch, type, isEnable
     )
 }
 
+export const ActivitySwitches = ({onPress, isEnabled, toggleSwitch, type, isEnabledLeft, isEnabledRight, onVlChngLeft, onVlChngRight}) => {
+    return (
+
+        <View>
+            <Space space={10}/>
+            <GestureHandlerRootView >
+    <View style={[styles.signWithCnt]} >
+        <View style={{flexDirection: 'row', alignItems: 'center', left: 30}}>
+
+            <IconMa size={32} color={'black'} name={'severe-cold'} />            
+
+            <Text style={[styles.signWithTxt, {top: 0, left: 40, fontWeight: '600'}]}>
+                'Cold Shower'
+            </Text>
+
+            
+        </View>
+            <View style={{position: 'absolute', right: 30,}}>
+                
+                <View style={styles.smallSwitchItCnt}>
+                <Switch
+                trackColor={{false: '#f2f2f6', true: 'black'}}
+                thumbColor={false ? '#f5dd4b' : '#f4f3f4'}
+                ios_backgroundColor="gray"
+                value={isEnabledLeft}
+                onValueChange={onVlChngLeft}
+                />                
+                </View>
+
+            </View>
+    </View>
+</GestureHandlerRootView>            
+
+<Space space={10}/>
+            <Line space={0}/>
+            <Space space={10}/>
+            <SignWith onValueChange={onVlChngRight} isEnabled={isEnabledRight} txt2={'Connect'} type={'activity'} txt={'Hot Shower'} icon={'facebook'} />
+            <Space space={10}/>
+            <Line space={0}/>
+        </View>
+    )
+}
+
 
 
 export const SmallLogo = ({}) => {
@@ -2357,6 +2664,58 @@ export const SmallLogo = ({}) => {
 }
 
 export const CustomInput = ({noText, txt, name, type, email, onChangeText, isName, txt1, name1, lastname1, isPassword}) => (
+    type == 'editprofilefn' ?
+    <View style={[styles.customBtnCnt, {width: '50%', marginVertical: 10}]}>
+        <View style={{flexDirection: 'row'}}>
+            <View style={styles.customBtnlineH}>
+            </View>
+            <Text style={{position: 'absolute', left: 15, top: -8, color: 'gray', fontSize: 11}}>
+            {txt}
+            </Text>
+            <View style={[styles.customBtnlineH1, {width: '49%', left: 70}]}>
+            </View>
+            <View style={{height: .5, width: '96%', backgroundColor: 'gray', left: -100, top: 46}}>
+            </View>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
+            <View style={[styles.customBtnlineV]}>
+            </View>
+            <View style={styles.customBtnlineV2}>
+            </View>
+        </View>
+        <View style={[styles.customBtnlineH2, {left : 40, position: 'absolute'}]}>
+        </View>
+    <TextInput autoCapitalize={isName ? 'words' : 'none'} onChangeText={onChangeText} value={name} placeholderTextColor={'black'} style={{position: 'absolute', top: 5, left: 15, zIndex: 100, opacity: 100, width: 1000,}}>
+
+    </TextInput>
+    </View> 
+    :
+    type == 'editprofileln' ?
+    <View style={[styles.customBtnCnt, {width: '50%', marginVertical: 10}]}>
+        <View style={{flexDirection: 'row'}}>
+            <View style={styles.customBtnlineH}>
+            </View>
+            <Text style={{position: 'absolute', left: 15, top: -8, color: 'gray', fontSize: 11}}>
+            {txt}
+            </Text>
+            <View style={[styles.customBtnlineH1, {width: '49%', left: 70}]}>
+            </View>
+            <View style={{height: .6, width: '96%', backgroundColor: 'gray', left: -100, top: 46}}>
+            </View>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
+            <View style={styles.customBtnlineV}>
+            </View>
+            <View style={styles.customBtnlineV2}>
+            </View>
+        </View>
+        <View style={[styles.customBtnlineH2, {left : 40, position: 'absolute'}]}>
+        </View>
+    <TextInput autoCapitalize={isName ? 'words' : 'none'} onChangeText={onChangeText} value={name} placeholderTextColor={'black'} style={{position: 'absolute', top: 5, left: 15, zIndex: 100, opacity: 100, width: 1000}}>
+
+    </TextInput>
+    </View> 
+    :
     type == 'bio' ?
     <View style={[styles.customBtnCnt, {width: '85%', marginVertical: 10}]}>
         <View style={{flexDirection: 'row'}}>
@@ -2377,7 +2736,7 @@ export const CustomInput = ({noText, txt, name, type, email, onChangeText, isNam
         </View>
         <View style={styles.customBtnlineH2}>
         </View>
-    <TextInput autoCapitalize={isName ? 'words' : 'none'} onChangeText={onChangeText} value={name} placeholderTextColor={'black'} style={{position: 'absolute', top: 15, left: 15, zIndex: 100, opacity: 100, width: 1000}}>
+    <TextInput autoCapitalize={isName ? 'words' : 'none'} onChangeText={onChangeText} value={name} placeholderTextColor={'black'} style={{position: 'absolute', top: 5, left: 15, zIndex: 100, opacity: 100, width: 1000}}>
 
     </TextInput>
     </View> 
@@ -2853,9 +3212,9 @@ export const PersonBox = ({name, onPress}) => {
 
 export const OneNotification = ({txt1, txt2, onPress, closePost}) => {
     return(
-        <TouchableOpacity onPress={onPress} activeOpacity={.8} style={{flexDirection:'row'}}>
+        <TO onPress={onPress} activeOpacity={.8} style={{flexDirection:'row'}}>
+            
             <ImageBackground width={50} height={50} style={{width:50, height: 50, margin: 30, borderRadius: 300}} borderRadius={40} source={require('../images/logo.png')}>
-
             </ImageBackground>
 
             <View style={{justifyContent: 'center'}}>
@@ -2870,12 +3229,15 @@ export const OneNotification = ({txt1, txt2, onPress, closePost}) => {
 
             </View>
 
-            <TouchableOpacity onPress={() => {closePost(item)}}>
+            <TO style={{position: 'absolute', right: 40, top: 10}} onPress={closePost}>
                 <IconF5 color={'gray'} size={20} name='times'/>
-              </TouchableOpacity>
+              </TO>
+
+    <Line space={undefined} type={undefined} />
+    <Line space={undefined} type={undefined} />
 
 
-        </TouchableOpacity>
+        </TO>
     )
 }
 
@@ -3661,7 +4023,7 @@ export const styles = StyleSheet.create({
     },
     profilePersonItCnt:{
         width: '100%',
-        height: SCREEN_HEIGHT / 2.3,
+        height: SCREEN_HEIGHT / 1.9,
         backgroundColor: '#C2BFBF'
     },
     profilePersonIcon:{

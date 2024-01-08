@@ -52,6 +52,9 @@ import SplashScreen2 from './components/SplashScreen2';
 import UserProfile from './screens/Home/UserProfile';
 import { navigationRef, isReadyRef } from './components/RootNavigation';
 import * as RootNavigation from './components/RootNavigation';
+import ActivitySettings from './screens/Front/Back/ActivitySettings';
+import GoalSettings from './screens/Front/Back/GoalSettings';
+import ChatScreen from './screens/Front/Back/ChatScreen';
 
 //navigators
 const Stack  = createNativeStackNavigator()
@@ -227,7 +230,8 @@ function App(): JSX.Element {
       isReadyRef.current = true;
 }} ref={navigationRef}  linking={linking} fallback={<Text>Loading...</Text>}>
       <Stack.Navigator initialRouteName={'Tabs'} screenOptions={{headerShown: false}} >
-        
+        <Stack.Screen name='GoalSettings' component={GoalSettings}/>
+        <Stack.Screen name='ActivitySettings' component={ActivitySettings}/>
         <Stack.Screen name='Activity' component={Activity}/>
         <Stack.Screen name='First' component={First}/>
         <Stack.Screen name='Already' component={Already}/>
@@ -236,6 +240,7 @@ function App(): JSX.Element {
         <Stack.Screen name='Login' component={Login}/>
         <Stack.Screen name='SignupScratch' component={SignupScratch}/>
         <Stack.Screen name='Welcome' component={Welcome}/>
+        <Stack.Screen name='Goals' component={Goals}/>
         <Stack.Screen name='Tabs' component={Tabs}/>
         <Stack.Screen name='Settings' component={Settings}/>
         <Stack.Screen name='Account' component={Account}/>
@@ -257,7 +262,7 @@ function App(): JSX.Element {
         <Stack.Screen name='Connections' component={Connections}/>
         <Stack.Screen name='SplashScreen' component={SplashScreen}/>
         <Stack.Screen name='SplashScreen2' component={SplashScreen2}/>
-             
+        <Stack.Screen name='ChatScreen' component={ChatScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
     );

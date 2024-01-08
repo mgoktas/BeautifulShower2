@@ -169,7 +169,6 @@ export const updateUser2 = async (
   email: any, user: any
 ) => {
   try{
-    console.log('response1: ')
     const response = await fetch(`${localhost}/update-user`, {
       method: 'POST',
       headers: {
@@ -186,7 +185,6 @@ export const updateUser2 = async (
 
     const {doc} = await response.json()
 
-    console.log(doc)
     return doc
     // console.log('response: ',await response.json())
   }
@@ -221,8 +219,6 @@ export const createUserEmail = async (
 
     const {doc} = await response.json()
 
-    console.log(doc)
-
     return doc
   }
   catch(err){
@@ -248,7 +244,6 @@ export const checkUserFriends = async (
 
     const {doc} = await response.json()
 
-    console.log(doc)
 
   // setData('didItGetContacts', 1)
 
@@ -277,7 +272,6 @@ export const createUserNew = async (
 
     const {doc} = await response.json()
 
-    console.log(doc)
 
       // setData('didItGetContacts', 1)
 
@@ -294,7 +288,6 @@ export const addToFollowingList = async (
   user: any
 ) => {
   try{
-    console.log('response1: ')
     const response = await fetch(`${localhost}/add-user-to-followers`, {
       method: 'POST',
       headers: {
@@ -310,7 +303,6 @@ export const addToFollowingList = async (
 
     const {doc} = await response.json()
 
-    console.log('response2: ' , doc)
     return doc
     // console.log('response: ',await response.json())
   }
@@ -325,7 +317,6 @@ export const removeFromFollowingList = async (
   user: any
 ) => {
   try{
-    console.log('response1: ')
     const response = await fetch(`${localhost}/delete-user-from-followers`, {
       method: 'POST',
       headers: {
@@ -339,7 +330,6 @@ export const removeFromFollowingList = async (
 
     const {doc} = await response.json()
 
-    console.log('response2: ' , doc)
     return doc
     // console.log('response: ',await response.json())
   }

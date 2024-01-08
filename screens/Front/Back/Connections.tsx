@@ -19,22 +19,18 @@ export const Connections = ({route, navigation}) => {
     const [followings, setFollowings] = useState([])
     const flatlistRef = useRef()
     const [isLoading, setIsLoading] = useState(true)
-    const [email, setEmail] = React.useState(getDataString('email'))
+    const [email, setEmail] = React.useState('ahmethkhkhk@gmail.com')
+    // const [email, setEmail] = React.useState(getDataString('email'))
     const [users, setUsers] = React.useState([])
-
-    console.log(email)
 
     const changeFollowings = async (user) => {
       setFollowings((current) => 
       current.filter((item) => item.email !== user.email)
     );    
 
-    
-  
       await unFollowPerson(email, user.email)
 
   };
-
 
     const changeFollowers = async (user) => {
       setFollowers((current) => 
@@ -45,10 +41,13 @@ export const Connections = ({route, navigation}) => {
 
 };
 
+
+
     const addUsers = async () => {
 
       setFollowers([])
       setFollowings([])
+
 
       await firestore()
       .collection('Users')
@@ -70,6 +69,7 @@ export const Connections = ({route, navigation}) => {
 
       });
 
+      
       await firestore()
       .collection('Users')
       .get()
@@ -77,6 +77,9 @@ export const Connections = ({route, navigation}) => {
         querySnapshot.forEach(async (doc) => {
           
           let docData = doc._data
+
+          console.log(await checkFollow(docData.email, email), docData.email)
+          
 
           if(await checkFollow(docData.email, email)){
             setFollowers(arr => [...arr, {
