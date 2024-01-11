@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler'
 //native
 import React, { useEffect, useState } from 'react';
-import { Linking, Platform, Text } from 'react-native';
+import { Linking, LogBox, Platform, Text } from 'react-native';
 
 //icons
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -228,6 +228,16 @@ function App(): JSX.Element {
     };
   },[]);
   
+  LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreLogs(['Sending']); // Ignore log notification by message
+LogBox.ignoreAllLogs(true);
+
+useEffect(() => {
+  LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+  LogBox.ignoreLogs(['Sending']); // Ignore log notification by message
+LogBox.ignoreAllLogs(true);
+
+},[])
 
   return (
 

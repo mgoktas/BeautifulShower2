@@ -635,10 +635,6 @@ export const followPerson = async (email, followWho) => {
     console.log('asda')
   })
 
-  console.log(userme._data.followingCount)
-  console.log(email, followWho, userthat._data.followercount)
-  
-
   if(userme._data.followingCount == 0) {
 
     firestore()
@@ -710,6 +706,10 @@ export const unFollowPerson = async (email, followWho) => {
   const userme = await firestore().collection('Users').doc(email).get();
   const userthat = await firestore().collection('Users').doc(followWho).get();
 
+  console.log(email, followWho)
+  console.log(userme._data.followingCount)
+  console.log(userthat._data.followerCount)
+  
   await firestore()
   .collection('Notifications')
   .get()
@@ -735,8 +735,6 @@ export const unFollowPerson = async (email, followWho) => {
             
 
   });
-
-
 
   if(userme._data.followingCount == 1) {
 
@@ -769,8 +767,6 @@ export const unFollowPerson = async (email, followWho) => {
 
   }) 
   }
-
-
 
   if(userthat._data.followerCount == 1) {
 
@@ -810,18 +806,12 @@ export const checkFollow = async (myemail, email) => {
 
   const userme = await firestore().collection('Users').doc(myemail).get();
 
-  console.log(myemail, userme)
-
   const followings = await userme._data.followings
-
-  console.log('followings: ', followings)
 
   const arr = await followings.split('//')
 
   const checked = await arr.includes(email)
   
-  console.log(checked)
-
   return await checked
 
 }

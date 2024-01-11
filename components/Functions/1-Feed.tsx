@@ -40,8 +40,6 @@ export const AddPersonSheet = React.forwardRef<AddPersonSheetRefProps, AddPerson
     const [searchText, setSearchText] = useState('');
     const [email, setEmail] = React.useState(getDataString('email'))
 
-    setData('email', 'tryapple2@gmail.com')
-
     const translateY = useSharedValue(0)
     const MAX_TRANSLATE_Y = SCREEN_HEIGHT / 1.2
     
@@ -150,8 +148,6 @@ export const AddPersonSheet = React.forwardRef<AddPersonSheetRefProps, AddPerson
         setFilteredDataSource(users)
         setMasterDataSource(users)
 
-        console.log(users, 776)
-        
         try{
 
           if (text) {
@@ -175,8 +171,6 @@ export const AddPersonSheet = React.forwardRef<AddPersonSheetRefProps, AddPerson
 
 
     };
-
-    
           
         return (
 
@@ -205,8 +199,6 @@ export const AddPersonSheet = React.forwardRef<AddPersonSheetRefProps, AddPerson
                           style={{ borderTopLeftRadius: index == 0 ? 10 : 0, borderTopRightRadius: index == 0 ? 10 : 0, borderBottomLeftRadius: index == (filteredDataSource.length - 1) ? 10 : 0, borderBottomRightRadius: index == (filteredDataSource.length - 1) ? 10 : 0 }} 
                           txt={item.name} 
                           onPress={ () => {
-
-                      console.log(checkFollow(email, item.email))
 
                     if(!checkFollow(email, item.email)){
                        followPerson(email, item.email)
@@ -302,6 +294,7 @@ export interface AddPostSheetProps {
   connectCon: Function
   setSheet: Function
   isSheetOn: Boolean
+  name: String
   
 }
 
@@ -491,9 +484,10 @@ export const AddPostSheet = React.forwardRef<AddPostSheetRefProps, AddPostSheetP
               onPress={() => {
                 post(postTitle, postTxt)
                 }}
+
               onPressBack={() => {scrollTo(SCREEN_HEIGHT); props.setSheet(2)}} txt2={'Cancel'} txt1={'Post'} type={6} title={'EDIT PROFILE'} txt={'Done'}/>
               
-              <PersonBox name={'Muhammet Rasit'} onPress={undefined}/>
+              <PersonBox name={props.name} onPress={undefined}/>
 
               <InputBox onChangeText={(txt) => {
 

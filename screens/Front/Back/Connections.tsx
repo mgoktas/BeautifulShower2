@@ -16,8 +16,6 @@ export const Connections = ({route, navigation}) => {
 
     const {which} = route.params
 
-    setData('email', 'tryapple2@gmail.com')
-
     const [selectedIndex, setSelectedIndex] = useState(0)
     const [followers, setFollowers] = useState([])
     const [followings, setFollowings] = useState([])

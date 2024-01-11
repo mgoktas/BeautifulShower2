@@ -29,7 +29,7 @@ const Feed = ({route, navigation}) => {
     }, [])
   );
 
-  const [name, setName] = React.useState(`${getDataString('firstname')}, ${getDataString('lastname')}`)
+  const [name, setName] = React.useState(`${getDataString('firstname')} ${getDataString('lastname')}`)
   const [when, setWhen] = React.useState('')
   const [activity, setActivity] = React.useState('Cold Bath')
   const [duration, setDuration] = React.useState(5)
@@ -47,8 +47,6 @@ const Feed = ({route, navigation}) => {
   const d = new Date();
   let day = d.getDay();
 
-  
-
   useFocusEffect(
     React.useCallback(() => {
       
@@ -60,7 +58,6 @@ const Feed = ({route, navigation}) => {
   
     }, [])
   );
-  
 
 const ref = React.useRef<AddPersonSheetRefProps>(null);
 const openSheet = React.useCallback(() => {
@@ -197,7 +194,7 @@ const openPost = (item) => {
 
       <AddPersonSheet email={email} isSheetOn={isSheetOn} setSheet={setSheet} ref={ref}/>
       {/* <AddPersonSheet isSheetOn={isSheetOn} setSheet={setSheet} connectCon={connectContact} ref={ref}/> */}
-      <AddPostSheet  setSheet={setSheet} ref={refPost} connectCon={undefined} isSheetOn={undefined}/>
+      <AddPostSheet name={name} setSheet={setSheet} ref={refPost} connectCon={undefined} isSheetOn={undefined}/>
 
   </SafeAreaView>
 

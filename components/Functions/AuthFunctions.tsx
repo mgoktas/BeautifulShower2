@@ -37,8 +37,6 @@ export const createAccount = async (firstname, lastname, gender, email, location
 
       try {
 
-        console.log(locationIso2, 2)
-
         setData('firstname', firstname)
         setData('lastname', lastname)
         setData('email', email)

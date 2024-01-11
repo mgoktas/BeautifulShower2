@@ -3193,7 +3193,7 @@ export const PersonCnt = ({isFollowing, txt, onPress, style }) => {
 
     return (
       <V 
-        activeOpacity={.7} onPress={onPress} style={[{
+        activeOpacity={.7} style={[{
         backgroundColor: '#212121',
         borderRadius: 1,
         borderColor: 'transparent',
@@ -3212,7 +3212,7 @@ export const PersonCnt = ({isFollowing, txt, onPress, style }) => {
         marginHorizontal: 20,
         justifyContent: 'space-between'}}>
             <Text style={{top:10, right:5, fontWeight:500, fontSize: 14, color: '#766E6E'}}>{txt}</Text>
-            <SmallButton type={'c'} isFollowing={isFollowing}  txt={'FOLLOWING'} txt2={'FOLLOW'}/>
+            <SmallButton onPress={onPress} type={'c'} isFollowing={isFollowing}  txt={'FOLLOWING'} txt2={'FOLLOW'}/>
         </View>
         <TO onPress={onPress} style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
         </TO>
