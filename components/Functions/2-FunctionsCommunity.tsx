@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import { Linking, PermissionsAndroid, Platform, Share } from "react-native";
 import Contacts, { getContactsByEmailAddress } from 'react-native-contacts';
+import messages from "../../screens/Front/Back/messages";
 
 
   export type GetAllContactsRefProps = {
@@ -74,13 +75,23 @@ import Contacts, { getContactsByEmailAddress } from 'react-native-contacts';
 
   })
 
-  export const shareMyProfile = (user) => {
-
+  export const shareMyProfile = (email) => {
+    
     const content = {
-      message: `Follow me on Beautiful Shower`
+      message: `Follow me on Beautiful Shower \n beautifulshower://userprofile/${email}`
     }
 
+    let options = {
+      title: `Follow Me`,
+      message: `Follow me on Beautiful Shower {'\n'} \n beautifulshower://userprofile/${email}`,
+    };
     
-
-    // Share.share()
+    Share.share(options)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        err && console.log(err);
+      });    
+    
   }

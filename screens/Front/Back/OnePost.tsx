@@ -5,13 +5,16 @@ import { Text } from "react-native"
 import React from "react"
 import { getImage, goToProfile } from "../../../components/Functions/Functions"
 import firestore from '@react-native-firebase/firestore';
+import IconE from 'react-native-vector-icons/Entypo'
+import IconF5 from 'react-native-vector-icons/FontAwesome5'
 
 
 export const OnePost = ({route, navigation}) => {
 
-    const {data, postId} = route.params
+    const {postId} = route.params
 
-    const [post, setPost] = React.useState({})
+    const [post, setPost] = React.useState(item)
+    const [isVisibleDots, setIsVisibleDots] = React.useState(false)
     const [isLoading, setIsLoading] = React.useState(true)
 
     React.useEffect(() => {
@@ -38,9 +41,14 @@ export const OnePost = ({route, navigation}) => {
       
       },[])
 
+
+const onPressDots = (item) => {
+  setIsVisibleDots(true)
+}
+      
     return (
         <SafeAreaView>
-        <HeaderHome onPressBack={() => {navigation.goBack()}} type={'notif'} title={data.title} txt={'Done'}/>
+        <HeaderHome onPressBack={() => {navigation.goBack()}} type={'notif'} title={post.title} txt={'Done'}/>
         <View>
               
               <View style={{flexDirection: 'row', alignContent: 'center', marginVertical: 5, justifyContent: 'space-around', width: SCREEN_WIDTH}}>
@@ -68,21 +76,12 @@ export const OnePost = ({route, navigation}) => {
               <TouchableOpacity onPress={onPressDots}>
                 <IconE color={'gray'} size={20} name='dots-three-horizontal'/> 
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => {closePost(item.uuid)}}>
-                <IconF5 color={'gray'} size={20} name='times'/>
-              </TouchableOpacity>
-  
             </View>
             
               </View>
 
-
-
-
               <Text style={{justifyContent: 'center', alignSelf: 'flex-start', fontSize: 19, fontWeight: '600', marginHorizontal: 30}}>{item.postTitle}</Text>
               <Text style={{justifyContent: 'center', alignSelf: 'flex-start', marginHorizontal: 30}}>{item.postText}</Text>
-
-              {/* <SmallButton isFollowing={item.id == 100 ? true : false} onPress={() => { changeFollowers(item); } } txt={'FOLLOW'} txt2={'UNFOLLOW'} type={undefined}/> */}
           
               <Line type={3} space={undefined}/>
 

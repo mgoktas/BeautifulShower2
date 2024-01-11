@@ -26,6 +26,7 @@ RegisterNotificationRefProps
       Notifications.events().registerRemoteNotificationsRegistered((event: Registered) => {
         // TODO: Send the token to my server so it could send back push notifications...
         setData('isNotificationsAllowed', 1)
+        setData('isNotificationsAllowedBase', 1)
     });
     Notifications.events().registerRemoteNotificationsRegistrationFailed((event: RegistrationError) => {
       console.error(event);

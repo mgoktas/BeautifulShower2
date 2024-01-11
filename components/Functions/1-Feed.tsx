@@ -8,7 +8,7 @@ import { verticalScaleAnti } from "../Utilities/Metrics"
 import { datablogs } from "../Data/Data"
 import { faL } from "@fortawesome/free-solid-svg-icons"
 import { GraphRequest, GraphRequestManager } from 'react-native-fbsdk-next';
-import { getDataNumber, getDataString, setData } from "../Storage/MMKV"
+import { getDataNumber, getDataString, setData, storage } from "../Storage/MMKV"
 import { addToFollowingList, checkUserFriends, removeFromFollowingList } from "../Storage/Azure"
 import firestore from '@react-native-firebase/firestore';
 import uuid from 'react-native-uuid';
@@ -28,7 +28,7 @@ export interface AddPersonSheetProps {
     email: String
   }
 
-export const AddPersonSheet = React.forwardRef<BottomSheetRefProps, BottomSheetProps>((props: AddPersonSheetProps, ref) => {
+export const AddPersonSheet = React.forwardRef<AddPersonSheetRefProps, AddPersonSheetProps>((props: AddPersonSheetProps, ref) => {
   
     const [isSwitchOn, setIsSwitchOn] = useState(false)
     const [isSwitchOn2, setIsSwitchOn2] = useState(getDataNumber('isContactsPermitted') == 1)
@@ -40,6 +40,8 @@ export const AddPersonSheet = React.forwardRef<BottomSheetRefProps, BottomSheetP
     const [searchText, setSearchText] = useState('');
     const [email, setEmail] = React.useState(getDataString('email'))
 
+    setData('email', 'tryapple2@gmail.com')
+
     const translateY = useSharedValue(0)
     const MAX_TRANSLATE_Y = SCREEN_HEIGHT / 1.2
     
@@ -48,7 +50,6 @@ export const AddPersonSheet = React.forwardRef<BottomSheetRefProps, BottomSheetP
       translateY.value = withSpring(destination, { damping: 2000 })
       
     }, [])
-    
     
     const getSheetHeight = () => {
       return translateY.value
@@ -121,12 +122,35 @@ export const AddPersonSheet = React.forwardRef<BottomSheetRefProps, BottomSheetP
     
     useEffect(() => {
         scrollTo(200)
+        refresh()
     },[])
+    const refresh = () => {
+      setUsers([])
+      setIsLoading(true)
+            
+      firestore()
+      .collection('Users')
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(async(doc) => {
+          
+          if(doc._data.email != email){
+            setUsers(arr => [...arr, {name: doc._data.firstname + ' ' + doc._data.lastname, email: doc._data.email,}])
+          }
+
+          });
+                
+          setIsLoading(false)
+    
+      });
+    }
 
     const search = (text) => {
         
         setFilteredDataSource(users)
         setMasterDataSource(users)
+
+        console.log(users, 776)
         
         try{
 
@@ -151,6 +175,8 @@ export const AddPersonSheet = React.forwardRef<BottomSheetRefProps, BottomSheetP
 
 
     };
+
+    
           
         return (
 
@@ -178,12 +204,15 @@ export const AddPersonSheet = React.forwardRef<BottomSheetRefProps, BottomSheetP
                           isFollowing={checkFollow(email, item.email) == false || checkFollow(email, item.email) ==  true ? checkFollow(email, item.email) : false } 
                           style={{ borderTopLeftRadius: index == 0 ? 10 : 0, borderTopRightRadius: index == 0 ? 10 : 0, borderBottomLeftRadius: index == (filteredDataSource.length - 1) ? 10 : 0, borderBottomRightRadius: index == (filteredDataSource.length - 1) ? 10 : 0 }} 
                           txt={item.name} 
-                          onPress={async () => {
-                    if(await checkFollow(email, item.email) == false){
-                      followPerson(email, item.email)
+                          onPress={ () => {
+
+                      console.log(checkFollow(email, item.email))
+
+                    if(!checkFollow(email, item.email)){
+                       followPerson(email, item.email)
                     }
 
-                    if(await checkFollow(email, item.email) == true){
+                    else if(checkFollow(email, item.email)){
                       unFollowPerson(email, item.email)
                     }
 

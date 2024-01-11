@@ -36,13 +36,11 @@ const Community = ({route, navigation}) => {
 
             {/* <Discover duration={'0 mins'} name={name} info={'Track a session to participate in the leaderboard'} type={3} title={'LEADERBOARD'} subtitle={'PAST CHALLENGES'} data={data}/> */}
             
-            <Space space={50} />
 
-            <Discover type={true} onPressLeft={() => {connectFriendsFromFacebook()}} onPressRight={() => {getContacts()}} title={'DISCOVER PEOPLE'} text21={'Contacts'} text22={'Follow people you know'} text11={'Facebook'} text12={'Follow friends from Facebook'} text3={true ? 'CONNECTED' : 'CONNECT'}  />
+            {/* <Discover type={true} onPressLeft={() => {connectFriendsFromFacebook()}} onPressRight={() => {getContacts()}} title={'DISCOVER PEOPLE'} text21={'Contacts'} text22={'Follow people you know'} text11={'Facebook'} text12={'Follow friends from Facebook'} text3={true ? 'CONNECTED' : 'CONNECT'}  /> */}
 
-            <Space space={50} />
         
-            <Discover onPress={() => {navigation.navigate('Connections')}} duration={'0 mins'} name={'Followers & Following'} info={'Get inspired and motivate others'} type={4} title={'CONNECTIONS'} data={data}/>
+            <Discover onPress={() => {navigation.navigate('Connections', {which: 0})}} duration={'0 mins'} name={'Followers & Following'} info={'Get inspired and motivate others'} type={4} title={'CONNECTIONS'} data={data}/>
 
             <Space space={50} />
 

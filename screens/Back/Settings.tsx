@@ -6,6 +6,7 @@ import { LogOut } from '../../components/Functions/AuthFunctions';
 import { GetAllContacts, GetAllContactsRefProps } from '../../components/Functions/2-FunctionsCommunity';
 import { ConnectContactsRefProps } from '../../components/Functions/PermissionFunctions';
 import { companyUrl, privacyPolicyUrl, supportUrl, termsAndConditionsUrl } from '../../components/Data/Data';
+import { getDataNumber } from '../../components/Storage/MMKV';
 
 const Settings = ({route, navigation}) => {
 
@@ -19,6 +20,7 @@ const Settings = ({route, navigation}) => {
     refCon?.current?.goTo(url)
   }, [])
 
+  console.log(getDataNumber('weeklyGoalMin'))
 
   return (
     <SafeAreaView>
@@ -57,9 +59,7 @@ const Settings = ({route, navigation}) => {
 
             <LineBwCell isSettings={true} />
             <LineBwCell isSettings={true} />
-           
-            {/* <SettingsBox type={2} icon={'watch-variant'} title={'Apple Watch'}   onPress={() => {navigation.navigate('AppleWatch')}}/> */}
-          
+                     
             <LineBwCell isSettings={true} />
             <LineBwCell isSettings={true} />
           

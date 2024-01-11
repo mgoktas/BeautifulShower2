@@ -37,6 +37,17 @@ export const createAccount = async (firstname, lastname, gender, email, location
 
       try {
 
+        console.log(locationIso2, 2)
+
+        setData('firstname', firstname)
+        setData('lastname', lastname)
+        setData('email', email)
+        setData('gender', gender)
+        setData('locationIso2', locationIso2)
+        setData('locationName', locationName)
+        setData('birthdateDATE', birthdateDATE)
+        setData('birthdateName', birthdateName)
+
         auth()
           .createUserWithEmailAndPassword(email, password)
           .then(async () => {
@@ -55,6 +66,15 @@ export const createAccount = async (firstname, lastname, gender, email, location
               birthdateName : birthdateName,
             })
             .then(async () => {
+
+              setData('firstname', firstname)
+              setData('lastname', lastname)
+              setData('email', email)
+              setData('gender', gender)
+              setData('locationIso2', locationIso2)
+              setData('locationName', locationName)
+              setData('birthdateDATE', birthdateDATE)
+              setData('birthdateName', birthdateName)
               
               await navigation.navigate('Welcome',{
                 email : email
@@ -100,16 +120,37 @@ export const loginToAccount = async (email, password, navigation) => {
   try {
 
       auth()
-        .createUserWithEmailAndPassword(email, password)
+        .signInWithEmailAndPassword(email, password)
         .then(async () => {
           console.log('User account created & signed in!');
-  
-          addUserDataToMMKV(email, navigation)
-  
+
+          const user = await firestore().collection('Users').doc(email).get();
+
+        setData('firstname', await user._data.firstname)  
+        // setData('bio', await user._data.bio)  
+        // setData('birthdateDATE', await user._data.birthdateDATE)  
+        // setData('birthdateName', await user._data.birthdateName)  
+        // setData('email', await email)  
+        // setData('firstname', await user._data.firstname)  
+        // setData('followercount', await user._data.followercount)  
+        // setData('followers', await user._data.followers)  
+        // setData('followingCount', await user._data.followingCount)  
+        // setData('followings', await user._data.followings)  
+        // setData('gender', await user._data.gender)  
+        // setData('goals', await user._data.goals)  
+        // setData('height', await user._data.height)  
+        setData('lastname', await user._data.lastname)  
+        // setData('locationISO2', await user._data.locationISO2)  
+        // setData('locationName', await user._data.locationName)  
+        // setData('showerdays', await  user._data.showerdays)  
+        // setData('weight', await user._data.weight)  
+        // setData('isSeenFirstNotif', await user._data.isSeenFirstNotif)  
+
+
           await navigation.navigate('Tabs',{
             email : email
           }) 
-
+          
     
         })
         .catch(async error => {
@@ -243,9 +284,25 @@ SignWithAppleRefProps
 
         try {
 
+          console.log(0,fullName)
 
+
+          let user = await firestore().collection('Users').doc(email).get()._data
+        
+          await navigation.navigate('Tabs') 
+  
+          Alert.alert('Succesful login','Welcome!')
+
+          
+          let firstName = await user.firstname
+          let lastName = await user.lastname
+
+          console.log(1,await firstName)
+          console.log(2,await lastName)
 
           if(fullName != null) {
+
+
             firestore()
             .collection('Users')
             .doc(email)
@@ -258,11 +315,11 @@ SignWithAppleRefProps
               setData('firstname', fullName.givenName)
               setData('lastname',  fullName.familyName)
               
-              await navigation.navigate('Signup',{
-                firstname : fullName.givenName,
-                lastname : fullName.familyName,
-                email : email
-              }) 
+              // await navigation.navigate('Signup',{
+              //   firstname : fullName.givenName,
+              //   lastname : fullName.familyName,
+              //   email : email
+              // }) 
 
             }) 
           }
@@ -270,20 +327,20 @@ SignWithAppleRefProps
           else {
             async () => {
 
-              const user = await firestore().collection('Users').doc(email).get();
+              const user = await firestore().collection('Users').doc(email).get()
 
-              let firstName = user.firstname
-              let lastName = user.lastname
+              let firstName = await user.firstname
+              let lastName = await user.lastname
 
               setData('firstname', user.firstname)
               setData('lastname',  user.lastname)
               
 
-              await navigation.navigate('Signup',{
-                firstname : firstName,
-                lastname : lastName,
-                email : email
-              }) 
+              // await navigation.navigate('Signup',{
+              //   firstname : firstName,
+              //   lastname : lastName,
+              //   email : email
+              // }) 
             } 
           }
 
@@ -397,23 +454,22 @@ const state = uuid.v4();
   
     await auth().signInWithCredential(appleCredential);
 
-    
+    try{
       const email = await jwtDecode(id_token)
+     
       setData('email', email.email)
-
       
-      // user != undefined ==> apple not logined before
-      // typeof user2 == 'undefined' ==> never signed up before
-  
+      let user2 = await firestore().collection('Users').doc(email.email).get()._data
+        
+      await navigation.navigate('Tabs') 
+
+      Alert.alert('Succesful login','Welcome!')
+    }
+    catch(err){
+ 
+      const email = await jwtDecode(id_token)
       
-      // try{
-
-      //   let user2 = await firestore().collection('Users').doc(email.email).get()._data
-
-      // }
-      // catch(err){
-
-      // }
+      console.log(1, user?.name)
       
       if(user != undefined){
 
@@ -432,8 +488,6 @@ const state = uuid.v4();
           }) 
 
         }) 
-
-
 
       } else{
 
@@ -468,19 +522,12 @@ const state = uuid.v4();
   
           }) 
 
-          // const user = await firestore().collection('Users').doc(email.email).get();
-
           let firstName = 'adas'
           let lastName = 'dasdas'
       }
-
-    console.log("Got auth code", code);
-    console.log("Got id_token", id_token);
-    console.log("Got user", user);
-    console.log("Got state", state);
-
-  }
-  } catch (error) {
+    }   
+  
+  } }catch (error) {
     console.log(error);
   if (error && error.message) {
     switch (error.message) {
@@ -544,17 +591,19 @@ SignWithFacebookRefProps
                         currentProfile.userID,
                         );
                       
-                        const user = await firestore().collection('Users').doc('ABC').get();
+                        
+                        try {
+  
+                            setData('firstname', currentProfile.firstName)
+                            setData('lastname',  currentProfile.lastName)
+                            setData('email',  email)
+                       
+                         
+        let user = await firestore().collection('Users').doc(email).get()._data
+        
+        await navigation.navigate('Tabs') 
 
-                          setData('firstname', currentProfile.firstName)
-                          setData('lastname',  currentProfile.lastName)
-                          setData('email',  email)
-
-                          let user2 = await firestore().collection('Users').doc(email).get()._data
-
-                          try {
-
-                            await navigation.navigate('Tabs') 
+        Alert.alert('Succesful login','Welcome!')
                 
                           }
                           catch(err)
@@ -588,8 +637,7 @@ SignWithFacebookRefProps
                 
                                 await navigation.navigate('Signup',{
                                   email : email
-                                })
-                                  
+                                })                                 
                 
                               }) 
                             }
@@ -658,13 +706,15 @@ export type SignWithGoogleRefProps = {
       await auth().signInWithCredential(googleCredential);
       // );
 
-      let user2 = await firestore().collection('Users').doc(userInfo.user.email).get()._data
-      setData('firstname', userInfo.user.givenName)
-      setData('lastname',  userInfo.user.familyName)
-      setData('email' ,userInfo.user.email)
       
       try {
 
+        setData('firstname', userInfo.user.givenName)
+        setData('lastname',  userInfo.user.familyName)
+        setData('email' ,userInfo.user.email)
+
+        let user = await firestore().collection('Users').doc(userInfo.user.email).get()._data
+        
         await navigation.navigate('Tabs') 
 
         Alert.alert('Succesful login','Welcome!')
@@ -730,6 +780,8 @@ export type SignWithGoogleRefProps = {
   export const LogOut = async (navigation) => {
 
     setData('isLogged', 0)
+
+    setData('isNotificationsAllowed', 0)
 
     await navigation.navigate('First')
 

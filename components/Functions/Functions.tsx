@@ -4,7 +4,7 @@ import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-g
 import { Extrapolate, interpolate, runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { CustomButton, HeightPicker, InfoText, JoinLogo, Line, NoOneYet, OneNotification, SCREEN_HEIGHT, SCREEN_WIDTH, SmallButton, Space, SwitchBox, TextButton } from "../Utilities/Utilities"
 import BcryptReactNative from 'bcrypt-react-native';
-import { deleteUserMMKV, getDataNumber } from "../Storage/MMKV";
+import { deleteUserMMKV, getDataNumber, setData } from "../Storage/MMKV";
 import IconI from 'react-native-vector-icons/Ionicons'
 import { azureConstant } from "../Data/Data";
 import IconE from 'react-native-vector-icons/Entypo'
@@ -245,7 +245,7 @@ export const getImage = (email) => {
   return url
 }
 
-export const Posts = ({open, onPressDots, closePost, posts, onPressText, isSheetOn, goToProfileFeed, navigation, openSheet}) => {
+export const Posts = ({openPost, onPressDots, closePost, posts, onPressText, isSheetOn, goToProfileFeed, navigation, openSheet}) => {
     
 
 
@@ -254,14 +254,13 @@ export const Posts = ({open, onPressDots, closePost, posts, onPressText, isSheet
               
               <View style={{flexDirection: 'row', alignContent: 'center', marginVertical: 5, justifyContent: 'space-around', width: SCREEN_WIDTH}}>
 
-          <TouchableOpacity style={{backgroundColor: 'gray', width : 60, height: 60, borderRadius: 60}} activeOpacity={.8} onPress={() => {goToProfileFeed(item.id)}}>
-                <Image borderRadius={40} width={50} height={50}
-          style={{width: 50, height: 50, marginHorizontal: 10, borderRadius: 40, marginVertical: 15}}
-          source={{uri :getImage(item.id)}}
-        />
+          <TouchableOpacity style={{backgroundColor: 'gray', width : 50, height: 50, borderRadius: 60, justifyContent: 'center'}} activeOpacity={.8} onPress={() => {goToProfileFeed(item.id)}}>
+          <ImageBackground borderRadius={60} style={{width: 50, height: 50, borderRadius: 40, marginVertical: 15}} source={{uri : getImage(item.id)}}>
+                </ImageBackground>
           </TouchableOpacity>
 
-                <View style={{justifyContent: 'space-around', height: 80, width: '50%', alignItems: 'flex-start', right: 20}}>
+
+                <TouchableOpacity onPress={() => {openPost(item)}} style={{justifyContent: 'space-around', height: 80, width: '50%', alignItems: 'flex-start', right: 20}}>
                   <Text style={{fontWeight: '600'}}>
                     {item.byWho}
                   </Text>
@@ -271,7 +270,7 @@ export const Posts = ({open, onPressDots, closePost, posts, onPressText, isSheet
                   <Text>
                     {item.postDate}
                   </Text>
-                </View>
+                </TouchableOpacity>
 
             <View style={{flexDirection: 'row', width: '15%', justifyContent: 'space-between', alignSelf: 'flex-start', top: 5}}>
               <TouchableOpacity onPress={() => {onPressDots(item)}}>
@@ -323,7 +322,7 @@ export const Posts = ({open, onPressDots, closePost, posts, onPressText, isSheet
                nestedScrollEnabled={true}
 showsHorizontalScrollIndicator={false} pagingEnabled={false} horizontal={false} renderItem={item =>renderPost(item)} estimatedItemSize={10} data={posts} extraData={posts.length}>
               </FlatList>
-              </View>
+          </View>
       )
 
 }
@@ -535,6 +534,54 @@ export const sharePost = (title, msg, postId, byWho) => {
     });
 }
 
+export const reportPost = async (title, msg, postId, byWho) => {
+
+  const response = await fetch(`https://will-doro-d4ab29967685.herokuapp.com/reportPost`, {
+    method: 'POST',
+    headers: {
+      // Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      title: title,
+      msg: msg,
+      postId: postId,
+      byWho: byWho
+    }),
+  });
+
+}
+
+export const reportUser = async (email) => {
+
+  const response = await fetch(`https://will-doro-d4ab29967685.herokuapp.com/reportUser`, {
+    method: 'POST',
+    headers: {
+      // Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      email: email,
+    }),
+  });
+
+}
+
+export const blockUser = async (email, email2) => {
+
+  firestore()
+  .collection('Users')
+  .doc(email)
+  .update({
+    blocked: email2,
+})
+  .then(async () => {
+
+    
+
+  })
+}
+
 export const goToProfile = (navigation, email) => {
 
   navigation.navigate('UserProfile', {email})
@@ -574,16 +621,10 @@ export const removeFollow = (prevArrStr, email) => {
 
 export const followPerson = async (email, followWho) => {
 
-  console.log(email)
-  console.log(followWho)
-  
   const userme = await firestore().collection('Users').doc(email).get();
   const userthat = await firestore().collection('Users').doc(followWho).get();
 
-  console.log(userme._data.firstname)
-  console.log(userme._data.lastname)
-
-  console.log('asdB')
+  console.log(followWho)
   await firestore()
   .collection('Notifications')
   .add({
@@ -594,6 +635,9 @@ export const followPerson = async (email, followWho) => {
     console.log('asda')
   })
 
+  console.log(userme._data.followingCount)
+  console.log(email, followWho, userthat._data.followercount)
+  
 
   if(userme._data.followingCount == 0) {
 
@@ -627,7 +671,7 @@ export const followPerson = async (email, followWho) => {
   }) 
   }
 
-  if(userthat._data.followerCount == 0) {
+  if(userthat._data.followercount == 0) {
 
     firestore()
     .collection('Users')
@@ -766,9 +810,11 @@ export const checkFollow = async (myemail, email) => {
 
   const userme = await firestore().collection('Users').doc(myemail).get();
 
+  console.log(myemail, userme)
+
   const followings = await userme._data.followings
 
-  console.log('followings: ',followings)
+  console.log('followings: ', followings)
 
   const arr = await followings.split('//')
 
@@ -822,6 +868,100 @@ export const getDaysLeftEndWeek = () => {
 
 export const getRemainingGoal = (one, two) => {
   return one - two
+}
+
+export const setBioo = (val) => {
+  setData('bio', val)
+}
+
+export const setProperty = async (email, firstname, lastname, bio, gender, height, weight, locationISO2, locationName) => {
+
+  console.log(email, firstname, lastname, bio, gender, height, weight, locationISO2, locationName)
+
+  setData('firstname',firstname)
+  setData('lastname',lastname)
+  setData('bio',bio)
+  setData('gender',gender)
+  setData('height',height)
+  setData('weight',weight)
+  setData('locationIso2',locationISO2)
+  setData('locationName',locationName)
+
+
+    firestore()
+    .collection('Users')
+    .doc(email)
+    .update({
+      firstname: firstname,
+      lastname: lastname,
+      bio: bio,
+      gender: gender,
+      height: height,
+      weight: weight,
+      locationISO2: locationISO2,
+      locationName: locationName,
+  })
+    .then(async () => {
+  
+
+  
+    }) 
+}
+
+export const setProperties = async (email, firstname, lastname, bio, gender, height, weight, locationISO2, locationName) => {
+
+  firestore()
+  .collection('Users')
+  .doc(email)
+  .update({
+    firstname: firstname,
+    lastname: lastname,
+    bio: bio,
+    gender: gender,
+    height: height,
+    weight: weight,
+    locationISO2: locationISO2,
+    locationName: locationName,
+})
+  .then(async () => {
+
+    setData('firstname',firstname)
+    setData('lastname',lastname)
+    setData('bio',bio)
+    setData('gender',gender)
+    setData('height',height)
+    setData('weight',weight)
+    setData('locationISO2',locationISO2)
+    setData('locationName',locationName)
+
+  }) 
+}
+
+export const saveGoal = (input, is1, is2, nav) => {
+  // const goal1 = isClickedFirst ? 'Cold' : 'Hot' 
+  // const goal2 = isClickedFirstTime ? 'Day' : 'Week'
+  // const goal3 = selectedIndex == 1 ? 'Frequency' : selectedIndex == 2 ? 'Duration' : selectedIndex == 3 ? 'Time of the day' : 'Calories'
+  // const goal4 = input
+
+  // const Goal = goal1 + '/' + goal2 + '/' + goal3 + '/' + goal4
+
+  setData('weeklyGoalMin', Number(input))
+  console.log(Number(input))
+
+  setData('timeFrameGoal', 'This Week')
+
+  if(is1){
+    setData('bathGoal', 'cold')
+  }
+
+  if(is2){
+    setData('bathGoal', 'hot')
+  }
+
+  console.log(getDataNumber('weeklyGoalMin'))
+
+  nav.goBack()
+
 }
 
 const styles =  StyleSheet.create({

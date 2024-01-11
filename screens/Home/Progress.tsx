@@ -8,25 +8,29 @@ import { captureScreen } from "react-native-view-shot";
 import RNFS from "react-native-fs";
 import { getDataNumber, getDataString, setData } from '../../components/Storage/MMKV';
 import { getDaysLeftEndWeek, getRemainingGoal } from '../../components/Functions/Functions';
+import { useFocusEffect } from '@react-navigation/native';
 
 const Progress = ({route, navigation}) => {
 
     const [name, setName] = React.useState('Muhammet')
     const [uri, setUri] = React.useState('')
     const ref = React.useRef();
-    const weeklyGoalMin = getDataNumber('weeklyGoalMin')
-    const weeklyReachedMin = getDataNumber('weeklyReachedMin')
-    setData('weeklyReachedMin', 0)
-    const timeFrameGoal = getDataString('timeFrameGoal')
     const bathGoal = getDataString('bathGoal')
 
-    console.log(weeklyGoalMin, 'das')
+    const [weeklySpentBath, setWeeklySpentBath] = React.useState(getDataNumber('weeklySpentBath'))
+
+    const [min, setMin] = React.useState(getDataNumber('weeklyGoalMin'))
+    const [weeklyTimes, setWeeklyTimes] = React.useState(getDataNumber('weeklyTimes'))
   
-  const getContacts = () => {
-  // Contacts.getAll().then(contacts => {
-  //   // contacts returned
-  // })
-}
+    const [timeFrameGoal, setTimeFrameGoal] = React.useState(getDataString('timeFrameGoal'))
+  
+    useFocusEffect(
+      React.useCallback(() => {
+        
+        setWeeklySpentBath(getDataNumber('weeklySpentBath'))
+
+      }, [])
+    );
 
 React.useEffect(() => {
   // on mount
@@ -34,8 +38,6 @@ React.useEffect(() => {
     setUri(uri)
   });
 }, []);
-
-
 
 const shareIt = () => {
   // RNFS.readFile(uri, "base64").then((res) => {
@@ -75,7 +77,7 @@ const data = [
 
         <ViewShot ref={ref}>
         <View>
-          <ProgressCnt  txt1={'THIS WEEK'} txt2={'14:00'} txt3={'of ' + weeklyGoalMin + ':00'} txt4={'1:' +'00'} txt5={'Left to Goal'} txt6={getDaysLeftEndWeek() + ' days'} txt7={'Remaining'} />
+          <ProgressCnt  txt1={timeFrameGoal?.toUpperCase()} txt2={`${weeklySpentBath}:00`} txt3={'of ' + min + ':00'} txt4={`${min - weeklySpentBath}:00`} txt5={'Left to Goal'} txt6={getDaysLeftEndWeek() + ' days'} txt7={'Remaining'} />
         </View>
       </ViewShot>
         

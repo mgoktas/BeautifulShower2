@@ -16,7 +16,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react"
 import { verticalScale } from "./Metrics"
 import Animated from "react-native-reanimated"
 import { isEnabled } from "react-native/Libraries/Performance/Systrace"
-import { goToProfile } from "../Functions/Functions"
+import { getDate, goToProfile } from "../Functions/Functions"
 
 export const {height: SCREEN_HEIGHT, width: SCREEN_WIDTH} = Dimensions.get('window')
 
@@ -152,7 +152,7 @@ export const AppleButtonWithHighlight = ({onPress, isApple, title}) => {
     )
 }
 
-export const CustomButton = ({isReady, onPress, txt, type, isClicked, space}) => {
+export const CustomButton = ({isReady, onPress, txt, type, isClicked}) => {
     
     return (
 
@@ -243,7 +243,7 @@ export const BottomText = () => (
     </View>
 )
 
-export const SignWith = ({isEnabled, txt, txt2, icon2, onPress, type, onValueChange, value}) => (
+export const SignWith = ({isEnabled, txt, txt2, onPress, type, onValueChange, value}) => (
     type == 'activity' ? 
     <GestureHandlerRootView >
     <View style={[styles.signWithCnt, {marginTop: txt == 'Facebook' ?  0 : 0}]} >
@@ -416,7 +416,7 @@ export const Line = ({space, type}) => (
         </View>
 )
 
-export const CustomSwitch = ({type, isActive1, isActive2, isActive3, onPress1, onPress2, onPress3}) => (
+export const CustomSwitch = ({isActive1, isActive2, isActive3, onPress1, onPress2, onPress3}) => (
     <GestureHandlerRootView>
         <View style={styles.customSwitchCnt}>
             <TouchableOpacity onPress={onPress1} activeOpacity={1} style={[styles.customSwitch, {width: 50, height: 30, borderColor: isActive1 ? 'black' : 'gray'}]}>
@@ -432,60 +432,71 @@ export const CustomSwitch = ({type, isActive1, isActive2, isActive3, onPress1, o
     </GestureHandlerRootView>
 )
 
-export const HeightPicker = ({heightInFeet, onValueChangeLeftH, onValueChangeRightH, isW, selectedIndex, weight, onWeightChangeLeft, onWeightChangeRight, feet1, feet2, unit, isWSelected, onUnitChange, height, value, values, values2, values3, values4, values5, values6, onValueChange, type, onPress, isHeightSelected, values10, values11, values12}) => {
+export const HeightPicker = ({heightInF1, heightInF2, onValueChangeHeight, onValueChangeLeftH, onValueChangeRightH, isW, weight, onWeightChangeLeft, onWeightChangeRight, unit, isWSelected, onUnitChange, height, value, values, values2, values3, values4, values5, values6, onValueChange, type, onPress, isHeightSelected, values10, values11, values12}) => {
     
     return ( 
     
-        unit == 1 && isW ?     <View style={{flexDirection: 'row'}}>
-            <View style={[styles.locationSwitchItemCnt, {alignSelf: 'flex-end'}]}>
-                <TextButton onPress={onPress} txt={'00'} type={undefined}/>
-            </View>
-        <Picker itemStyle={{width: '100%', backgroundColor: 'transparent',}} 
-                style={{width: '30%', flexDirection: 'column', borderRadius: 10, justifyContent: 'center', alignSelf: 'flex-end', height: 120, backgroundColor: 'transparent', marginTop: 40, left: 60}}
-                selectedValue={heightInFeet.split(' ')[0] + "'"}
-                onValueChange={onValueChangeLeftH}>
-            {
-                values3.map((item, index) =>
-                    <Picker.Item key={index} label={String(item)} value={item} />
-                    )
-                }
-        </Picker>
-        <Picker itemStyle={{width: '100%', backgroundColor: 'transparent',}} 
-                style={{width: '30%', flexDirection: 'column', borderRadius: 10, justifyContent: 'center', alignSelf: 'flex-end', height: 120, backgroundColor: 'transparent', marginTop: 40, left: 25}}
-                selectedValue={heightInFeet.split(' ')[1] + '"'}
-                onValueChange={onValueChangeRightH}>
-            {
-                values4.map((item, index) =>
-                    <Picker.Item key={index} label={String(item)} value={item} />
-                    )
-                }
-        </Picker>
-        <Picker itemStyle={{width: '50%', backgroundColor: 'transparent',}} 
-                style={{width: '50%', borderRadius: 10, justifyContent: 'center', alignSelf: 'center', height: 120, backgroundColor: 'transparent', marginTop: 40}}
-                selectedValue={1}
-                onValueChange={onUnitChange}>
-            {
-                values2.map((item, index) =>
-                    <Picker.Item key={index} label={item} value={index} />
-                    )
-                }
-        </Picker>
-        </View> :
+        unit == 1 && isW ?     
+        <View style={[ {flexDirection: 'column', marginTop: 5}, styles.shadow]}>
+        <Space space={10}/>
+    <View style={[{justifyContent: 'flex-end', flexDirection: 'row'}]}>
+        <TextButton onPress={onPress} txt={'DONE'} type={undefined}/>
+    </View>
+    <Space space={10}/>
+    <Line space={0}/>
+    <View style={{flexDirection: 'row'}}>
+        <View style={[styles.locationSwitchItemCnt, {alignSelf: 'center', left: 45, top:77}]}>
+    
+        </View>
+    <Picker itemStyle={{width: '50%', backgroundColor: 'transparent',}} 
+            style={{width: '30%', flexDirection: 'column', borderRadius: 10, justifyContent: 'center', alignSelf: 'flex-end', height: 120, backgroundColor: 'transparent', marginTop: 40, left: 60, }}
+            selectedValue={heightInF1}
+            onValueChange={onValueChangeLeftH}>
+        {
+            values3.map((item, index) =>
+                <Picker.Item key={index} label={String(item)} value={item} />
+                )
+            }
+    </Picker>
+    <Picker itemStyle={{width: '30%', backgroundColor: 'transparent',}} 
+            style={{width: '30%', borderRadius: 10, justifyContent: 'center', alignSelf: 'center', height: 120, backgroundColor: 'transparent', marginTop: 40}}
+            selectedValue={heightInF2}
+            onValueChange={onValueChangeRightH}>
+        {
+            values4.map((item, index) =>
+                <Picker.Item key={index} label={item} value={index} />
+                )
+            }
+    </Picker>
+    <Picker itemStyle={{width: '30%', backgroundColor: 'transparent',}} 
+            style={{width: '30%', borderRadius: 10, justifyContent: 'center', alignSelf: 'center', height: 120, backgroundColor: 'transparent', marginTop: 40}}
+            selectedValue={unit}
+            onValueChange={onUnitChange}>
+        {
+            values2.map((item, index) =>
+                <Picker.Item key={index} label={item} value={index} />
+                )
+            }
+    </Picker>
+    </View>
+        </View>
+        
+        :
     
         isWSelected ?  
         <View style={[ {flexDirection: 'column', marginTop: 5}]}>
             <Space space={10}/>
         <View style={[{justifyContent: 'flex-end', flexDirection: 'row'}]}>
-                <TextButton onPress={onPress} txt={'111'} type={undefined}/>
+                <TextButton onPress={onPress} txt={'DONE'} type={undefined}/>
         </View>
         <Space space={10}/>
         <Line space={0}/>
     
         <View style={{flexDirection: 'row'}}>
     
-            <Picker itemStyle={{width: '100%', backgroundColor: 'transparent',}} 
-                    style={{width: '100%', flexDirection: 'column', borderRadius: 10, justifyContent: 'center', alignSelf: 'flex-end', height: 120, backgroundColor: 'transparent', marginTop: 40, left: 120}}
-                    selectedValue={weight[0]}
+            <Picker itemStyle={{width: '50%', backgroundColor: 'transparent',}} 
+                    style={{width: '50%', flexDirection: 'column', borderRadius: 10, justifyContent: 'center', alignSelf: 'flex-end', height: 120, backgroundColor: 'transparent', marginTop: 40, left: 120}}
+                    selectedValue={weight}
                     onValueChange={onWeightChangeLeft}>
                 {
                     values5.map((item, index) =>
@@ -493,21 +504,8 @@ export const HeightPicker = ({heightInFeet, onValueChangeLeftH, onValueChangeRig
                         )
                     }
             </Picker>
-            <Text style={{alignSelf: 'center', left: 88, top: 22, fontSize: 16}}>
-                ,
-            </Text>
-            <Picker itemStyle={{width: '100%', backgroundColor: 'transparent',}} 
-                    style={{width: '25%', flexDirection: 'column', borderRadius: 10, justifyContent: 'center', alignSelf: 'flex-end', height: 120, backgroundColor: 'transparent', marginTop: 40, left: 50}}
-                    selectedValue={weight[1]}
-                    onValueChange={onWeightChangeRight}>
-                {
-                    values6.map((item, index) =>
-                        <Picker.Item key={index} label={String(item)} value={index} />
-                        )
-                    }
-            </Picker>
-            <Picker itemStyle={{width: '100%', backgroundColor: 'transparent',}} 
-                    style={{width: '25%', flexDirection: 'column', borderRadius: 10, justifyContent: 'center', alignSelf: 'flex-end', height: 120, backgroundColor: 'transparent', marginTop: 40, right: 20}}
+            {/* <Picker itemStyle={{width: '30%', backgroundColor: 'transparent',}} 
+                    style={{width: '30%', flexDirection: 'column', borderRadius: 10, justifyContent: 'center', alignSelf: 'flex-end', height: 120, backgroundColor: 'transparent', marginTop: 40, right: 20}}
                     selectedValue={value}
                     onValueChange={onValueChange}>
                 {
@@ -515,7 +513,7 @@ export const HeightPicker = ({heightInFeet, onValueChangeLeftH, onValueChangeRig
                         <Picker.Item key={index} label={item} value={index} />
                         )
                     }
-            </Picker>
+            </Picker> */}
             
         </View>
     
@@ -535,8 +533,8 @@ export const HeightPicker = ({heightInFeet, onValueChangeLeftH, onValueChangeRig
         </View>
     <Picker itemStyle={{width: '100%', backgroundColor: 'transparent',}} 
             style={{width: '50%', flexDirection: 'column', borderRadius: 10, justifyContent: 'center', alignSelf: 'flex-end', height: 120, backgroundColor: 'transparent', marginTop: 40, left: 60}}
-            selectedValue={height}
-            onValueChange={onWeightChangeLeft}>
+            selectedValue={170}
+            onValueChange={onValueChangeHeight}>
         {
             values.map((item, index) =>
                 <Picker.Item key={index} label={String(item)} value={item} />
@@ -546,7 +544,7 @@ export const HeightPicker = ({heightInFeet, onValueChangeLeftH, onValueChangeRig
     <Picker itemStyle={{width: '50%', backgroundColor: 'transparent',}} 
             style={{width: '50%', borderRadius: 10, justifyContent: 'center', alignSelf: 'center', height: 120, backgroundColor: 'transparent', marginTop: 40}}
             selectedValue={unit}
-            onValueChange={onWeightChangeRight}>
+            onValueChange={onUnitChange}>
         {
             values2.map((item, index) =>
                 <Picker.Item key={index} label={item} value={index} />
@@ -692,15 +690,11 @@ export const HeightPicker = ({heightInFeet, onValueChangeLeftH, onValueChangeRig
         
     )}
 
-export const WeightPicker = ({weight, 
-    onWeightChangeLeft, onWeightChangeRight, 
-    unit, isWSelected, 
-    onUnitChange, onValueChange, type, onPress, 
+export const WeightPicker = ({
+    unit, 
+    onValueChange, type, onPress, 
     valuesKgLeft, 
     valuesKgRight,
-    valuesLbLeft, 
-    valuesLbRight,
-    typeOfWeight,
     isClicked,
     oVCWLeft,
     oVCWRight,
@@ -825,26 +819,13 @@ export const WeightPicker = ({weight,
 export const LocationSwitch = ({txt1, txt2, onPress, 
     isClicked, value, onValueChange, values, 
     type, open, date, 
-    onDateChange, 
-    onCancel,
-    sdWghtLeft,
-    sdWghtRight,
-    oVCWLeft,
-    oVCWRight,
-    sdWgTp,
-    heightSd,
-    oVC
-}) => {
+    onDateChange}) => {
 
     const range = (start, end, step) => {
         return Array.from(Array.from(Array(Math.ceil((end-start)/step)).keys()), x => start+ x*step);
       }
       
-      let out = Array.from(range(10,221,1))
 
-    const Range = (start, end) => {
-        return Array.from(range(start, end, 1))
-    }
 
 
     return (
@@ -1162,7 +1143,7 @@ export const WelcomeHeader = ({txt1, txt2}) => (
     </View>
 )
 
-export const Optionals = ({unit, toggleSwitchNotifications, isNotificationsEnabled, weight, height, txt1, txt2, isActive, onPressH, onPressW, isClicked, type, onPress, onPressG, onPressOpen, onPressContinue, isClickedOnce, isClickedDay1, isClickedDay2, isClickedDay3, isClickedDay4, isClickedDay5, isClickedDay6, isClickedDay7, onPressDay1, onPressDay2, onPressDay3, onPressDay4, onPressDay5, onPressDay6, onPressDay7}) => {
+export const Optionals = ({unit, toggleSwitchNotifications, isNotificationsEnabled, weight, height, txt1, txt2, isActive, onPressH, onPressW, isClicked, type, onPressG, onPressOpen, onPressContinue, isClickedOnce, isClickedDay1, isClickedDay2, isClickedDay3, isClickedDay4, isClickedDay5, isClickedDay6, isClickedDay7, onPressDay1, onPressDay2, onPressDay3, onPressDay4, onPressDay5, onPressDay6, onPressDay7}) => {
 
     return (
     type == 3 ? 
@@ -1243,9 +1224,9 @@ export const Optionals = ({unit, toggleSwitchNotifications, isNotificationsEnabl
                 </View>
                 <View style={[styles.rulerCnt, {display: type == 2 ? 'none' : isClicked ? 'flex' : 'none'}]}>
                     <IconM name={'scale-bathroom'} size={18}/>
-                    <TouchableOpacity onPress={onPressW} activeOpacity={1} style={[styles.customSwitch, {width: 70, height: 30, borderColor: isActive ? 'black' : 'gray', left: 4}]}>
+                    <TO onPress={onPressW} activeOpacity={1} style={[styles.customSwitch, {width: 70, height: 30, borderColor: isActive ? 'black' : 'gray', left: 4}]}>
                         <Text style={[styles.customSwitchTxt, {color: isActive ? 'black' : 'black'}]}>{weight[0]},{weight[1]} kg</Text>
-                    </TouchableOpacity>
+                    </TO>
                 </View>
                 <CustomButton onPress={onPressContinue} isClicked={isClicked} txt={'CONTINUE'} type={2} isReady={undefined} space={undefined}/>
             </View>
@@ -1337,7 +1318,7 @@ export const DayOptions = ({txt, isClicked, onPress}) => (
     </GestureHandlerRootView>
 )
 
-export const OneGoal = ({selectedIndex, isClickedFirst, isClickedSec, isClickedThi, isClickedFou, onPressThi, onPressFou, onPressFirst, onPressSec, txt, txt21, txt22, txt31, txt32, icon1, icon2, type}) => {
+export const OneGoal = ({selectedIndex, isClickedFirst, isClickedSec, onPressThi, onPressFou, onPressFirst, onPressSec, txt, txt21, txt22, txt31, txt32, icon1, icon2, type}) => {
     return (
     type == 'goalset1' ? 
     <View style={styles.oneGoalCnt}>
@@ -1468,9 +1449,21 @@ export const OneGoalInput = ({type, onPress, txt, onChangeText}) => {
     )
 }
 
-export const HeaderHome = ({onPressR, onPress, txt, title, type, onPressBack, onPress0, onPress1, onPress2, onPressShare, onPressTDots}) => {
+export const HeaderHome = ({onPressR, onPress, txt, title, type, onPressBack, onPress0, onPress1, onPress2, onPressShare}) => {
  
     return (
+        type == 35 ?
+        <GestureHandlerRootView>
+            <View style={styles.headerHomeCnt}>
+                    <Text style={styles.headerHomeTitle}>
+                        {title}
+                    </Text>
+                    <TO activeOpacity={.7} onPress={onPress} style={styles.headerProfileIconsCnt}>
+                        <IconE style={styles.startButtonActivityIcon} name={'dots-three-vertical'} size={21}/>
+                    </TO>
+            </View>
+        </GestureHandlerRootView> 
+        :
         type == 'goals' ?
         <GestureHandlerRootView>
             <View style={[styles.headerHomeCnt, {justifyContent: 'center', left: -78,}]}>
@@ -1617,7 +1610,7 @@ export const HeaderHome = ({onPressR, onPress, txt, title, type, onPressBack, on
                         {title}
                     </Text>
                     <TO activeOpacity={.7} onPress={onPress} style={styles.headerProfileIconsCnt}>
-                        <IconI style={styles.startButtonActivityIcon} name={'settings-outline'} size={28}/>
+                    <IconI style={styles.startButtonActivityIcon} name={'settings-outline'} size={28}/>
                     </TO>
             </View>
         </GestureHandlerRootView> 
@@ -1660,7 +1653,15 @@ export const HeaderHome = ({onPressR, onPress, txt, title, type, onPressBack, on
     </GestureHandlerRootView> 
 )}
 
-export const ActivityDuration = ({txt1, txt2, txt3, txt4, hr, min, sec}) => (
+export const MiniText = ({txt}) => (
+    <V style={{marginHorizontal: 10, justifyContent: 'center', alignSelf: 'center', opacity: .6, marginTop: 30}}>
+        <Text>
+            {txt}
+        </Text>
+    </V>
+)
+
+export const ActivityDuration = ({txt2, txt3, txt4, hr, min, sec}) => (
     <View style={styles.activityDurationCnt}>
         <View style={styles.activityDurationCntRow0}>
             <Text style={styles.activityDurationCntRow2ColText1}>{String(hr).length == 1 ? `0${hr}` : hr}:{String(min).length == 1 ? `0${min}` : min}:{String(sec).length == 1 ? `0${sec}` : sec}</Text>
@@ -1825,7 +1826,7 @@ export const ActivityDuration = ({txt1, txt2, txt3, txt4, hr, min, sec}) => (
             
             console.log(viewableItems)
            
-            setVisibleItems(viewableItems.map(({ item, index }) => {
+            setVisibleItems(viewableItems.map(({ index }) => {
                 if(index == 1){
                     props.changeActive()
                 }
@@ -1837,7 +1838,7 @@ export const ActivityDuration = ({txt1, txt2, txt3, txt4, hr, min, sec}) => (
         const configref = useRef(viewabilityConfig)
         const itemschangedref = useRef(onViewableItemsChanged)
           
-          const renderItem = ({ item, index }) => {
+          const renderItem = ({ index }) => {
     
             
               return (
@@ -1890,9 +1891,9 @@ export const ActivityDuration = ({txt1, txt2, txt3, txt4, hr, min, sec}) => (
     
         <View style={[styles.startButtonActivityCnt,{height: props.hasStarted ? 55 : 60}]}>
       
-            <View style={[styles.startButtonActivityMusicIconCnt, {display: props.hasStarted ? 'none' : 'flex'}]}>
+            <TO activeOpacity={.8} onPress={props.onPressMusic} style={[styles.startButtonActivityMusicIconCnt, {display: props.hasStarted ? 'none' : 'flex'}]}>
                 <IconI style={styles.startButtonActivityIcon} name={'musical-notes-outline'} size={32}/>
-            </View>
+            </TO>
     
             <TO onPress={props.onPress} activeOpacity={.8} style={[styles.startButtonActivityButtonCnt, {width: props.hasStarted ? '85%' : '50%'}]}>
                 <View style={styles.startButtonActivityButtonCol1}>
@@ -1935,14 +1936,14 @@ export const ProfilePerson = ({type, onPress, imageSource}) => (
     </View>    
 
     :
-    <V style={styles.profilePersonBackCnt}>
+    <TO onPress={onPress} activeOpacity={.8} style={styles.profilePersonBackCnt}>
         <ImageBackground style={{width: '100%', height: SCREEN_HEIGHT/5, justifyContent: 'center'}} source={{uri :imageSource}}>
         <IconM style={styles.profilePersonIcon} name={'pencil-outline'} size={30} />
         </ImageBackground>
-    </V>
+    </TO>
 )
 
-export const ProfilePersonIt = ({isFollowing, isSecary, txt1, txt2, txt3, txt4, txt5, txt6, type, onPressAvatar, imageSource, onPressProfile, onPressFollow, onPressChat}) => (
+export const ProfilePersonIt = ({isMe, isFollowing, isSecary, txt1, txt2, txt3, txt4, txt5, txt6, type, onPressAvatar, imageSource, onPressProfile, onPressFollow, onPressChat, onPressFollowers, onPressFollowings}) => (
     type == 'userp' ?
     <View style={styles.profilePersonItCnt}>
     <View style={styles.profilePersonColCnt}>
@@ -1964,14 +1965,14 @@ export const ProfilePersonIt = ({isFollowing, isSecary, txt1, txt2, txt3, txt4, 
             <View style={styles.profilePersonInfoVLine}></View>
             <Text style={styles.profilePersonInfoText}>{txt6} FOLLOWING</Text>
         </View>
-        <TO activeOpacity={.8} onPress={onPressFollow} style={styles.profilePersonButtonCnt}>
+        <TO activeOpacity={.8} onPress={onPressFollow} style={[styles.profilePersonButtonCnt, {display: isMe ? 'none' : 'flex'}]}>
             <Text style={[styles.profilePersonButtonText, {textAlign: 'center'}]}>{isFollowing ? 'Following' : 'Follow' }</Text>
         </TO>
-        <TO activeOpacity={.8} onPress={onPressChat} style={[styles.profilePersonButtonCnt, {display: true ? 'flex' : 'none'}]}>
+        <TO activeOpacity={.8} onPress={onPressChat} style={[styles.profilePersonButtonCnt, {display: isFollowing ? 'flex' : 'none'}]}>
             <Text style={[styles.profilePersonButtonText, {textAlign: 'center'}]}>{'Start Chat' }</Text>
         </TO>
     </View>
-</View>
+    </View>
 :
     type == 'up' ? 
     <View style={styles.profilePersonItCnt}>
@@ -1999,7 +2000,7 @@ export const ProfilePersonIt = ({isFollowing, isSecary, txt1, txt2, txt3, txt4, 
             <Icon style={styles.startButtonActivityButtonIcon} name={'long-arrow-right'} size={20} color={'white'}/>
         </TO>
     </View>
-</View>
+    </View>
     :
     type == 2 && imageSource ?
     <ImageBackground source={imageSource} style={[styles.profilePersonImageCnt2, {backgroundColor: '#a5a5a5'}]}>
@@ -2012,7 +2013,7 @@ export const ProfilePersonIt = ({isFollowing, isSecary, txt1, txt2, txt3, txt4, 
     </TO>
     :
     isSecary ? 
-    <View style={[styles.profilePersonItCnt, {backgroundColor: 'white'}]}>
+    <View style={[styles.profilePersonItCnt, {backgroundColor: 'white', height: SCREEN_HEIGHT}]}>
     <View style={styles.profilePersonColCnt}>
         <TO activeOpacity={.8} onPress={onPressAvatar} style={styles.profilePersonImageCnt}>
             <ImageBackground style={{width: 140, height: 140, borderRadius: 40, justifyContent: 'center'}} borderRadius={80} source={{uri :imageSource}}>
@@ -2021,30 +2022,34 @@ export const ProfilePersonIt = ({isFollowing, isSecary, txt1, txt2, txt3, txt4, 
         </TO>
         <Text style={styles.profilePersonName}>{txt1}</Text>
         <View style={styles.profilePersonCountryCnt}>
-            {/* <CountryFlag isoCode={txt2} size={12} /> */}
+            <CountryFlag isoCode={txt2} size={12} />
             <Text style={styles.profilePersonItCountryText}>{txt3}</Text>
         </View>
         <Text style={styles.profilePersonItBioText}>
             {txt4}
         </Text>
         <View style={styles.profilePersonItInfoCnt}>
-            <Text style={styles.profilePersonInfoText}>{txt5} FOLLOWERS</Text>
+            <TO activeOpacity={1} onPress={onPressFollowers}>
+                <Text style={styles.profilePersonInfoText}>{txt5} FOLLOWERS</Text>
+            </TO>
             <View style={styles.profilePersonInfoVLine}></View>
-            <Text style={styles.profilePersonInfoText}>{txt6} FOLLOWING</Text>
+            <TO activeOpacity={1} onPress={onPressFollowings}>
+                <Text style={styles.profilePersonInfoText}>{txt6} FOLLOWING</Text>
+            </TO>
         </View>
         <TO activeOpacity={.8} onPress={onPressProfile} style={[styles.profilePersonButtonCnt, {backgroundColor: 'white', borderWidth: 1, width: SCREEN_WIDTH/2.3, marginVertical: 14, height: 32}]}>
             <Text style={[styles.profilePersonButtonText, {color: 'black', fontSize: 12, width: 'auto'}]}>EDIT PROFILE</Text>
             <Icon style={styles.startButtonActivityButtonIcon} name={'long-arrow-right'} size={16} color={'black'}/>
         </TO>
     </View>
+    <Space space={100}/>
 </View>
     :
     <View style={styles.profilePersonItCnt}>
         <View style={styles.profilePersonColCnt}>
             <TO activeOpacity={.8} onPress={onPressAvatar} style={styles.profilePersonImageCnt}>
-                <ImageBackground style={{width: 140, height: 140, borderRadius: 40, justifyContent: 'center'}} borderRadius={80} source={{uri :imageSource}}>
-                <IconI name={'person-outline'}  style={[styles.profilePersonImage, {display: imageSource !== undefined ? 'none' : 'flex'}]} color={'#a5a5a5'} size={80} />
-                </ImageBackground>
+                <Image style={{width: 140, height: 140, borderRadius: 40}} borderRadius={80} source={{uri :'https://csb10032003198f8088.blob.core.windows.net/avatarcontainer-beautifulshower/mgoktashk@gmail.com'}}>
+                </Image>
             </TO>
             <Text style={styles.profilePersonName}>{txt1}</Text>
             <View style={styles.profilePersonCountryCnt}>
@@ -2085,7 +2090,24 @@ export const ProfileBox = ({txt1, txt2}) => (
     </View>
 )
 
-export const SettingsBox = ({title, isFirst, isLast, icon, icon2, type, onPress, name, lastName}) => (
+export const PremiumBox = ({txt1, txt2}) => (
+    <View style={styles.profileBoxCnt}>
+        <Text style={styles.headerHomeTitle}> 
+            PREMIUM
+        </Text>
+        <View style={styles.profileBoxRow2}>
+            <View style={styles.profileBoxIconPremium}>
+                <IconI size={16} name={'star'} color={'white'} />
+            </View>            
+            <View style={styles.profileBoxCol2TextsCnt}>
+                <Text style={styles.profileBoxCol2Text1}>{txt1}</Text>
+                <Text style={styles.profileBoxCol2Text2}>{txt2}</Text>
+            </View>
+        </View>
+    </View>
+)
+
+export const SettingsBox = ({title, isFirst, icon, icon2, type, onPress}) => (
     type == 5 ?
     <View>
     <View style={{display: isFirst ? 'flex' : 'none'}}>
@@ -2181,9 +2203,9 @@ export const SettingsBox = ({title, isFirst, isLast, icon, icon2, type, onPress,
     </View>
 )
 
-export const ProfileEdit = ({typee, name, lastname, countries, isActive1, isActive2, isActive3, isClickedBirthdate, isClickedLocation, isClickedWeight, isClickedHeight, onPressCon, country, birthdate, email, countryIso, weight, height, onPress1, onPress2, onPress3, onPressBd, onPressWg, onPressHt, onChangeName, onChangeLastname, onChangeBio, onChangeCountry, onChangeBirthdate, onChangeWeight, onChangeHeight, onDateChange, open, date, onCancel}) => (
+export const ProfileEdit = ({typee, bio, name, lastname, isActive1, isActive2, isActive3, email, onPress1, onPress2, onPress3, onChangeName, onChangeLastname, onChangeBio, unit, weight, height, isActive, onPressH, onPressW, isClicked, type}) => (
    typee == 2 ? 
-   <V>
+    <V>
    <ScrollView>
        <V style={styles.profileEditCnt}>
            <V style={{justifyContent: 'center'}}>
@@ -2194,15 +2216,27 @@ export const ProfileEdit = ({typee, name, lastname, countries, isActive1, isActi
                <CustomInput onChangeText={onChangeLastname} type={'editprofileln'} txt={'Last Name'} name={lastname} email={undefined} isName={undefined} txt1={undefined} />
            </V>
        </V>
-       <CustomInput onChangeText={onChangeLastname} type={'bio'} txt={'Bio'} name={lastname} email={undefined} isName={undefined} txt1={undefined} />
+       <CustomInput onChangeText={(val) => {onChangeBio(val)}} type={'bio'} txt={'Bio'} name={bio} />
        <CustomSwitch onPress1={onPress1} onPress2={onPress2} onPress3={onPress3} isActive1={isActive1} isActive2={isActive2} isActive3={isActive3} type={1}/>
        <Line space={0}/>
        <Space space={20}/>
-       {/* <CustomInput type={4} txt={'Email'} email={email} name={undefined} onChangeText={undefined} isName={undefined} txt1={undefined} /> */}
-   </ScrollView>
-</V>
+       <View style={[styles.rulerCnt]}>
+                    <IconF5 name={'ruler'} size={18}/>
+                    <TO onPress={onPressH} activeOpacity={1} style={[styles.customSwitch, {width: 70, height: 30, borderColor: isActive ? 'black' : 'gray'}]}>
+                        <Text style={[styles.customSwitchTxt, {color: isActive ? 'black' : 'black'}]}>{unit == 1 ? height + ' ft' : height + ' cm'} </Text>
+                    </TO>
+        </View>
+        <View style={[styles.rulerCnt]}>
+            <IconM name={'scale-bathroom'} size={18}/>
+            <TO onPress={onPressW} activeOpacity={1} style={[styles.customSwitch, {width: 70, height: 30, borderColor: isActive ? 'black' : 'gray', left: 4}]}>
+                <Text style={[styles.customSwitchTxt, {color: isActive ? 'black' : 'black'}]}>{weight} kg</Text>
+            </TO>
+        </View>
+                
+    </ScrollView>
+    </V>
    :
-   <V>
+    <V>
         <ScrollView>
             <V style={styles.profileEditCnt}>
                 <V style={{justifyContent: 'center'}}>
@@ -2232,10 +2266,46 @@ export const ProfileEdit = ({typee, name, lastname, countries, isActive1, isActi
     </V>
 )
 
-export const Discover = ({isSheetOn, info, name, duration, data, title, subtitle, text11, text12, text21, text22, onPressRight, onPressLeft, type, text1, text2, text3, onPress}) => {
+export const ProfileEditProfile = ({onPressAvi, imageSource, typee, bio, name, lastname, isActive1, isActive2, isActive3, email, onPress1, onPress2, onPress3, onChangeName, onChangeLastname, onChangeBio, unit, weight, height, isActive, onPressH, onPressW, isClicked, type}) => (
+    <V>
+    <ScrollView>
+        <V style={styles.profileEditCnt}>
+            <V style={{justifyContent: 'center'}}>
+                <TO onPress={onPressAvi} activeOpacity={.8} style={[styles.profilePersonImageCnt2, {backgroundColor: '#a5a5a5'}]}>
+                    <ImageBackground source={{uri: imageSource}} width={100} height={100} borderRadius={100} style={{width: 100, height: 100, borderRadius: 100}}>
+                    </ImageBackground>
+                </TO>
+            </V>
+            <V>
+                <CustomInput onChangeText={onChangeName} type={'editprofilefn'} txt={'First Name'} name={name} email={undefined} isName={undefined} txt1={undefined} />
+                <CustomInput onChangeText={onChangeLastname} type={'editprofileln'} txt={'Last Name'} name={lastname} email={undefined} isName={undefined} txt1={undefined} />
+            </V>
+        </V>
+        <CustomInput onChangeText={(val) => {onChangeBio(val)}} type={'bio'} txt={'Bio'} name={bio} />
+        <CustomSwitch onPress1={onPress1} onPress2={onPress2} onPress3={onPress3} isActive1={isActive1} isActive2={isActive2} isActive3={isActive3} type={1}/>
+        <Line space={0}/>
+        <Space space={20}/>
+        <View style={[styles.rulerCnt]}>
+                     <IconF5 name={'ruler'} size={18}/>
+                     <TO onPress={onPressH} activeOpacity={1} style={[styles.customSwitch, {width: 70, height: 30, borderColor: isActive ? 'black' : 'gray'}]}>
+                         <Text style={[styles.customSwitchTxt, {color: isActive ? 'black' : 'black'}]}>{unit == 1 ? height + ' ft' : height + ' cm'} </Text>
+                     </TO>
+         </View>
+         <View style={[styles.rulerCnt]}>
+             <IconM name={'scale-bathroom'} size={18}/>
+             <TO onPress={onPressW} activeOpacity={1} style={[styles.customSwitch, {width: 70, height: 30, borderColor: isActive ? 'black' : 'gray', left: 4}]}>
+                 <Text style={[styles.customSwitchTxt, {color: isActive ? 'black' : 'black'}]}>{weight} kg</Text>
+             </TO>
+         </View>
+                 
+     </ScrollView>
+     </V>
+)
+
+export const Discover = ({isSheetOn, info, name, duration, data, title, subtitle, text11, text12, text21, text22, onPressRight, onPressLeft, type, text3, onPress}) => {
     
 
-    const DateItemListList = ({item}) => {
+    const DateItemListList = () => {
       return (
         <View style={{width: Dimensions.get("screen").width}}>
           <FlashList showsHorizontalScrollIndicator={false} pagingEnabled={true} horizontal={true} renderItem={item =>renderItem(item)} estimatedItemSize={10} data={data} extraData={data.length}>
@@ -2244,7 +2314,7 @@ export const Discover = ({isSheetOn, info, name, duration, data, title, subtitle
       )
     }
     
-    const renderItem = ({ item, index }) => {
+    const renderItem = ({ item }) => {
         return (
             <View style={{width: SCREEN_WIDTH}}>
                 <ImageBackground source={require('../images/cold.jpg')} style={[styles.discoverRowBox, {width: SCREEN_WIDTH / 1.2, height: 200, backgroundColor: 'transparent', flexDirection: 'row'}]}>
@@ -2264,7 +2334,7 @@ export const Discover = ({isSheetOn, info, name, duration, data, title, subtitle
         )
     }
 
-    const renderItems = ({ item, index }) => {
+    const renderItems = ({ item }) => {
 
           return (
             <DateItemListList item={item} />
@@ -2272,7 +2342,7 @@ export const Discover = ({isSheetOn, info, name, duration, data, title, subtitle
         
     }
 
-    const DateItemListListBlog = ({item}) => {
+    const DateItemListListBlog = () => {
         return (
           <View style={{width: Dimensions.get("screen").width}}>
             <FlashList showsHorizontalScrollIndicator={false} pagingEnabled={false} horizontal={true} renderItem={item =>renderItemBlog(item)} estimatedItemSize={10} data={data} extraData={data.length}>
@@ -2281,7 +2351,7 @@ export const Discover = ({isSheetOn, info, name, duration, data, title, subtitle
         )
     }
   
-    const renderItemBlog = ({ item, index }) => {
+    const renderItemBlog = ({ item }) => {
         return (
             <View style={{width: SCREEN_WIDTH / 1.4, height: SCREEN_WIDTH, opacity: isSheetOn ? .6 : 1}}>
                 <ImageBackground resizeMethod='scale' source={require('../images/cold.jpg')} style={[styles.discoverRowBox, {width: SCREEN_WIDTH / 1.4, backgroundColor: 'transparent', flexDirection: 'row', height: '90%'}]}>
@@ -2295,7 +2365,7 @@ export const Discover = ({isSheetOn, info, name, duration, data, title, subtitle
         )
     }
 
-    const renderItemsBlog = ({ item, index }) => {
+    const renderItemsBlog = ({ item }) => {
   
             return (
               <DateItemListListBlog item={item} />
@@ -2474,7 +2544,7 @@ export const ProgressCnt = ({txt1, txt2, txt3, txt4, txt5, txt6, txt7}) => {
     )
 }
 
-export const AccountPageContent = ({txt1, txt2, txt3, txt4, txt5, txt6, link, linkATxt}) => {
+export const AccountPageContent = ({txt1, txt2, txt3, txt4, txt5, link, linkATxt}) => {
     return (
         <View style={styles.accountPageContentCnt}>
             <Text style={styles.accountPageHead}>{txt1}</Text>
@@ -2492,7 +2562,7 @@ export const AccountPageContent = ({txt1, txt2, txt3, txt4, txt5, txt6, link, li
     )
 }
 
-export const PrivacyText = ({title, txt, toggleSwitch, isEnabled, type, icon1, icon2, icon3, isSelected, option1, option2, option3, selectedIndex, onPress0, onPress1, onPress2}) => {
+export const PrivacyText = ({title, txt, toggleSwitch, isEnabled, type, icon1, icon2, icon3, option1, option2, option3, selectedIndex, onPress0, onPress1, onPress2}) => {
     return (
         type == 2 ?
         <View style={styles.privacyCnt}>
@@ -2610,7 +2680,7 @@ export const SocialMediaCnt = ({onPress, isEnabled, toggleSwitch, type, isEnable
     )
 }
 
-export const ActivitySwitches = ({onPress, isEnabled, toggleSwitch, type, isEnabledLeft, isEnabledRight, onVlChngLeft, onVlChngRight}) => {
+export const ActivitySwitches = ({isEnabledLeft, isEnabledRight, onVlChngLeft, onVlChngRight}) => {
     return (
 
         <View>
@@ -2663,7 +2733,7 @@ export const SmallLogo = ({}) => {
     )
 }
 
-export const CustomInput = ({noText, txt, name, type, email, onChangeText, isName, txt1, name1, lastname1, isPassword}) => (
+export const CustomInput = ({noText, txt, name, type, onChangeText, isName, txt1, name1, isPassword}) => (
     type == 'editprofilefn' ?
     <View style={[styles.customBtnCnt, {width: '50%', marginVertical: 10}]}>
         <View style={{flexDirection: 'row'}}>
@@ -2896,9 +2966,10 @@ export const ClassicButton = ({txt1, txt2}) => (
     </View>
 )
 
-export const OneItemSummary = ({txt1, txt2, txt3, txt4, txt5, txt6, txt7, txt8, type}) => (
+export const OneItemSummary = ({txt1, txt2, txt3, txt4, txt5, txt6, txt7, type}) => (
    type == 'p' ? 
    <View style={styles.oneItemSummaryCnt}>
+    <Space space={10}/>
         <View style={[styles.oneItemSummaryRow1, {flexDirection: 'row'}]}>
             <View style={[styles.oneItemSummaryRow1AvatarCnt, {justifyContent: 'center', width: '25%', height: 60}]}>
                 {/* <View style={{backgroundColor: 'gray', width: 50, alignSelf: 'center', borderRadius: 30}}> */}
@@ -2910,24 +2981,11 @@ export const OneItemSummary = ({txt1, txt2, txt3, txt4, txt5, txt6, txt7, txt8, 
                 {txt1}
                 </Text>
                 <Text style={[styles.oneItemSummaryWhatOn, {fontSize: 12, color: 'gray'}]}>
-                {txt2}
+                {getDate(new Date())}
                 </Text>
             </View>
         </View>
-
-        <View style={[styles.oneItemSummaryRow4Cnt, {flexDirection: 'row'}]}>
-
-        </View>
-        <View style={styles.oneItemSummaryRow5MapCnt}></View>
-        <View style={styles.oneItemSummaryFeedBackCnt}>
-            <View style={styles.oneItemSummaryFeedBackIconsCnt}>
-                <Icon />
-                <Icon />
-            </View>
-            <Text style={styles.oneItemSummaryFeedBackText}>
-                
-            </Text>
-        </View>
+    <Space space={10}/>
     </View>   
    : 
    <View style={styles.oneItemSummaryCnt}>
@@ -2991,11 +3049,11 @@ export const OneItemSummary = ({txt1, txt2, txt3, txt4, txt5, txt6, txt7, txt8, 
     </View>
 )
 
-export const TextButtonSh = ({title1, title2, title3, title4, isFirst, isLast, onPress1, onPress2, onPress3, onPress4, isDarkModeOn}) => {
+export const TextButtonSh = ({title1, title2, title4, isFirst, isLast, onPress1, onPress2, onPress4, isDarkModeOn}) => {
     return (
 
         <View style={{opacity: 10, zIndex: 10}}>
-            <TouchableOpacity
+            <TO
                 activeOpacity={.8}
                 onPress={onPress1}
                 style={[styles.textButtonCnt, {
@@ -3004,9 +3062,9 @@ export const TextButtonSh = ({title1, title2, title3, title4, isFirst, isLast, o
                 <Text style={styles.textButtonTxt}>
                     {title1}
                 </Text>
-            </TouchableOpacity>
+            </TO>
             <LineBwCell isFull={true} isDarkModeOn={undefined} isOnTask={undefined}/>
-            <TouchableOpacity 
+            <TO 
             activeOpacity={.8}
             onPress={onPress2}
             style={[styles.textButtonCnt, {
@@ -3014,7 +3072,7 @@ export const TextButtonSh = ({title1, title2, title3, title4, isFirst, isLast, o
             <Text style={styles.textButtonTxt}>
                 {title2}
             </Text>
-</TouchableOpacity>
+</TO>
 <LineBwCell isFull={true} isDarkModeOn={undefined} isOnTask={undefined}/>
 
 {/* <TouchableOpacity 
@@ -3032,7 +3090,7 @@ export const TextButtonSh = ({title1, title2, title3, title4, isFirst, isLast, o
 
 <Space space={5}/>
 
-<TouchableOpacity 
+<TO 
     activeOpacity={.8}
     onPress={onPress4}
     style={[styles.textButtonCnt, {
@@ -3045,7 +3103,7 @@ export const TextButtonSh = ({title1, title2, title3, title4, isFirst, isLast, o
     <Text style={styles.textButtonTxt}>
         {title4}
     </Text>
-</TouchableOpacity>
+</TO>
 </View>
 
 )
@@ -3131,10 +3189,10 @@ export const InputBox = ({txt, type, txt2, count, onChangeText, onChangeTextTitl
     )
 }
 
-export const PersonCnt = ({isFollowing, txt, onPress, country, style }) => {
+export const PersonCnt = ({isFollowing, txt, onPress, style }) => {
 
     return (
-      <TouchableOpacity 
+      <V 
         activeOpacity={.7} onPress={onPress} style={[{
         backgroundColor: '#212121',
         borderRadius: 1,
@@ -3156,9 +3214,9 @@ export const PersonCnt = ({isFollowing, txt, onPress, country, style }) => {
             <Text style={{top:10, right:5, fontWeight:500, fontSize: 14, color: '#766E6E'}}>{txt}</Text>
             <SmallButton type={'c'} isFollowing={isFollowing}  txt={'FOLLOWING'} txt2={'FOLLOW'}/>
         </View>
-        <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-        </TouchableOpacity>
-      </TouchableOpacity>
+        <TO onPress={onPress} style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+        </TO>
+      </V>
     )
   }
 
@@ -3171,7 +3229,7 @@ export const SmallLine = ({}) => {
     )
 }
 
-export const SheetButtons = ({title, txt, txt1, txt2, type, onPress, onPressBack}) => {
+export const SheetButtons = ({txt1, txt2, onPress, onPressBack}) => {
     return (
         <GestureHandlerRootView>
         <View style={[styles.headerHomeCnt, {justifyContent: 'center'}]}>
@@ -3299,7 +3357,7 @@ export const UserBox = ({name, place, isFriend, name2, place2, isFriend2, type})
     )
 }
 
-export const Target = ({title, desc, type, data}) => {
+export const Target = ({desc, type}) => {
     return (
         type == 'target' ? 
         <View style={{flexDirection: 'row', margin: 10, alignItems: 'center'}}>
@@ -3395,12 +3453,12 @@ export const SmallButton = ({type, txt, txt2, onPress, isFollowing}) => (
     </TO>
 )
 
-export const FollowerList = ({onClick, navigation, changeFollowings, changeFollowers, followings, followers, onPressText, followingsList, followersList, selectedIndex, onPress1, onPress2, isSheetOn, info, name, duration, data, title, subtitle, text11, text12, text21, text22, onPressRight, onPressLeft, type, text1, text2, text3, onPress}) => {
+export const FollowerList = ({navigation, changeFollowings, changeFollowers, followings, followers, onPressText, selectedIndex, onPress1, onPress2, isSheetOn, data}) => {
     
 
-    const renderItemBlog = ({ item, index }) => {
+    const renderItemBlog = ({ index }) => {
 
-        const renderFollower = ({item, index}, changeFollowers) => (
+        const renderFollower = ({item}, changeFollowers) => (
             <TO onPress={() => {goToProfile(navigation, item.email)}}>
                 <View style={{flexDirection: 'row', alignItems: 'center', alignContent: 'center', marginVertical: 10}}>
                 <IconI size={20} style={{width: '15%', alignSelf: 'center', marginLeft: 30}} name="person-outline"/>
@@ -3415,7 +3473,7 @@ export const FollowerList = ({onClick, navigation, changeFollowings, changeFollo
             </TO>
         )
 
-        const renderFollowing = ({item, index}, changeFollowers) => (
+        const renderFollowing = ({item}) => (
             <TO onPress={() => {goToProfile(navigation, item.email)}}>
                 <View style={{flexDirection: 'row', alignItems: 'center', alignContent: 'center', marginVertical: 10}}>
                 <IconI size={20} style={{width: '15%', alignSelf: 'center', marginLeft: 30}} name="person-outline"/>

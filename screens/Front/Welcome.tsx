@@ -6,7 +6,7 @@ import { CustomButton, HeightPicker, Line, Optionals, SCREEN_HEIGHT, SCREEN_WIDT
 import { RegisterNotification, RegisterNotificationRefProps } from '../../components/Functions/PermissionFunctions';
 import { Notifications } from 'react-native-notifications';
 import { updateUser, updateUser2 } from '../../components/Storage/Azure';
-import { getDataString, setData, updateUserMMKV2 } from '../../components/Storage/MMKV';
+import { getDataNumber, getDataString, setData, updateUserMMKV2 } from '../../components/Storage/MMKV';
 import firestore from '@react-native-firebase/firestore';
 import { Picker } from '@react-native-picker/picker';
 import Dialog from "react-native-dialog";
@@ -32,6 +32,8 @@ const Welcome = ({route, navigation}) =>  {
     const [weight1, setWeight1] = React.useState(60)
     const [weight2, setWeight2] = React.useState(0)
     const [email, setEmail] = React.useState(getDataString('email'))
+    const [firstName, setFirstname] = React.useState(getDataString('firstname'))
+    const [lastName, setLastname] = React.useState(getDataString('lastname'))
 
 
     const [isClickedDay1, setIsClickedDay1] = React.useState(false)
@@ -41,6 +43,9 @@ const Welcome = ({route, navigation}) =>  {
     const [isClickedDay5, setIsClickedDay5] = React.useState(false)
     const [isClickedDay6, setIsClickedDay6] = React.useState(false)
     const [isClickedDay7, setIsClickedDay7] = React.useState(false)
+    
+    const [isNotificationsAllowedPrimary, setIsNotificationsAllowedPrimary] = React.useState(getDataNumber('isNotificationsAllowed') == 1)
+    const [isNotificationsAllowedSecary, setIsNotificationsAllowedSecary] = React.useState(getDataNumber('isNotificationsAllowedBase') == 1)
 
     const [isPickerOn, setIsPickerOn] = React.useState(false)
     const [isWSelected, setIsWSelected] = React.useState(false)
@@ -66,6 +71,7 @@ const Welcome = ({route, navigation}) =>  {
     const onHeightChange = (val) => {
 
       setHeightCm(val)
+      console.log(val)
       setHeightFt(toFeet(val))
 
     }
@@ -103,8 +109,10 @@ const Welcome = ({route, navigation}) =>  {
     }
 
     const onValueChangeRightH = (val) => {
-      setHeightInFeet(heightInFeet.split(' ')[0] + ' ' + val.split('"')[0])
-      setHeightFt(heightFt.split(' ')[0] + ' ' + val.split('"')[0])
+      console.log(val)
+      console.log(heightInFeet)
+      setHeightInFeet(heightInFeet.split(' ')[0] + ' ' + val)
+      setHeightFt(heightFt.split(' ')[0] + ' ' + val)
     }
 
     const notRef = React.useRef<RegisterNotificationRefProps>(null);
@@ -124,14 +132,17 @@ const Welcome = ({route, navigation}) =>  {
         sunday: isClickedDay7 ? 1 : 0,
       }
     
+      console.log('email: ',email)
       
+      setData('weeklySpentBath', 0)
+      setData('weeklyTimes', 0)
+
       try {
           setData('showerdays', JSON.stringify(obj))
           setData('height', heightCm)
           setData('weight', weight1*10 + weight2)
           setData('goals', goals)
-          setData('isSeenFirstNotif', 0)
-          
+          setData('isSeenFirstNotif', 0)      
   
           firestore()
           .collection('Users')
@@ -139,7 +150,7 @@ const Welcome = ({route, navigation}) =>  {
           .update({
             showerdays: JSON.stringify(obj),
             height: heightCm,
-            weight: weight1*10 + weight2,
+            weight: weight,
             goals: goals,
             followercount: 0,
             followingCount: 0,
@@ -180,7 +191,7 @@ const Welcome = ({route, navigation}) =>  {
   return (
     <View style={[styles.pageWelcome, {backgroundColor:  isPickerOn ? 'gray' : 'white'}]}>
 
-        <WelcomeHeader txt1={'WELCOME MUHAMMET'} txt2={"LET'S GET STARTED"} />
+        <WelcomeHeader txt1={`WELCOME ${firstName} ${lastName}`} txt2={"LET'S GET STARTED"} />
         <Dialog.Container contentStyle={{borderRadius: 30}} visible={isVisible}>
 
         {/* <Picker itemStyle={{width: '100%', backgroundColor: 'transparent',}} 
@@ -225,7 +236,21 @@ const Welcome = ({route, navigation}) =>  {
         isClickedOnce={isClickedFirstOnce} onPressContinue={() => {setIsClickedFirst(false); setIsClickedThird(false); setIsClickedSecond(!isClickedSecond); setIsClickedFirstOnce(true)}} onPressOpen={() => {setIsClickedSecond(false); setIsClickedThird(false); setIsClickedFirst(!isClickedFirst)}}  isClicked={isClickedFirst} 
         onPressH={() => {setIsW(true); setIsHeightSelected(true); setIsWSelected(false); openSheet(); }} 
         onPressW={() => {setIsW(false); setIsWSelected(true); openSheet(); setIsHeightSelected(false);}} txt1={'Calorie Calculation'} txt2={'To accurately calculate the calories you burned in shower, we need to know how often you take showers.'}/>
-        <Optionals toggleSwitchNotifications={() => {setIsNotificationsEnabled(!isNotificationsEnabled); SetNotifications()}} isNotificationsEnabled={isNotificationsEnabled} isClickedOnce={isClickedSecondOnce} onPressContinue={() => {setIsClickedThird(true); setIsClickedSecond(false); ; setIsClickedSecondOnce(true)}} onPressOpen={() => {setIsClickedFirst(false); setIsClickedThird(false); setIsClickedSecond(!isClickedSecond); }}  type={2} isClicked={isClickedSecond} onPressH={() => {openSheet(); setIsHeightSelected(true); }} onPressW={() => {openSheet(); setIsHeightSelected(false);}} txt1={'Permissions'} txt2={'Help us provide you with the best experience possible.'}/>
+        <Optionals 
+        
+        toggleSwitchNotifications={() => {
+
+          console.log(isNotificationsAllowedSecary)
+
+          if(true){
+            setIsNotificationsAllowedPrimary(!isNotificationsAllowedPrimary)
+          } else {
+            SetNotifications()
+          }
+
+        }}
+        
+        isNotificationsEnabled={isNotificationsAllowedPrimary} isClickedOnce={isClickedSecondOnce} onPressContinue={() => {setIsClickedThird(true); setIsClickedSecond(false); ; setIsClickedSecondOnce(true)}} onPressOpen={() => {setIsClickedFirst(false); setIsClickedThird(false); setIsClickedSecond(!isClickedSecond); }}  type={2} isClicked={isClickedSecond} onPressH={() => {openSheet(); setIsHeightSelected(true); }} onPressW={() => {openSheet(); setIsHeightSelected(false);}} txt1={'Permissions'} txt2={'Help us provide you with the best experience possible.'}/>
         <Optionals isClickedOnce={isClickedThirdOnce} onPressContinue={() => {setIsClickedThird(false); ; setIsClickedThirdOnce(true)}} onPressOpen={() => {setIsClickedSecond(false); setIsClickedFirst(false); setIsClickedThird(!isClickedThird)}} onPressG={() => {navigation.navigate('Goals', {onChangeGoals:onChangeGoals})}} type={3} isClicked={isClickedThird} onPressH={() => {openSheet(); setIsHeightSelected(true); }} onPressW={() => {openSheet(); setIsHeightSelected(false);}} txt1={'Set a Personal Goal'} txt2={'Having a goal, however big or small, can help keep you focused and motivated.'}/>
         <Space space={120}/>
 

@@ -11,22 +11,20 @@ import { SignWithFacebook, SignWithFacebookRefProps } from '../../components/Fun
 import { Linking } from 'react-native';
 import { createUser, createUser2, createUserEmail, createUserNew } from '../../components/Storage/Azure';
 import { useFocusEffect } from '@react-navigation/native';
-import { Animation, Posts, addUsers, checkFollow, goToProfile, sharePost } from '../../components/Functions/Functions';
+import { Animation, Posts, addUsers, checkFollow, goToProfile, reportPost, reportUser, sharePost } from '../../components/Functions/Functions';
 import firestore from '@react-native-firebase/firestore';
 import LottieView from 'lottie-react-native';
 import uuid from 'react-native-uuid';
 import IconI from 'react-native-vector-icons/Ionicons'
 import Dialog from "react-native-dialog";
+import IconMa from 'react-native-vector-icons/MaterialIcons'
 
 const Feed = ({route, navigation}) => {
-
-  setData('email', '5a1f3b658e08c9@crankymonkey.info')
   
   useFocusEffect(
     React.useCallback(() => {
       
       const add = route.params == undefined ? '' : 'add'
-      
 
     }, [])
   );
@@ -43,6 +41,25 @@ const Feed = ({route, navigation}) => {
   const [isVisibleDots, setIsVisibleDots] = React.useState(false)
   const [isSheetOn2, setIsSheetOn2] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(true)
+  const [didCheckThisWeek, setDidCheckThisWeek] = React.useState(getDataNumber('didCheckThisWeek') == 0)
+  const [didCheckThisWeek2, setDidCheckThisWeek2] = React.useState(getDataNumber('didCheckThisWeek2') == 0)
+  
+  const d = new Date();
+  let day = d.getDay();
+
+  
+
+  useFocusEffect(
+    React.useCallback(() => {
+      
+      if(!didCheckThisWeek && day == 1){
+        setData('weeklySpentBath', 0)
+        setData('weeklyTimes', 0)
+        setData('didCheckThisWeek', 1)
+      }
+  
+    }, [])
+  );
   
 
 const ref = React.useRef<AddPersonSheetRefProps>(null);
@@ -65,8 +82,6 @@ const setSheet = (id) => {
   id == 2 ? setIsSheetOn2(false)  : {}
 
 }
-
-setData('email', 'ahmethkhkhk@gmail.com')
 
 const AnimatedLottieView = Animated.createAnimatedComponent(LottieView);
 
@@ -92,7 +107,7 @@ const refresh = () => {
       // if(!keys.includes(doc.id)){
 
       //  if(await checkFollow(email, doc._data.id)){
-         setPosts(arr => [...arr, {uuid: uuid.v4(), id: doc._data.id,  byWho:doc._data.byWho, followercount: doc._data.followercount, postDate: doc._data.postDate, postTitle: doc._data.postTitle, postText:doc._data.postTxt, postId: doc.id}])
+         setPosts(arr => [...arr, {uuid: uuid.v4(), id: doc._data.id,  byWho:doc._data.id, followercount: doc._data.followercount, postDate: doc._data.postDate, postTitle: doc._data.postTitle, postText:doc._data.postTxt, postId: doc.id}])
       //  }
       
       // }
@@ -123,7 +138,9 @@ const goTo = (email) => {
   goToProfile(navigation, email)
 }
 
-console.log(posts)
+const openPost = (item) => {
+  navigation.navigate('OnePost', {item: item.postId})
+}
 
   return (
 
@@ -137,12 +154,24 @@ console.log(posts)
   onPress2={() => { navigation.navigate('Notifications2'); } } onPress={undefined} txt={undefined} type={undefined} onPressBack={undefined} onPressShare={undefined} onPressTDots={undefined}          />
     <Line space={undefined} type={undefined} />
 
-    <Dialog.Container contentStyle={{borderRadius: 30}} visible={isVisibleDots}>
-      <TouchableOpacity activeOpacity={.8} style={{flexDirection: 'row', alignItems: 'center',}} onPress={() => {sharePost(selectedPost.postTitle, selectedPost.postText, selectedPost.postId, selectedPost.byWho)}} >
+    <Dialog.Container contentStyle={{borderRadius: 30,}} visible={isVisibleDots}>
+      <TouchableOpacity activeOpacity={.8} style={{flexDirection: 'row', alignItems: 'center',}} onPress={() => {sharePost(selectedPost.postTitle, selectedPost.postText, selectedPost.postId, selectedPost.byWho); setIsVisibleDots(false);}} >
         <IconI name={'share-outline'} size={18} />
         <Text style={{marginHorizontal: 10, fontSize: 20}}>
           Share
-      </Text>
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity activeOpacity={.8} style={{flexDirection: 'row', alignItems: 'center',}} onPress={() => {reportPost(selectedPost.postTitle, selectedPost.postText, selectedPost.postId, selectedPost.byWho, selectedPost.id); setIsVisibleDots(false);  Alert.alert('Report Success')}} >
+        <IconMa name={'report-gmailerrorred'} size={18} />
+        <Text style={{marginHorizontal: 10, fontSize: 20}}>
+          Report
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity activeOpacity={.8} style={{flexDirection: 'row', alignItems: 'center',}} onPress={() => {reportUser(selectedPost.byWho); setIsVisibleDots(false);  Alert.alert('Block Success')}} >
+      <IconMa name={'block'} size={18} />
+        <Text style={{marginHorizontal: 10, fontSize: 20}}>
+          Block user
+        </Text>
       </TouchableOpacity>
         <Dialog.Button label="Cancel" onPress={() => {setIsVisibleDots(false)}} />
     </Dialog.Container>
@@ -151,7 +180,7 @@ console.log(posts)
 
       <OneItemSummary type={'p'} txt1={name} txt2={when} txt3={activity} txt4={duration} txt5={burned} txt6={'Duration'} txt7={'Calories'} txt8={undefined} /> 
 
-      <Posts closePost={closePost} onPressDots={openDialogDots} openSheet={openSheet} navigation={navigation} goToProfileFeed={goTo} posts={posts} onPressText={undefined} followingsList={undefined} followersList={undefined} selectedIndex={undefined} onPress1={undefined} onPress2={undefined} isSheetOn={undefined} info={undefined} name={undefined} duration={undefined} data={undefined} title={undefined} subtitle={undefined} text11={undefined} text12={undefined} text21={undefined} text22={undefined} onPressRight={undefined} onPressLeft={undefined} type={undefined} text1={undefined} text2={undefined} text3={undefined} onPress={undefined} />
+      <Posts openPost={openPost} closePost={closePost} onPressDots={openDialogDots} openSheet={openSheet} navigation={navigation} goToProfileFeed={goTo} posts={posts} onPressText={undefined} followingsList={undefined} followersList={undefined} selectedIndex={undefined} onPress1={undefined} onPress2={undefined} isSheetOn={undefined} info={undefined} name={undefined} duration={undefined} data={undefined} title={undefined} subtitle={undefined} text11={undefined} text12={undefined} text21={undefined} text22={undefined} onPressRight={undefined} onPressLeft={undefined} type={undefined} text1={undefined} text2={undefined} text3={undefined} onPress={undefined} />
       
       {/* <Discover isSheetOn={isSheetOn} type={5} onPressRight={() => {getContacts()}} title={'OUR BLOG'} subtitle={'PAST CHALLENGES'} data={datablogs} text1={'COLD IS MERCILESS'} text2={'STARTS IN 5 DAYS'} text3={'257.306 PARTICIPANTS'} />
 

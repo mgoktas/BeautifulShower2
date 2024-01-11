@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ActivityDuration, HeaderHome, StartButtonActivity, styles } from '../../components/Utilities/Utilities';
 import firestore from '@react-native-firebase/firestore';
 import { postShower } from '../../components/Functions/Functions';
-import { getDataString } from '../../components/Storage/MMKV';
+import { getDataNumber, getDataString, setData } from '../../components/Storage/MMKV';
 import { GetAllContacts } from '../../components/Functions/2-FunctionsCommunity';
 import { musicUrl } from '../../components/Data/Data';
 
@@ -12,17 +12,20 @@ const Activity = ({route, navigation}) => {
 
   const [secPast, setSecPast] = React.useState(0)
   const [hr, setHr] = React.useState(0)
-  const [min, setMin] = React.useState(14)
+  const [min, setMin] = React.useState(getDataNumber('weeklySpentBath'))
   const [sec, setSec] = React.useState(0)
-  const [userInfo, setUserInfo] = React.useState({times: 2, cal: 20, avg: 7})
+  const [sec2, setSec2] = React.useState(0)
+  
+  const [weeklyTimes, setWeeklyTimes] = React.useState(getDataNumber('weeklyTimes'))
+  const [weeklySpentBath, setWeeklySpentBath] = React.useState(getDataNumber('weeklySpentBath'))
+  
+  const [timeFrameGoal, setTimeFrameGoal] = React.useState(getDataString('timeFrameGoal'))
+  const [userInfo, setUserInfo] = React.useState({times: weeklyTimes, cal: weeklySpentBath * 2, avg: weeklySpentBath == 0 ? 0 : weeklySpentBath / weeklyTimes})
   const [hasStarted, setHasStarted] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(true)
   const [isActive, setIsActive] = React.useState(false);
   const [isActiveBt, setIsActiveBt] = React.useState(false);
   const [isActive2, setIsActive2] = React.useState(false);
   const [isActive3, setIsActive3] = React.useState(false);
-  const [isShowerOn, setIsShowerOn] = React.useState(false);
-  const email = getDataString('email')
 
   React.useEffect(() => {
     let interval = null;
@@ -60,12 +63,19 @@ React.useEffect(() => {
   if (isActive) {
   interval = setInterval(() => {
 
+      if(sec == 60){
+        setMin(min => min + 1);
+        setSec(0);
+      }
+
       // if(remainingSecs == 0){
       //   setRemainingSecs(1500)
       //   resetAll()
       // } else {
         setSec(sec => sec + 1);
+        setSec2(sec2 => sec2 + 1);
       // }
+      
 
   }, 1000);
   } 
@@ -75,9 +85,10 @@ React.useEffect(() => {
   return () => clearInterval(interval);
 }, [isActive, sec]);
 
-
 const Toggle = () => {  
 
+  setSec(0)
+  setMin(0)
   setIsActive(true)
   setIsActiveBt(true)
 
@@ -85,10 +96,25 @@ const Toggle = () => {
   
 const Toggle2 = () => {
   // postShower(email, min, 0)
+  
+  const minutes  = Math.floor(sec2 / 60) + 1
+  
+  let prevMin = weeklySpentBath
+  let prevTimes = weeklyTimes
+  
+  let nowMin = prevMin + minutes
+  let nowTimes = prevTimes + 1
+
+  setData('weeklySpentBath', nowMin)
+  setData('weeklyTimes', nowTimes)
+
   setIsActive(false)
   setIsActiveBt(false)
   setSec(0)
   ToggleRef()
+
+
+
 }
 
 const Toggle3 = () => {
@@ -132,18 +158,18 @@ const goTo = React.useCallback((url) => {
   return (
 
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
-        <HeaderHome type={2} txt={'This Week'}/>
+        <HeaderHome type={2} txt={timeFrameGoal}/>
 
         <ActivityDuration hr={hr} min={min} sec={sec} txt2={userInfo.times} txt3={userInfo.cal} txt4={userInfo.avg}/>
 
         <ImageBackground style={styles.imageActivity} source={require('../../components/images/showerActivity.jpg')} >
 
         <StartButtonActivity onPressMusic={async () => {
-                       async () => {
-                        Platform.OS == 'ios' ? 
-                        await goTo(musicUrl)
-                        :
-                        await Linking.openURL(musicUrl);              }
+            Platform.OS == 'ios' ? 
+            await goTo(musicUrl)
+            :
+            console.log('sadas')
+                        await Linking.openURL(musicUrl);
         }} onPressRight={openSettings} ref={ref} changeActive={changeActive} hasStarted={isActiveBt} onPress={Toggle} onPress2={Toggle2} onPress3={Toggle3} txt1={'START'} txt2={'Showering'} txt3={'SLIDE TO PAUSE'} txt4={'FINISH'} txt5={'RESUME'}/>
             
         </ImageBackground>
@@ -151,6 +177,7 @@ const goTo = React.useCallback((url) => {
       <GetAllContacts ref={refCon}/>
         
     </SafeAreaView>
+    
   );
 };
 

@@ -16,7 +16,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import First from './screens/Front/First';
 import Join from './screens/Front/Join';
-import { AppProvider, UserProvider } from '@realm/react';
 import Already from './screens/Front/Already';
 import Signup from './screens/Front/Signup';
 import Welcome from './screens/Front/Welcome';
@@ -46,15 +45,14 @@ import FullProfile from './screens/Back/Settings/FullProfile';
 import Connections from './screens/Front/Back/Connections';
 import OneChallenge from './screens/Front/Back/OneChallenge';
 import AddContacts from './screens/Home/Tabs/AddContacts';
-import { getDataNumber } from './components/Storage/MMKV';
 import SplashScreen from './components/SplashScreen';
 import SplashScreen2 from './components/SplashScreen2';
 import UserProfile from './screens/Home/UserProfile';
 import { navigationRef, isReadyRef } from './components/RootNavigation';
-import * as RootNavigation from './components/RootNavigation';
 import ActivitySettings from './screens/Front/Back/ActivitySettings';
 import GoalSettings from './screens/Front/Back/GoalSettings';
 import ChatScreen from './screens/Front/Back/ChatScreen';
+import { getDataNumber } from './components/Storage/MMKV';
 
 //navigators
 const Stack  = createNativeStackNavigator()
@@ -182,6 +180,10 @@ const config = {
     OnePost: {
       path: 'onepost/:postId'
     },
+    UserProfile: {
+      path: 'userprofile/:email'
+    },
+
   }
 }
 
@@ -194,6 +196,8 @@ const linking = {
 function App(): JSX.Element {
 
   const [initialUrl, setInitialUrl] = useState('')
+  
+  const [isLogged, setIsLogged] = useState(getDataNumber('isLogged') == 1)
 
   useEffect(() => {
       Linking.getInitialURL()
@@ -226,6 +230,9 @@ function App(): JSX.Element {
   
 
   return (
+
+    isLogged ? 
+    
     <NavigationContainer onReady={() => {
       isReadyRef.current = true;
 }} ref={navigationRef}  linking={linking} fallback={<Text>Loading...</Text>}>
@@ -265,6 +272,49 @@ function App(): JSX.Element {
         <Stack.Screen name='ChatScreen' component={ChatScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
+
+    :
+
+    <NavigationContainer onReady={() => {
+      isReadyRef.current = true;
+}} ref={navigationRef}  linking={linking} fallback={<Text>Loading...</Text>}>
+      <Stack.Navigator initialRouteName={'First'} screenOptions={{headerShown: false}} >
+        <Stack.Screen name='GoalSettings' component={GoalSettings}/>
+        <Stack.Screen name='ActivitySettings' component={ActivitySettings}/>
+        <Stack.Screen name='Activity' component={Activity}/>
+        <Stack.Screen name='First' component={First}/>
+        <Stack.Screen name='Already' component={Already}/>
+        <Stack.Screen name='Join' component={Join}/>
+        <Stack.Screen name='Signup' component={Signup}/>
+        <Stack.Screen name='Login' component={Login}/>
+        <Stack.Screen name='SignupScratch' component={SignupScratch}/>
+        <Stack.Screen name='Welcome' component={Welcome}/>
+        <Stack.Screen name='Goals' component={Goals}/>
+        <Stack.Screen name='Tabs' component={Tabs}/>
+        <Stack.Screen name='Settings' component={Settings}/>
+        <Stack.Screen name='Account' component={Account}/>
+        <Stack.Screen name='AppleWatch' component={AppleWatch}/>
+        <Stack.Screen name='CommunityGuidelines' component={CommunityGuidelines}/>
+        <Stack.Screen name='EditProfile' component={EditProfile}/>
+        <Stack.Screen name='FullProfile' component={FullProfile}/>
+        <Stack.Screen name='UserProfile' component={UserProfile}/>
+        <Stack.Screen name='MgoktasPremium' component={MgoktasPremium}/>
+        <Stack.Screen name='Notifications' component={Notifications}/>
+        <Stack.Screen name='Notifications2' component={Notifications2}/>
+        <Stack.Screen name='Privacy' component={Privacy}/>
+        <Stack.Screen name='PrivacyPolicy' component={PrivacyPolicy}/>
+        <Stack.Screen name='SocialSharing' component={SocialSharing}/>
+        <Stack.Screen name='SupportFeedback' component={SupportFeedback}/>
+        <Stack.Screen name='TermsConditions' component={TermsConditions}/>
+        <Stack.Screen name='AddContacts' component={AddContacts}/>
+        <Stack.Screen name='OneChallenge' component={OneChallenge}/>
+        <Stack.Screen name='Connections' component={Connections}/>
+        <Stack.Screen name='SplashScreen' component={SplashScreen}/>
+        <Stack.Screen name='SplashScreen2' component={SplashScreen2}/>
+        <Stack.Screen name='ChatScreen' component={ChatScreen}/>
+      </Stack.Navigator>
+    </NavigationContainer>
+    
     );
 }
 

@@ -1,6 +1,6 @@
 import { countries } from 'country-code-lookup';
 import * as React from 'react';
-import { Text, View, StyleSheet, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { index } from 'realm';
 import { HeaderHome, ProfileBox, ProfilePerson, ProfilePersonIt, SCREEN_HEIGHT, SmallButton } from '../../components/Utilities/Utilities';
@@ -8,17 +8,23 @@ import { ChangeAvatar, ChangeAvatarRefProps } from '../../components/Functions/5
 import { getDataString, setData } from '../../components/Storage/MMKV';
 import { azureConstant, azureConstantBackground } from '../../components/Data/Data';
 import firestore from '@react-native-firebase/firestore';
-import { UnFollowPerson, checkFollow, followPerson, unFollowPerson } from '../../components/Functions/Functions';
+import { UnFollowPerson, blockUser, checkFollow, followPerson, reportUser, unFollowPerson } from '../../components/Functions/Functions';
+import Dialog from "react-native-dialog";
+import IconMa from 'react-native-vector-icons/MaterialIcons'
 
 const UserProfile = ({route, navigation}) => {
     
     const {email} = route.params
+
+    console.log('email')
     
     const [myemail, setMymail] = React.useState(getDataString('email'))
     const [isLoading, setIsLoading] = React.useState(true)
-    const [isFollowing, setIsFollowing] = React.useState(false)
+    const [isFollowing, setIsFollowing] = React.useState(checkFollow(myemail, email))
+    const [isVisible, setIsVisible] = React.useState(false)
     const [avatarChosen, setAvatarChosen] = React.useState(false)
     const [user, setUser] = React.useState({})
+    const [isMe, setIsMe] = React.useState(email == myemail)
 
     const avatarUrl = azureConstant + email
     const backgroundUrl = azureConstantBackground + email
@@ -35,7 +41,7 @@ const UserProfile = ({route, navigation}) => {
       if(user){
         setUser({
           name: user._data.firstname + ' ' +user._data.lastname, 
-          locationISO2: user._data.locationISO2.toLowerCase(),
+          locationISO2: user._data.locationIso2.toLowerCase(),
           locationName: user._data.locationName, 
           bio: user._data.bio, 
           followerCount: user._data.followercount, 
@@ -59,13 +65,33 @@ const UserProfile = ({route, navigation}) => {
     check()
   },[])
 
+  const openDialog = () => {
+    setIsVisible(true)
+  }
+
   return (
     !isLoading ? 
     <SafeAreaView>
 
-    <HeaderHome title={'PROFILE'} type={3}/>
+    <HeaderHome onPress={openDialog} title={'PROFILE'} type={35}/>
 
       <ScrollView>
+
+      <Dialog.Container contentStyle={{borderRadius: 30,}} visible={isVisible}>
+      <TouchableOpacity activeOpacity={.8} style={{flexDirection: 'row', alignItems: 'center',}} onPress={() => {reportUser(email)}} >
+        <IconMa name={'report-gmailerrorred'} size={18} />
+        <Text style={{marginHorizontal: 10, fontSize: 20}}>
+          Report User
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity activeOpacity={.8} style={{flexDirection: 'row', alignItems: 'center',}} onPress={() => {blockUser(email, myemail)}} >
+        <IconMa name={'block'} size={18} />
+        <Text style={{marginHorizontal: 10, fontSize: 20}}>
+          Block User
+        </Text>
+      </TouchableOpacity>
+        <Dialog.Button label="Cancel" onPress={() => {setIsVisible(false)}} />
+    </Dialog.Container>
 
         <ProfilePerson imageSource={backgroundUrl} />
 
@@ -96,7 +122,7 @@ const UserProfile = ({route, navigation}) => {
          
              
         }
-          }} isFollowing={isFollowing} type={'userp'} imageSource={avatarUrl} txt1={user.name} txt2={user.locationISO2} txt3={user.locationName} txt4={user.bio == '' ? user.bio : 'Welcome To My Page!'} txt5={user.followerCount} txt6={user.followingCount}/>
+          }} isMe={isMe} isFollowing={isFollowing} type={'userp'} imageSource={avatarUrl} txt1={user.name} txt2={user.locationISO2} txt3={user.locationName} txt4={user.bio == '' ? user.bio : 'Welcome To My Page!'} txt5={user.followerCount} txt6={user.followingCount}/>
 
         <ProfileBox txt1={'Premium Benefits'} txt2={'Go further with Premium'}/>
 

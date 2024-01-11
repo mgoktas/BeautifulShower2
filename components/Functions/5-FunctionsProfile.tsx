@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
 import Animated, { Extrapolate, interpolate, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 import { SCREEN_HEIGHT, Space, TextButtonSh, styles } from "../Utilities/Utilities";
@@ -130,12 +130,14 @@ export type ChangeAvatarRefProps = {
     return (
         <GestureHandlerRootView>
           <GestureDetector gesture={gesture}>
-            <Animated.View style={[styles.buttonSheet, rBottomSheetStyle]}>
+            <Animated.View pointerEvents='none' style={[styles2.buttonSheet, rBottomSheetStyle]}>
               <View
                 style={{
                   justifyContent: 'space-between',
                   flexDirection: 'column',
                   height: SCREEN_HEIGHT / 3,
+                  opacity: 100,
+                  zIndex: 100
                 }}>
                 <Space space={5} />
                 <TextButtonSh
@@ -164,4 +166,15 @@ export type ChangeAvatarRefProps = {
       );
     
 
+  })
+
+  const styles2 = StyleSheet.create({
+    buttonSheet : {
+      height: SCREEN_HEIGHT * 1.5, 
+      width: '96%' , 
+      backgroundColor: 'white', 
+      alignSelf: 'center', 
+      zIndex: 2,
+      opacity: 3,
+  },
   })

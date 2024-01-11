@@ -7,7 +7,7 @@ import { Text, View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { createAccount } from '../../components/Functions/AuthFunctions';
 import { AgreementSheet, AgreementSheetRefProps, getAge, getDate, getDDate, hashPassword, SignWithFb } from '../../components/Functions/Functions';
-import { addUserToMMKV, updateUserMMKV } from '../../components/Storage/MMKV';
+import { addUserToMMKV, setData, updateUserMMKV } from '../../components/Storage/MMKV';
 import { AppleButtonWithHighlight, BottomTab, BottomText, CustomButton, CustomInput, CustomSwitch, Header, InfoText, JoinLogo, Line, LocationSwitch, SCREEN_HEIGHT, SCREEN_WIDTH, SignWith, SignWithEmail, Space, styles } from '../../components/Utilities/Utilities';
 import { createUserEmail, updateUser } from '../../components/Storage/Azure';
 
@@ -70,8 +70,17 @@ const SignupScratch = ({navigation}) => {
         
         try{
 
+            setData('firstname', name)
+            setData('locationIso2', countryIso)
+            setData('bio', 'Add a bio to your profile!')
+
+            console.log(countryIso, 1)
+
             await createAccount(name, lastName, gender, email, countryIso, country, date.toString(), birthDate, password, password2, navigation )
             
+            setData('firstname', name)
+            setData('lastname', lastName)
+
             await navigation.navigate('Welcome')
         
         }
@@ -133,7 +142,7 @@ const SignupScratch = ({navigation}) => {
                     
                 <Space space={20}/>
         
-                <LocationSwitch  onValueChange={(val, ind) => { setCountryIso(val); setCountry(countries[ind].name); } } value={countryIso} values={countries}
+                <LocationSwitch  onValueChange={(val, ind) => { setCountryIso(val); setCountry(countries[ind].name); console.log(val, 0) } } value={countryIso} values={countries}
 
                         onPress={() => {
 

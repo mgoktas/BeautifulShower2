@@ -4,7 +4,6 @@ import { setData } from "./MMKV";
 
 export const putImage = async (file, email) => {
 
-
     const customBlobName = email
      
     const sasContainerUri = 'https://csb10032003198f8088.blob.core.windows.net/avatarcontainer-beautifulshower'
