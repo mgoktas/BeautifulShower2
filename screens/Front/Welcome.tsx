@@ -12,8 +12,6 @@ import { Picker } from '@react-native-picker/picker';
 import Dialog from "react-native-dialog";
 
 const Welcome = ({route, navigation}) =>  {
-
-    // const {user} = route.params
     
     const [isClickedFirst, setIsClickedFirst] = React.useState(false)
     const [isClickedSecond, setIsClickedSecond] = React.useState(false)
@@ -34,7 +32,6 @@ const Welcome = ({route, navigation}) =>  {
     const [email, setEmail] = React.useState(getDataString('email'))
     const [firstName, setFirstname] = React.useState(getDataString('firstname'))
     const [lastName, setLastname] = React.useState(getDataString('lastname'))
-
 
     const [isClickedDay1, setIsClickedDay1] = React.useState(false)
     const [isClickedDay2, setIsClickedDay2] = React.useState(false)
@@ -132,10 +129,10 @@ const Welcome = ({route, navigation}) =>  {
         sunday: isClickedDay7 ? 1 : 0,
       }
     
-      console.log('email: ',email)
       
       setData('weeklySpentBath', 0)
       setData('weeklyTimes', 0)
+      setData('isAdmin', 0)
 
       try {
           setData('showerdays', JSON.stringify(obj))

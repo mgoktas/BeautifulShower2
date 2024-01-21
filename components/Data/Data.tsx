@@ -20,10 +20,6 @@ export const azureConstantBackground = 'https://csb10032003198f8088.blob.core.wi
 
 export const localhost = 'http://localhost:3000'
 
-export const fbAccessToken = 'EAAC8S9SfPwoBO1HWHP3sKLVAqba5dmhZAeuB1R5AwyKTCGObYDCNkjdNZAZAQx7s4ZBgZBmmLJEuH0c9sdlKgCVj9tQTTyA72nrssdMv6wfVF38BZCO0ZBJqyDkHrP1sKZCZCXrJlTbQuQLJdmPOWlaZCgflA2HU1jWVukvjeGYIy91vqlbkrZC8d0SZCcU5giDVQ7WBAtF6OxB5NXoRnmTjy4AVMZCSklh7ocz3OBK73bTb3i8RbmT14Hc4rXxGCJWUl2AZDZD'
-
-export const followers = []
-
 export const privacyPolicyUrl = 'https://www.freeprivacypolicy.com/live/0b82b9d1-fee6-4b94-88f1-a33906ad64d9'
 
 export const termsAndConditionsUrl = 'https://www.termsandconditionsgenerator.com/live.php?token=YBwUtsNzjCqub4lBmBqUBDou264zb41D'

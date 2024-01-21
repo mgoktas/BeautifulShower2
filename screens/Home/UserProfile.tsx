@@ -16,8 +16,6 @@ const UserProfile = ({route, navigation}) => {
     
     const {email} = route.params
 
-    console.log('email')
-    
     const [myemail, setMymail] = React.useState(getDataString('email'))
     const [isLoading, setIsLoading] = React.useState(true)
     const [isFollowing, setIsFollowing] = React.useState(checkFollow(myemail, email))
@@ -96,7 +94,6 @@ const UserProfile = ({route, navigation}) => {
         <ProfilePerson imageSource={backgroundUrl} />
 
         <ProfilePersonIt onPressChat={() => {navigation.navigate('ChatScreen')}} onPressFollow={ async () => {
-          console.log('hkjg')
         if  (isFollowing){
           
             try{
@@ -109,10 +106,7 @@ const UserProfile = ({route, navigation}) => {
           
               
         } else {
-          console.log('hkkhhlkjg')
-
            try{
-             console.log('khj')
          await  followPerson(myemail, email)
          setIsFollowing(true)
          }

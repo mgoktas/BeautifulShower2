@@ -14,9 +14,9 @@ import * as ImagePicker from 'react-native-image-picker';
 import { putBackgroundImage, putImage } from '../../../components/Storage/Azure';
 
 const EditProfile = ({navigation}) => {
-  const [isActive1, setIsActive1] = React.useState(true)
-  const [isActive2, setIsActive2] = React.useState(false)
-  const [isActive3, setIsActive3] = React.useState(false)
+  const [isActive1, setIsActive1] = React.useState(getDataString('gender') == 'Male')
+  const [isActive2, setIsActive2] = React.useState(getDataString('gender') == 'Female')
+  const [isActive3, setIsActive3] = React.useState(getDataString('gender') == 'Prefer Not To Say')
   const [isSheetOn, setIsSheetOn] = React.useState(true)
   // scrollViewRef.current.scrollToEnd({animated: true})}
   const [isClickedLocation, setIsClickedLocation] = React.useState(false)
@@ -321,7 +321,7 @@ const launchLibrary = async () => {
 
 <Dialog.Container contentStyle={{borderRadius: 30}} visible={isVisible}>
 
-<HeightPicker onValueChangeLeftH={onValueChangeLeftH} onValueChangeRightH={onValueChangeRightH}  heightInFeet={heightInFeet} isW={isW} selectedIndex={null} onWeightChangeLeft={onWeightChangeLeft} onWeightChangeRight={onWeightChangeRight} isWSelected={isWSelected} unit={unit} onUnitChange={onUnitChange} onValueChange={onHeightChange} height={heightCm} isHeightSelected={!isHeightSelected} onPress={() => {closeSheet()}} type={1} values={Range(120,220)} values2={['cm', 'ft']} values3={["3","4'","5'","6'"]} values4={['0"','1"','2"','3"','4"','5"','6"','7"','8"','9"','10"','11"']} values5={Range(34,770)} values6={Range(0,9)} />
+<HeightPicker onValueChangeLeftH={onValueChangeLeftH} onValueChangeRightH={onValueChangeRightH} weight={weight}  heightInFeet={heightInFeet} isW={isW} selectedIndex={null} onWeightChangeLeft={onWeightChangeLeft} onWeightChangeRight={onWeightChangeRight} isWSelected={isWSelected} unit={unit} onUnitChange={onUnitChange} onValueChange={onHeightChange} height={heightCm} isHeightSelected={!isHeightSelected} onPress={() => {closeSheet()}} type={1} values={Range(120,220)} values2={['cm', 'ft']} values3={["3","4'","5'","6'"]} values4={['0"','1"','2"','3"','4"','5"','6"','7"','8"','9"','10"','11"']} values5={Range(34,770)} values6={Range(0,9)} />
 
 </Dialog.Container>
 
@@ -370,30 +370,10 @@ const launchLibrary = async () => {
         weight={weight}
         isClickedOnce={isClickedFirstOnce} onPressContinue={() => {setIsClickedFirst(false); setIsClickedThird(false); setIsClickedSecond(!isClickedSecond); setIsClickedFirstOnce(true)}} onPressOpen={() => {setIsClickedSecond(false); setIsClickedThird(false); setIsClickedFirst(!isClickedFirst)}}  isClicked={isClickedFirst} 
         onPressH={() => {setIsW(true); setIsHeightSelected(true); setIsWSelected(false); openSheet(); }} 
-        onPressW={() => {setIsW(false); setIsWSelected(true); openSheet(); setIsHeightSelected(false);}} txt1={'Calorie Calculation'} txt2={'To accurately calculate the calories you burned in shower, we need to know how often you take showers.'} onChangeBio={(val) => {setBio(val); console.log('val')}} bio={bio} isClickedWeight={isClickedWeight} isClickedHeight={isClickedHeight} onPressHt={() => {setIsClickedWeight(!isClickedHeight)}}  onPressWg={() => {setIsClickedWeight(!isClickedWeight)}} open={open} date={date} onDateChange={(date) => {setOpen(true);setDate(date);setBirthdate(getDate(date))}} onChangeCountry={v => setSwitch(0, v)}  onChangeLastname={(txt) => {onChangeText(1, txt)}}  onChangeName={(txt) => {onChangeText(0, txt)}} countries={countries} countryIso={countryIso} email={email} country={country} birthdate={birthdate} onPressCon={() => {setIsClickedLocation(!isClickedLocation);  scrollViewRef.current.scrollToEnd({animated: true})}} onPressBd={() => {setOpen(!open); scrollViewRef.current.scrollToEnd({animated: true})}} isClickedBirthdate={isClickedBirthdate} isClickedLocation={isClickedLocation}  onPress1={() => {setData('gender', 'Male'); setGender('Male'); ;setIsActive1(true); setIsActive2(false); setIsActive3(false)}} onPress2={() => {setData('gender', 'Female'); setGender('Female');setIsActive1(false); setIsActive2(true); setIsActive3(false)}} onPress3={() => {setData('gender', 'Prefer Not To Say'); setGender('Prefer Not To Say'); setIsActive1(false); setIsActive2(false); setIsActive3(true)}} isActive1={isActive1} isActive2={isActive2} isActive3={isActive3} name={name} lastname={lastname}/>
-
-<LocationSwitch  onValueChange={(val, ind) => { setCountryIso(val); setCountry(countries[ind].name); } } value={countryIso} values={countries}
-
-onPress={() => {
-
-    if (isClickedLocation) {
-
-        scrollViewRef?.current.scrollTo({ x: 0, y: 110, animated: true });
-        setIsClickedLocation(false);
-
-    } else {
-
-        scrollViewRef?.current.scrollTo({ x: 0, y: SCREEN_HEIGHT, animated: true });
-        setIsClickedLocation(true);
-
-    }
-
-
-} }
-isClicked={true} txt1={'LOCATION'} txt2={country} type={2} open={undefined} date={undefined} onDateChange={undefined} onCancel={undefined} sdWghtLeft={undefined} sdWghtRight={undefined} oVCWLeft={undefined} oVCWRight={undefined} sdWgTp={undefined} heightSd={undefined} oVC={undefined}/>
-
+        onPressW={() => {setIsW(false); setIsWSelected(true); openSheet(); setIsHeightSelected(false);}} txt1={'Calorie Calculation'} txt2={'To accurately calculate the calories you burned in shower, we need to know how often you take showers.'} onChangeBio={(val) => {setBio(val);}} bio={bio} isClickedWeight={isClickedWeight} isClickedHeight={isClickedHeight} onPressHt={() => {setIsClickedWeight(!isClickedHeight)}}  onPressWg={() => {setIsClickedWeight(!isClickedWeight)}} open={open} date={date} onDateChange={(date) => {setOpen(true);setDate(date);setBirthdate(getDate(date))}} onChangeCountry={v => setSwitch(0, v)}  onChangeLastname={(txt) => {onChangeText(1, txt)}}  onChangeName={(txt) => {onChangeText(0, txt)}} countries={countries} countryIso={countryIso} email={email} country={country} birthdate={birthdate} onPressCon={() => {setIsClickedLocation(!isClickedLocation);  scrollViewRef.current.scrollToEnd({animated: true})}} onPressBd={() => {setOpen(!open); scrollViewRef.current.scrollToEnd({animated: true})}} isClickedBirthdate={isClickedBirthdate} isClickedLocation={isClickedLocation}  onPress1={() => {setData('gender', 'Male'); setGender('Male'); ;setIsActive1(true); setIsActive2(false); setIsActive3(false)}} onPress2={() => {setData('gender', 'Female'); setGender('Female'); setIsActive1(false); setIsActive2(true); setIsActive3(false)}} onPress3={() => {setData('gender', 'Prefer Not To Say'); setGender('Prefer Not To Say'); setIsActive1(false); setIsActive2(false); setIsActive3(true)}} isActive1={isActive1} isActive2={isActive2} isActive3={isActive3} name={name} lastname={lastname}/>
+{/* 
 <LocationSwitch onDateChange={(date) => {setDate(date); setBirthDate(getDate(date)); }} date={new Date('2011-04-11T10:20:30Z')} type={'date'}  
- isClicked={isClickedBirthdate} txt1={'BIRTHDATE'} txt2={birthdateName} value={undefined} onValueChange={undefined} values={undefined} open={isClickedBirthdate} onCancel={undefined} sdWghtLeft={undefined} sdWghtRight={undefined} oVCWLeft={undefined} oVCWRight={undefined} sdWgTp={undefined} heightSd={undefined} oVC={undefined}/>
+ isClicked={isClickedBirthdate} txt1={'BIRTHDATE'} txt2={birthdateName} value={undefined} onValueChange={undefined} values={undefined} open={isClickedBirthdate} onCancel={undefined} sdWghtLeft={undefined} sdWghtRight={undefined} oVCWLeft={undefined} oVCWRight={undefined} sdWgTp={undefined} heightSd={undefined} oVC={undefined}/> */}
 
 </ScrollView>
 

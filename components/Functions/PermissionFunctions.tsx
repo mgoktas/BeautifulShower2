@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Notifications } from "react-native-notifications";
 import { GraphRequest, GraphRequestManager } from 'react-native-fbsdk-next';
 import { fbAccessToken } from "../Data/Data";
-import Contacts, { getContactsByEmailAddress } from 'react-native-contacts';
+// import Contacts, { getContactsByEmailAddress } from 'react-native-contacts';
 import { checkUserFriends } from "../Storage/Azure";
 import { getDataNumber, setData } from "../Storage/MMKV";
 
@@ -22,15 +21,8 @@ RegisterNotificationRefProps
       
   const SetNotifications = () => {
     try{
-      Notifications.registerRemoteNotifications();
-      Notifications.events().registerRemoteNotificationsRegistered((event: Registered) => {
-        // TODO: Send the token to my server so it could send back push notifications...
         setData('isNotificationsAllowed', 1)
         setData('isNotificationsAllowedBase', 1)
-    });
-    Notifications.events().registerRemoteNotificationsRegistrationFailed((event: RegistrationError) => {
-      console.error(event);
-  });
     }
     catch(err){
       console.log(err)
@@ -38,8 +30,6 @@ RegisterNotificationRefProps
        
               
               }
-
-
 
   React.useImperativeHandle(ref, () => ({ SetNotifications}), [ SetNotifications]);
 
@@ -123,23 +113,20 @@ export type ConnectContactsRefProps = {
     
   const connectContact = async () => {
       try{
-          setData('isContactsNotPermitted', 1)
-          await Contacts.getAll().then(async contacts => {
+          // setData('isContactsNotPermitted', 1)
+          // await Contacts.getAll().then(async contacts => {
            
 
-            contacts.map((key) => {
-              setList(list => [...list,  key.emailAddresses[0].email])
-            })
+          //   contacts.map((key) => {
+          //     setList(list => [...list,  key.emailAddresses[0].email])
+          //   })
 
 
-            await checkUserFriends(list)
+          //   await checkUserFriends(list)
 
-            setListCon(contacts)
-
-          if(getDataNumber('isContactsPermitted') == 1) {
-          }
+          //   setListCon(contacts)
           
-          })
+          // })
       } catch(err) {
           console.log(err)
 

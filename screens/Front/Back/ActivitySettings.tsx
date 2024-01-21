@@ -41,7 +41,7 @@ const ActivitySettings = ({route, navigation}) => {
 
 
       </View>
-      <View style={{right: 140, position: 'relative'}}>
+      <View style={{right: 80, position: 'relative'}}>
       
       <SmallSwitch 
             onVlChng={() => {
@@ -74,7 +74,7 @@ Hot Shower
 
 </View>
 
-<View style={{right: 135, position: 'relative'}}>
+<View style={{right: 80, position: 'relative'}}>
 
 <SmallSwitch 
 
@@ -118,7 +118,7 @@ setIsEnabledLeft(!isEnabledLeft)
 
 
           </View>
-          <View style={{right: 140, position: 'relative'}}>
+          <View style={{right: 80, position: 'relative'}}>
           
           <SmallSwitch 
                 onVlChng={() => {
@@ -151,7 +151,7 @@ setIsEnabledLeft(!isEnabledLeft)
 
 </View>
 
-<View style={{right: 135, position: 'relative'}}>
+<View style={{right: 80, position: 'relative'}}>
 
 <SmallSwitch 
 

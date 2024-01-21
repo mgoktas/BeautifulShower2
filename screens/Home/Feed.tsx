@@ -18,7 +18,7 @@ import uuid from 'react-native-uuid';
 import IconI from 'react-native-vector-icons/Ionicons'
 import Dialog from "react-native-dialog";
 import IconMa from 'react-native-vector-icons/MaterialIcons'
-
+import auth, { firebase } from '@react-native-firebase/auth';
 const Feed = ({route, navigation}) => {
   
   useFocusEffect(
@@ -28,6 +28,122 @@ const Feed = ({route, navigation}) => {
 
     }, [])
   );
+
+    React.useEffect(() => {
+      if(getDataString('email') == 'mgoktashk@gmail.com'){
+        setData('isAdmin', 1)
+      }
+    },[])
+
+    // const create = () => {
+    //   createAccount  (firstname, lastname, gender, email, locationIso2, locationName, birthdateDATE, birthdateName, password, password2, navigation)
+    // }
+
+    const createAccount = async (firstname, lastname, gender, email, locationIso2, locationName, birthdateDATE, birthdateName, password, password2, navigation) => {
+
+      // if(firstname == ''){ 
+      //     Alert.alert('Security Error','Name is empty')
+      //     return
+      // }
+  
+      // else if(lastname == ''){ 
+      //     Alert.alert('Security Error','Surname is empty')
+      //     return
+      // }
+  
+      // else {
+  
+        try {
+  
+          setData('firstname', firstname)
+          setData('lastname', lastname)
+          setData('email', email)
+          setData('gender', gender)
+          setData('locationIso2', locationIso2)
+          setData('locationName', locationName)
+          setData('birthdateDATE', birthdateDATE)
+          setData('birthdateName', birthdateName)
+  
+          auth()
+            .createUserWithEmailAndPassword(email, password)
+            .then(async () => {
+    
+              await firestore()
+              .collection('Users')
+              .doc(email)
+              .set({
+                firstname : firstname,
+                lastname : lastname,
+                email : email,
+                gender : gender,
+                locationIso2 : locationIso2,
+                locationName : locationName,
+                birthdateDATE : birthdateDATE,
+                birthdateName : birthdateName,
+              })
+              .then(async () => {
+  
+                setData('firstname', firstname)
+                setData('lastname', lastname)
+                setData('email', email)
+                setData('gender', gender)
+                setData('locationIso2', locationIso2)
+                setData('locationName', locationName)
+                setData('birthdateDATE', birthdateDATE)
+                setData('birthdateName', birthdateName)
+                
+                await navigation.navigate('Welcome',{
+                  email : email
+                }) 
+    
+              }) 
+        
+            })
+            .catch(error => {
+              if (error.code === 'auth/email-already-in-use') {
+                console.log('That email address is already in use!');
+              }
+          
+              if (error.code === 'auth/invalid-email') {
+                console.log('That email address is invalid!');
+              }
+          
+              console.error(error);
+            });
+    
+            
+        } 
+    
+          catch (err) {
+            Alert.alert('Security Error',err.message)
+          }
+      } 
+  
+    
+
+  const checks = () => {
+
+    if(getDataString('locationIso2') == undefined || getDataString('locationIso2') == 'undefined'){
+
+      setData('locationName', 'United States')
+      setData('locationIso2', 'us')
+      setData('countryName', 'United States')
+      setData('countryIso2', 'us')
+      setData('locationISO2', 'us')
+      setData('countryISO2', 'us')
+      setData('weeklySpentBath', 0)
+      setData('timeFrameGoal', 0)
+      setData('weeklyTimes', 0)
+      setData('weeklyGoalMin', 20)
+      setData('weight', 80)
+      setData('height', 180)
+      
+    }
+  }
+
+  React.useEffect(() => {
+    checks()
+  },[])
 
   const [name, setName] = React.useState(`${getDataString('firstname')} ${getDataString('lastname')}`)
   const [when, setWhen] = React.useState('')
@@ -69,6 +185,12 @@ const AddPost = React.useCallback(() => {
   refPost?.current?.scrollTo(-400)
 }, []);
 
+const refCon = React.useRef<ConnectContactsRefProps>(null);
+const connectCon = React.useCallback(() => {
+  refCon?.current?.connectContact()
+}, []);
+
+
 const openSheet2 = React.useCallback(() => {
   ref?.current?.openSheet2()
 }, []);
@@ -87,6 +209,12 @@ React.useEffect(() => {
 refresh()
 },[])
 
+function delay(time) {
+  return new Promise(resolve => setTimeout(resolve, time));
+}
+
+
+
 const refresh = () => {
   setPosts([])
   setIsLoading(true)
@@ -94,6 +222,11 @@ const refresh = () => {
   const keys = storage.getAllKeys() // ['user.name', 'user.age', 'is-mmkv-fast-asf']
 
   console.log(keys)
+  
+  delay(1000).then(() => {
+    setIsLoading(false)
+  });
+  
 
   firestore()
   .collection('Posts')
@@ -101,17 +234,18 @@ const refresh = () => {
   .then(querySnapshot => {
     querySnapshot.forEach(async(doc) => {
       
-      // if(!keys.includes(doc.id)){
+      console.log(doc)
 
-      //  if(await checkFollow(email, doc._data.id)){
+      if(!keys.includes(doc.id)){
+
+       if(await checkFollow(email, doc._data.id)){
          setPosts(arr => [...arr, {uuid: uuid.v4(), id: doc._data.id,  byWho:doc._data.id, followercount: doc._data.followercount, postDate: doc._data.postDate, postTitle: doc._data.postTitle, postText:doc._data.postTxt, postId: doc.id}])
-      //  }
+       }
       
-      // }
+      }
    
       });
             
-      setIsLoading(false)
 
   });
 }
@@ -138,6 +272,7 @@ const goTo = (email) => {
 const openPost = (item) => {
   navigation.navigate('OnePost', {item: item.postId})
 }
+
 
   return (
 
@@ -192,9 +327,10 @@ const openPost = (item) => {
 {/* </ScrollView> */}
 
 
-      <AddPersonSheet email={email} isSheetOn={isSheetOn} setSheet={setSheet} ref={ref}/>
+      <AddPersonSheet connectCon={connectCon} email={email} isSheetOn={isSheetOn} setSheet={setSheet} ref={ref}/>
       {/* <AddPersonSheet isSheetOn={isSheetOn} setSheet={setSheet} connectCon={connectContact} ref={ref}/> */}
       <AddPostSheet name={name} setSheet={setSheet} ref={refPost} connectCon={undefined} isSheetOn={undefined}/>
+    <ConnectContactSheet    ref={refCon}/> 
 
   </SafeAreaView>
 

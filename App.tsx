@@ -53,6 +53,9 @@ import ActivitySettings from './screens/Front/Back/ActivitySettings';
 import GoalSettings from './screens/Front/Back/GoalSettings';
 import ChatScreen from './screens/Front/Back/ChatScreen';
 import { getDataNumber } from './components/Storage/MMKV';
+import AdminPanel from './screens/Back/AdminPanel';
+import { Users } from './screens/Front/Back/Users';
+import Posts from './screens/Front/Back/Posts';
 
 //navigators
 const Stack  = createNativeStackNavigator()
@@ -276,9 +279,12 @@ LogBox.ignoreAllLogs(true);
         <Stack.Screen name='TermsConditions' component={TermsConditions}/>
         <Stack.Screen name='AddContacts' component={AddContacts}/>
         <Stack.Screen name='OneChallenge' component={OneChallenge}/>
+        <Stack.Screen name='AdminPanel' component={AdminPanel}/>
         <Stack.Screen name='Connections' component={Connections}/>
         <Stack.Screen name='SplashScreen' component={SplashScreen}/>
         <Stack.Screen name='SplashScreen2' component={SplashScreen2}/>
+        <Stack.Screen name='Users' component={Users}/>
+        <Stack.Screen name='Posts' component={Posts}/>
         <Stack.Screen name='ChatScreen' component={ChatScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
@@ -302,6 +308,8 @@ LogBox.ignoreAllLogs(true);
         <Stack.Screen name='Goals' component={Goals}/>
         <Stack.Screen name='Tabs' component={Tabs}/>
         <Stack.Screen name='Settings' component={Settings}/>
+        <Stack.Screen name='Users' component={Users}/>
+        <Stack.Screen name='Posts' component={Posts}/>
         <Stack.Screen name='Account' component={Account}/>
         <Stack.Screen name='AppleWatch' component={AppleWatch}/>
         <Stack.Screen name='CommunityGuidelines' component={CommunityGuidelines}/>
@@ -315,6 +323,7 @@ LogBox.ignoreAllLogs(true);
         <Stack.Screen name='PrivacyPolicy' component={PrivacyPolicy}/>
         <Stack.Screen name='SocialSharing' component={SocialSharing}/>
         <Stack.Screen name='SupportFeedback' component={SupportFeedback}/>
+        <Stack.Screen name='AdminPanel' component={AdminPanel}/>
         <Stack.Screen name='TermsConditions' component={TermsConditions}/>
         <Stack.Screen name='AddContacts' component={AddContacts}/>
         <Stack.Screen name='OneChallenge' component={OneChallenge}/>

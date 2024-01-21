@@ -131,9 +131,13 @@ export const AddPersonSheet = React.forwardRef<AddPersonSheetRefProps, AddPerson
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(async(doc) => {
-          
+
+          console.log()
+
+          let isFollowing = await checkFollow(email, doc._data.email)
+
           if(doc._data.email != email){
-            setUsers(arr => [...arr, {name: doc._data.firstname + ' ' + doc._data.lastname, email: doc._data.email,}])
+            setUsers(arr => [...arr, {name: doc._data.firstname + ' ' + doc._data.lastname, email: doc._data.email, isFollowing: isFollowing}])
           }
 
           });
@@ -171,10 +175,59 @@ export const AddPersonSheet = React.forwardRef<AddPersonSheetRefProps, AddPerson
 
 
     };
+
+    const changeFollow = (x, y) => {
+
+      setIsLoading(true)
+
+    const newState = users.map(obj => {
+      // 👇️ if id equals 2, update country property
+      if (obj.email === y) {
+        return {...obj, isFollowing: true};
+      }
+
+      // 👇️ otherwise return the object as is
+      return obj;
+    });
+
+      if(x == 0){
+
+        const newState = users.map(obj => {
+          // 👇️ if id equals 2, update country property
+          if (obj.email === y) {
+            return {...obj, isFollowing: true};
+          }
+          
+          // 👇️ otherwise return the object as is
+          return obj;
+        });
+        
+        setUsers(newState);
+      setIsLoading(false)
+
+      }
+      if(x == 1){
+
+        const newState = users.map(obj => {
+          // 👇️ if id equals 2, update country property
+          if (obj.email === y) {
+            return {...obj, isFollowing: false};
+          }
+    
+          // 👇️ otherwise return the object as is
+          return obj;
+        });
+    
+        setUsers(newState);
+        setIsLoading(false)
+
+      }
+
+    }
           
         return (
 
-          !isLoading ? 
+          !isLoading ?  
           <GestureHandlerRootView>
           <GestureDetector gesture={gesture}>
             <Animated.View style={[styles.bottomSheet, rBottomSheetStyle]}>
@@ -195,23 +248,28 @@ export const AddPersonSheet = React.forwardRef<AddPersonSheetRefProps, AddPerson
               filteredDataSource.slice(0, 5).map((item, index) => (
                   <Fragment  key={index}>
                           <PersonCnt 
-                          isFollowing={checkFollow(email, item.email) == false || checkFollow(email, item.email) ==  true ? checkFollow(email, item.email) : false } 
+                          isFollowing={item.isFollowing} 
                           style={{ borderTopLeftRadius: index == 0 ? 10 : 0, borderTopRightRadius: index == 0 ? 10 : 0, borderBottomLeftRadius: index == (filteredDataSource.length - 1) ? 10 : 0, borderBottomRightRadius: index == (filteredDataSource.length - 1) ? 10 : 0 }} 
                           txt={item.name} 
                           onPress={ () => {
 
-                    if(!checkFollow(email, item.email)){
+                    if(!item.isFollowing){
                        followPerson(email, item.email)
+                       changeFollow(0, item.email)
                     }
 
-                    else if(checkFollow(email, item.email)){
+                    else if(item.isFollowing){
                       unFollowPerson(email, item.email)
+                      changeFollow(1, item.email)
                     }
+
 
                   } } country={undefined}/>
                   </Fragment>
               ))
                   }
+
+                  
                    
                <ScrollView>
 
@@ -259,14 +317,14 @@ export const AddPersonSheet = React.forwardRef<AddPersonSheetRefProps, AddPerson
 
 
                   <View style={{display: searchText.length == 0 ? 'flex' : 'none'}}>
-                    <SocialMediaCnt isEnabled={isSwitchOn} toggleSwitch={() => { } } type={'feed'} onPress={undefined} isEnabledBot={undefined} isEnabledTop={undefined} onVlChngT={undefined} onVlChngB={undefined} />
+                    {/* <SocialMediaCnt isEnabled={isSwitchOn} toggleSwitch={() => { } } type={'feed'} onPress={undefined} isEnabledBot={undefined} isEnabledTop={undefined} onVlChngT={undefined} onVlChngB={undefined} />
                     <Line space={0} type={undefined}/>
                     <Line space={0} type={undefined}/>
                     
                     
                     <SocialMediaCnt isEnabled={isSwitchOn2} toggleSwitch={() => { props.connectCon() } } type={'feedcon'} onPress={undefined} isEnabledBot={undefined} isEnabledTop={undefined} onVlChngT={undefined} onVlChngB={undefined} />
                     <Line space={0} type={undefined}/>
-                    <Line space={0} type={undefined}/>
+                    <Line space={0} type={undefined}/> */}
                   </View>
                     
 

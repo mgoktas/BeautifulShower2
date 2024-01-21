@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Text, View, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { index } from 'realm';
-import { HeaderHome, ProfileBox, ProfilePerson, ProfilePersonIt, SCREEN_HEIGHT, TextButtonSh } from '../../components/Utilities/Utilities';
+import { HeaderHome, PremiumBox, ProfileBox, ProfilePerson, ProfilePersonIt, SCREEN_HEIGHT, TextButtonSh } from '../../components/Utilities/Utilities';
 import { ChangeAvatar, ChangeAvatarRefProps } from '../../components/Functions/5-FunctionsProfile';
 import { getDataNumber, getDataString, setData } from '../../components/Storage/MMKV';
 import { azureConstant, azureConstantBackground } from '../../components/Data/Data';
@@ -39,6 +39,7 @@ const Profile = ({route, navigation}) => {
       avatarRef?.current?.scrollTo(-SCREEN_HEIGHT/2)
   }, [])
 
+  
   const optionsCamera = {
 
     mediaType: 'photo',
@@ -206,6 +207,7 @@ const launchLibrary = async () => {
 
         <ChangeAvatar avatarChosen={avatarChosen} userEmail={email} ref={avatarRef} openSheet={openSheet} />
     
+
     </SafeAreaView>
   );
 };

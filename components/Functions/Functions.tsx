@@ -619,6 +619,11 @@ export const removeFollow = (prevArrStr, email) => {
 
 }
 
+const checkArr = (arr, email) => {
+  const arr2 = arr.split('//')
+  return arr2.includes(email)
+}
+
 export const followPerson = async (email, followWho) => {
 
   const userme = await firestore().collection('Users').doc(email).get();
@@ -632,7 +637,6 @@ export const followPerson = async (email, followWho) => {
     toWhom: followWho
   })
   .then(async () => {
-    console.log('asda')
   })
 
   if(userme._data.followingCount == 0) {
@@ -651,7 +655,7 @@ export const followPerson = async (email, followWho) => {
     }) 
   }
 
-  if(userme._data.followingCount != 0) {
+  if(userme._data.followingCount != 0 && checkArr(userme._data.followings, followWho)) {
     
   firestore()
   .collection('Users')
@@ -804,12 +808,14 @@ export const unFollowPerson = async (email, followWho) => {
 
 export const checkFollow = async (myemail, email) => {
 
+  console.log(myemail, email)
+
   const userme = await firestore().collection('Users').doc(myemail).get();
 
   const followings = await userme._data.followings
 
   const arr = await followings.split('//')
-
+    
   const checked = await arr.includes(email)
   
   return await checked

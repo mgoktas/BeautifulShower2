@@ -17,7 +17,6 @@ const Notifications = ({route, navigation}) => {
   
   const [isSeenFirstNotif, setIsSeenFirstNotif] = React.useState(getDataNumber('isSeenFirstNotif') == 1)
 
-  
 
   React.useEffect(() => {
 

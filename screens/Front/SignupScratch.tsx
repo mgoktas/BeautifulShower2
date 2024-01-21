@@ -78,10 +78,11 @@ const SignupScratch = ({navigation}) => {
 
             await createAccount(name, lastName, gender, email, countryIso, country, date.toString(), birthDate, password, password2, navigation )
             
+            console.log(99)
+            
             setData('firstname', name)
             setData('lastname', lastName)
 
-            await navigation.navigate('Welcome')
         
         }
     

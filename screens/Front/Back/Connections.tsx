@@ -7,7 +7,7 @@ import { FlashList } from "@shopify/flash-list"
 import { azureConstant, datablogs } from "../../../components/Data/Data"
 import { shareMyProfile } from "../../../components/Functions/2-FunctionsCommunity"
 import firestore from '@react-native-firebase/firestore';
-import { checkFollow, followPerson, unFollowPerson } from "../../../components/Functions/Functions"
+import { Animation, checkFollow, followPerson, unFollowPerson } from "../../../components/Functions/Functions"
 import { getDataString, setData } from "../../../components/Storage/MMKV"
 import { useFocusEffect } from "@react-navigation/native"
 
@@ -52,12 +52,18 @@ useFocusEffect(
 
   }, [])
 );
-
+function delay(time) {
+  return new Promise(resolve => setTimeout(resolve, time));
+}
     const addUsers = async () => {
 
       setFollowers([])
       setFollowings([])
 
+      setIsLoading(true)
+      delay(1000).then(() => {
+        setIsLoading(false)
+      });
 
       await firestore()
       .collection('Users')
@@ -101,10 +107,9 @@ useFocusEffect(
        
           });
 
-          setIsLoading(false)
-    
-      });
-      
+          
+        });
+        
     }
             
     useEffect(() => {
@@ -112,14 +117,18 @@ useFocusEffect(
   },[])
 
     return (
+      !isLoading ? 
         <SafeAreaView>
-            <HeaderHome onPressBack={() => { navigation.goBack() } } type={'notif'} title={'CONNECTIONS'} txt={'Done'} onPress={undefined} onPress0={undefined} onPress1={undefined} onPress2={undefined}/>
-           
-                <Line space={undefined} />
-                
-                <FollowerList navigation={navigation} changeFollowings={changeFollowings} changeFollowers={changeFollowers} followers={followers} followings={followings}  onPressText={()=>{shareMyProfile(email)}} onPress2={() => { setSelectedIndex(1) } } selectedIndex={selectedIndex} onPress1={() => { setSelectedIndex(0) } } isSheetOn={false} type={5} onPressRight={() => { } } title={'OUR BLOG'} subtitle={'PAST CHALLENGES'} data={datablogs} text1={'COLD IS MERCILESS'} text2={'STARTS IN 5 DAYS'} text3={'257.306 PARTICIPANTS'} info={undefined} name={undefined} duration={undefined} text11={undefined} text12={undefined} text21={undefined} text22={undefined} onPressLeft={undefined} onPress={undefined} />
-        
+          <HeaderHome onPressBack={() => { navigation.goBack() } } type={'notif'} title={'CONNECTIONS'} txt={'Done'} onPress={undefined} onPress0={undefined} onPress1={undefined} onPress2={undefined}/>
+      
+          <Line space={undefined} />
+          
+          <FollowerList navigation={navigation} changeFollowings={changeFollowings} changeFollowers={changeFollowers} followers={followers} followings={followings}  onPressText={()=>{shareMyProfile(email)}} onPress2={() => { setSelectedIndex(1) } } selectedIndex={selectedIndex} onPress1={() => { setSelectedIndex(0) } } isSheetOn={false} type={5} onPressRight={() => { } } title={'OUR BLOG'} subtitle={'PAST CHALLENGES'} data={datablogs} text1={'COLD IS MERCILESS'} text2={'STARTS IN 5 DAYS'} text3={'257.306 PARTICIPANTS'} info={undefined} name={undefined} duration={undefined} text11={undefined} text12={undefined} text21={undefined} text22={undefined} onPressLeft={undefined} onPress={undefined} />
         </SafeAreaView>        
+      :
+        <View style={{backgroundColor: 'white', height: SCREEN_HEIGHT}}>
+          <Animation />
+        </View>
     )
 }
 

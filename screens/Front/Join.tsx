@@ -56,11 +56,11 @@ const Join = ({navigation}) => {
         
         <Space space={30}/>
 
-        <Header onPress={() => { navigation.goBack(); } } isBlank={undefined} isSheetOn={undefined} type={undefined} />
+        <Header onPress={() => { navigation.goBack(); } } />
         
         <JoinLogo txt1={'NEVER FORGET YOUR SHOWER!'} txt2={'Sign Up however you wish and start breathing!'} type={undefined} />
   
-        <Space space={SCREEN_HEIGHT/10}/>
+        <Space space={SCREEN_HEIGHT/15}/>
         
         <AppleButtonWithHighlight isApple={true} onPress={() => { 
                 SignInWithApplePress(updateCredentialStateForUser); } } title={undefined} />

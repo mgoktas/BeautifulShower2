@@ -1,4 +1,4 @@
-package com.beautifulshower
+package com.beautifulshowerhku
 
 import android.app.Application
 import com.facebook.react.PackageList
@@ -11,20 +11,16 @@ import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.react.flipper.ReactNativeFlipper
 import com.facebook.soloader.SoLoader
-import com.wix.reactnativenotifications.RNNotificationsPackage;
-import com.rt2zz.reactnativecontacts.ReactNativeContacts; // <--- import
 
 class MainApplication : Application(), ReactApplication {
 
   override val reactNativeHost: ReactNativeHost =
       object : DefaultReactNativeHost(this) {
-        override fun getPackages(): List<ReactPackage> {
-          
-          // Packages that cannot be autolinked yet can be added manually here, for example:
-          // packages.add(new MyReactNativePackage());
-          return PackageList(this).packages
-       
-        }
+        override fun getPackages(): List<ReactPackage> =
+            PackageList(this).packages.apply {
+              // Packages that cannot be autolinked yet can be added manually here, for example:
+              // add(MyReactNativePackage())
+            }
 
         override fun getJSMainModuleName(): String = "index"
 

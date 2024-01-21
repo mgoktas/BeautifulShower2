@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { Linking, PermissionsAndroid, Platform, Share } from "react-native";
-import Contacts, { getContactsByEmailAddress } from 'react-native-contacts';
+// import Contacts, { getContactsByEmailAddress } from 'react-native-contacts';
 import messages from "../../screens/Front/Back/messages";
 
 
@@ -21,34 +21,34 @@ import messages from "../../screens/Front/Back/messages";
     const getContacts = async () => {
 
       try{
-        if(Platform.OS == 'android') {
-          PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
-            title: 'Contacts',
-            message: 'This app would like to view your contacts.',
-            buttonPositive: 'Please accept bare mortal',
-        })
-            .then((res) => {
-                Contacts.getAll()
-                    .then((contacts) => {
-                        // work with contacts
-                    })
-                    .catch((e) => {
-                    }); 
-            })
-            .catch((error) => {
-                console.error('Permission error: ', error);
-            });
-        }
+        // if(Platform.OS == 'android') {
+        //   PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
+        //     title: 'Contacts',
+        //     message: 'This app would like to view your contacts.',
+        //     buttonPositive: 'Please accept bare mortal',
+        // })
+        //     .then((res) => {
+        //         Contacts.getAll()
+        //             .then((contacts) => {
+        //                 // work with contacts
+        //             })
+        //             .catch((e) => {
+        //             }); 
+        //     })
+        //     .catch((error) => {
+        //         console.error('Permission error: ', error);
+        //     });
+        // }
   
-        if(Platform.OS == 'ios') {
+        // if(Platform.OS == 'ios') {
   
-          try{
-              await Contacts.getAll().then(contacts => {
-              })
-          } catch(err) {
-              console.log(err)
-          }
-        }
+        //   try{
+        //       await Contacts.getAll().then(contacts => {
+        //       })
+        //   } catch(err) {
+        //       console.log(err)
+        //   }
+        // }
       }
       catch(err){
         console.log(err)

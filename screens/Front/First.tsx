@@ -4,13 +4,25 @@ import { Text, View, StyleSheet, ImageBackground } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppLogo, BottomTab, SCREEN_HEIGHT, SCREEN_WIDTH, styles } from '../../components/Utilities/Utilities';
 import { MMKV } from 'react-native-mmkv';
-import { getDataString } from '../../components/Storage/MMKV';
+import { getDataString, setData } from '../../components/Storage/MMKV';
 
 interface FirstProps {}
 
 const First = (props: FirstProps) => {
+  
+  const navigation = useNavigation()
+  
+  React.useEffect(() => {
     
-    const navigation = useNavigation()
+      setData('weeklyGoalMin', 20)
+      setData('timeFrameGoal', 20)
+      setData('showeredTimes', 0)
+      setData('showeredGoalTimes', 4)
+      setData('showerTimeGoal', '12:00')
+      setData('calorieGoal', 200)
+      setData('calorieBurned', 10)
+
+  },[])
 
   return (
       <ImageBackground style={{width: SCREEN_WIDTH, height: SCREEN_HEIGHT, justifyContent: 'flex-end'}} source={require('../../components/images/shower.jpg')}>

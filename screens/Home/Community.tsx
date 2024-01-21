@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Text, View, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaFrameContext, SafeAreaView } from 'react-native-safe-area-context';
-import { Discover, HeaderHome, Line, Space } from '../../components/Utilities/Utilities';
+import { Discover, HeaderHome, Line, PremiumBox, Space } from '../../components/Utilities/Utilities';
 // import Contacts from 'react-native-contacts';
 import { data } from '../../components/Data/Data';
 import { GetAllContacts, GetAllContactsRefProps } from '../../components/Functions/2-FunctionsCommunity';
@@ -45,6 +45,7 @@ const Community = ({route, navigation}) => {
             <Space space={50} />
 
             {/* <Discover duration={'0 mins'} name={'Groups & Communities'} info={'Longeivty is more fun together'} type={4} title={'GROUPS & COMMUNITIES'} data={data}/> */}
+
 
             <GetAllContacts ref={contactRef}/>
 

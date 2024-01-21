@@ -37,10 +37,8 @@ export const renderActions = (props) => (
     )}
     options={{
       'Choose From Library': () => {
-        console.log('Choose From Library');
       },
       Cancel: () => {
-        console.log('Cancel');
       },
     }}
     optionTintColor="#222B45"

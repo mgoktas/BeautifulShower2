@@ -18,7 +18,7 @@ const Activity = ({route, navigation}) => {
   
   const [weeklyTimes, setWeeklyTimes] = React.useState(getDataNumber('weeklyTimes'))
   const [weeklySpentBath, setWeeklySpentBath] = React.useState(getDataNumber('weeklySpentBath'))
-  
+
   const [timeFrameGoal, setTimeFrameGoal] = React.useState(getDataString('timeFrameGoal'))
   const [userInfo, setUserInfo] = React.useState({times: weeklyTimes, cal: weeklySpentBath * 2, avg: weeklySpentBath == 0 ? 0 : weeklySpentBath / weeklyTimes})
   const [hasStarted, setHasStarted] = React.useState(false);
@@ -93,7 +93,7 @@ const Toggle = () => {
   setIsActiveBt(true)
 
 }
-  
+
 const Toggle2 = () => {
   // postShower(email, min, 0)
   
@@ -107,6 +107,7 @@ const Toggle2 = () => {
 
   setData('weeklySpentBath', nowMin)
   setData('weeklyTimes', nowTimes)
+  
 
   setIsActive(false)
   setIsActiveBt(false)
@@ -164,14 +165,15 @@ const goTo = React.useCallback((url) => {
 
         <ImageBackground style={styles.imageActivity} source={require('../../components/images/showerActivity.jpg')} >
 
-        <StartButtonActivity onPressMusic={async () => {
-            Platform.OS == 'ios' ? 
-            await goTo(musicUrl)
-            :
-            console.log('sadas')
-                        await Linking.openURL(musicUrl);
-        }} onPressRight={openSettings} ref={ref} changeActive={changeActive} hasStarted={isActiveBt} onPress={Toggle} onPress2={Toggle2} onPress3={Toggle3} txt1={'START'} txt2={'Showering'} txt3={'SLIDE TO PAUSE'} txt4={'FINISH'} txt5={'RESUME'}/>
-            
+        <View style={{bottom: 40}}>
+                <StartButtonActivity onPressMusic={async () => {
+                    Platform.OS == 'ios' ? 
+                    await goTo(musicUrl)
+                    :
+                                await Linking.openURL(musicUrl);
+                }} onPressRight={openSettings} ref={ref} changeActive={changeActive} hasStarted={isActiveBt} onPress={Toggle} onPress2={Toggle2} onPress3={Toggle3} txt1={'START'} txt2={'Showering'} txt3={'SLIDE TO PAUSE'} txt4={'FINISH'} txt5={'RESUME'}/>
+        </View>
+                    
         </ImageBackground>
       
       <GetAllContacts ref={refCon}/>

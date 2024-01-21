@@ -39,7 +39,7 @@ const Already = ({navigation}) => {
         
         <JoinLogo txt1={'WELCOME BACK'} txt2={'Log in with one of the following options and get started!'} />
 
-        <Space space={SCREEN_HEIGHT/6}/>
+        <Space space={SCREEN_HEIGHT/15}/>
 
         <AppleButtonWithHighlight isApple={true} onPress={() => { SignInWithApplePress(updateCredentialStateForUser); } } title={undefined} />
         <BottomText />
