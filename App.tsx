@@ -14,48 +14,9 @@ import IconM from 'react-native-vector-icons/MaterialCommunityIcons'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
-import First from './screens/Front/First';
-import Join from './screens/Front/Join';
-import Already from './screens/Front/Already';
-import Signup from './screens/Front/Signup';
-import Welcome from './screens/Front/Welcome';
-import Goals from './screens/Back/Goals';
-import Home from './screens/Home/Home';
-import Feed from './screens/Home/Feed';
-import Activity from './screens/Home/Activity';
-import Profile from './screens/Home/Profile';
-import Settings from './screens/Back/Settings';
-import Account from './screens/Back/Settings/Account';
-import AppleWatch from './screens/Back/Settings/AppleWatch';
-import CommunityGuidelines from './screens/Back/Settings/CommunityGuidelines';
-import MgoktasPremium from './screens/Back/Settings/MgoktasPremium';
-import EditProfile from './screens/Back/Settings/EditProfile';
-import Notifications from './screens/Back/Settings/Notifications';
-import Notifications2 from './screens/Front/Back/Notifications';
-import Privacy from './screens/Back/Settings/Privacy';
-import PrivacyPolicy from './screens/Back/Settings/PrivacyPolicy';
-import SocialSharing from './screens/Back/Settings/SocialSharing';
-import SupportFeedback from './screens/Back/Settings/SupportFeedback';
-import TermsConditions from './screens/Back/Settings/TermsConditions';
-import SignupScratch from './screens/Front/SignupScratch';
-import Community from './screens/Home/Community';
-import Progress from './screens/Home/Progress';
-import Login from './screens/Front/Login';
-import FullProfile from './screens/Back/Settings/FullProfile';
-import Connections from './screens/Front/Back/Connections';
-import OneChallenge from './screens/Front/Back/OneChallenge';
-import AddContacts from './screens/Home/Tabs/AddContacts';
-import SplashScreen from './components/SplashScreen';
-import SplashScreen2 from './components/SplashScreen2';
-import UserProfile from './screens/Home/UserProfile';
-import { navigationRef, isReadyRef } from './components/RootNavigation';
-import ActivitySettings from './screens/Front/Back/ActivitySettings';
-import GoalSettings from './screens/Front/Back/GoalSettings';
-import ChatScreen from './screens/Front/Back/ChatScreen';
-import { getDataNumber } from './components/Storage/MMKV';
-import AdminPanel from './screens/Back/AdminPanel';
-import { Users } from './screens/Front/Back/Users';
-import Posts from './screens/Front/Back/Posts';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Tasks from './screens/Tasks';
+import Home from './screens/Home';
 
 //navigators
 const Stack  = createNativeStackNavigator()
@@ -77,31 +38,13 @@ const Tabs = ({route}: { route: any}) => {
           tabBarShowLabel: false,
           tabBarIcon: ({ focused, color, size }) => {
 
-            if (route.name === 'Feed') {
-              return <IconF name='feed' size={size} color={
+            if (route.name === 'Home') {
+              return <IconF name='home' size={size} color={
                 focused
                   ? 'black'
                   : '#6C6A66'
               } />;
             } 
-            else if (route.name === 'Activity') {
-              return <IconF name='hourglass-start' size={size} color={
-                focused
-                  ? 'black'
-                  : '#6C6A66'
-              } />;}
-            else if (route.name === 'Profile') {
-              return <IconI name='person-outline' size={size} color={
-                focused
-                  ? 'black'
-                  : '#6C6A66'
-              } />;}
-            else if (route.name === 'Community') {
-              return <IconI name='people-outline' size={size} color={
-                focused
-                  ? 'black'
-                  : '#6C6A66'
-              } />;}
             else if (route.name === 'Progress') {
               return <IconM name='list-status' size={size} color={
                 focused
@@ -119,9 +62,9 @@ const Tabs = ({route}: { route: any}) => {
         })}
       >
     
-    <Tab.Screen  name='Feed' component={Feed}
+    <Tab.Screen  name='Home' component={Home}
       options={{
-      tabBarLabel: 'Feed', 
+      tabBarLabel: 'Home', 
       tabBarActiveTintColor: 'black',
       tabBarStyle:{backgroundColor: 'white'},
       headerShown:false, 
@@ -130,41 +73,12 @@ const Tabs = ({route}: { route: any}) => {
       tabBarLabelStyle:{fontWeight: '800', fontSize: 10}}}
       />
 
-    <Tab.Screen  name='Community' component={Community}
-      options={{
-      tabBarStyle:{backgroundColor: 'white'},
-      tabBarActiveTintColor: 'black',
-      tabBarLabel: 'Community', 
-      headerShown:false, 
-      headerStyle:{backgroundColor: 'white'}, 
-      headerTitleStyle:{color:'black'},
-      tabBarLabelStyle:{fontWeight: '800', fontSize: 10}}}
-      />
-    
-    <Tab.Screen  name='Activity' component={Activity}
-      options={{
-      tabBarStyle:{backgroundColor: 'white'},
-      tabBarActiveTintColor: 'black',
-      tabBarLabel: 'Activity', 
-      headerShown:false, 
-      headerStyle:{backgroundColor: 'white'}, 
-      headerTitleStyle:{color:'black'},
-      tabBarLabelStyle:{fontWeight: '800', fontSize: 10}}}
-      />
-      <Tab.Screen  name='Progress' component={Progress}
-      options={{
-        tabBarLabel: 'My Goal', 
-        tabBarActiveTintColor: 'black',
-        tabBarStyle:{backgroundColor: 'white'},
-        headerShown:false, 
-        headerStyle:{backgroundColor: 'white'}, 
-        headerTitleStyle:{color:'black'},
-        tabBarLabelStyle:{fontWeight: '800', fontSize: 10}}}
-      />
 
-     <Tab.Screen  name='Profile' component={Profile}
+   
+
+     <Tab.Screen  name='Tasks' component={Tasks}
       options={{
-        tabBarLabel: 'Profile', 
+        tabBarLabel: 'Tasks', 
         tabBarActiveTintColor: 'black',
         tabBarStyle:{backgroundColor: 'white'},
         headerShown:false, 
@@ -246,96 +160,35 @@ LogBox.ignoreAllLogs(true);
 
     isLogged ? 
     
+    <GestureHandlerRootView>
+
     <NavigationContainer onReady={() => {
       isReadyRef.current = true;
 }} ref={navigationRef}  linking={linking} fallback={<Text>Loading...</Text>}>
       <Stack.Navigator initialRouteName={'Tabs'} screenOptions={{headerShown: false}} >
-        <Stack.Screen name='GoalSettings' component={GoalSettings}/>
-        <Stack.Screen name='ActivitySettings' component={ActivitySettings}/>
-        <Stack.Screen name='Activity' component={Activity}/>
-        <Stack.Screen name='First' component={First}/>
-        <Stack.Screen name='Already' component={Already}/>
-        <Stack.Screen name='Join' component={Join}/>
-        <Stack.Screen name='Signup' component={Signup}/>
-        <Stack.Screen name='Login' component={Login}/>
-        <Stack.Screen name='SignupScratch' component={SignupScratch}/>
-        <Stack.Screen name='Welcome' component={Welcome}/>
-        <Stack.Screen name='Goals' component={Goals}/>
-        <Stack.Screen name='Tabs' component={Tabs}/>
-        <Stack.Screen name='Settings' component={Settings}/>
-        <Stack.Screen name='Account' component={Account}/>
-        <Stack.Screen name='AppleWatch' component={AppleWatch}/>
-        <Stack.Screen name='CommunityGuidelines' component={CommunityGuidelines}/>
-        <Stack.Screen name='EditProfile' component={EditProfile}/>
-        <Stack.Screen name='FullProfile' component={FullProfile}/>
-        <Stack.Screen name='UserProfile' component={UserProfile}/>
-        <Stack.Screen name='MgoktasPremium' component={MgoktasPremium}/>
-        <Stack.Screen name='Notifications' component={Notifications}/>
-        <Stack.Screen name='Notifications2' component={Notifications2}/>
-        <Stack.Screen name='Privacy' component={Privacy}/>
-        <Stack.Screen name='PrivacyPolicy' component={PrivacyPolicy}/>
-        <Stack.Screen name='SocialSharing' component={SocialSharing}/>
-        <Stack.Screen name='SupportFeedback' component={SupportFeedback}/>
-        <Stack.Screen name='TermsConditions' component={TermsConditions}/>
-        <Stack.Screen name='AddContacts' component={AddContacts}/>
-        <Stack.Screen name='OneChallenge' component={OneChallenge}/>
-        <Stack.Screen name='AdminPanel' component={AdminPanel}/>
-        <Stack.Screen name='Connections' component={Connections}/>
-        <Stack.Screen name='SplashScreen' component={SplashScreen}/>
-        <Stack.Screen name='SplashScreen2' component={SplashScreen2}/>
-        <Stack.Screen name='Users' component={Users}/>
-        <Stack.Screen name='Posts' component={Posts}/>
-        <Stack.Screen name='ChatScreen' component={ChatScreen}/>
+        <Stack.Screen name='Home' component={Home}/>
+        <Stack.Screen name='Tasks' component={Tasks}/>
+
       </Stack.Navigator>
     </NavigationContainer>
 
+    </GestureHandlerRootView>
+
     :
+     <GestureHandlerRootView>
 
     <NavigationContainer onReady={() => {
       isReadyRef.current = true;
 }} ref={navigationRef}  linking={linking} fallback={<Text>Loading...</Text>}>
       <Stack.Navigator initialRouteName={'First'} screenOptions={{headerShown: false}} >
-        <Stack.Screen name='GoalSettings' component={GoalSettings}/>
-        <Stack.Screen name='ActivitySettings' component={ActivitySettings}/>
-        <Stack.Screen name='Activity' component={Activity}/>
-        <Stack.Screen name='First' component={First}/>
-        <Stack.Screen name='Already' component={Already}/>
-        <Stack.Screen name='Join' component={Join}/>
-        <Stack.Screen name='Signup' component={Signup}/>
-        <Stack.Screen name='Login' component={Login}/>
-        <Stack.Screen name='SignupScratch' component={SignupScratch}/>
-        <Stack.Screen name='Welcome' component={Welcome}/>
-        <Stack.Screen name='Goals' component={Goals}/>
-        <Stack.Screen name='Tabs' component={Tabs}/>
-        <Stack.Screen name='Settings' component={Settings}/>
-        <Stack.Screen name='Users' component={Users}/>
-        <Stack.Screen name='Posts' component={Posts}/>
-        <Stack.Screen name='Account' component={Account}/>
-        <Stack.Screen name='AppleWatch' component={AppleWatch}/>
-        <Stack.Screen name='CommunityGuidelines' component={CommunityGuidelines}/>
-        <Stack.Screen name='EditProfile' component={EditProfile}/>
-        <Stack.Screen name='FullProfile' component={FullProfile}/>
-        <Stack.Screen name='UserProfile' component={UserProfile}/>
-        <Stack.Screen name='MgoktasPremium' component={MgoktasPremium}/>
-        <Stack.Screen name='Notifications' component={Notifications}/>
-        <Stack.Screen name='Notifications2' component={Notifications2}/>
-        <Stack.Screen name='Privacy' component={Privacy}/>
-        <Stack.Screen name='PrivacyPolicy' component={PrivacyPolicy}/>
-        <Stack.Screen name='SocialSharing' component={SocialSharing}/>
-        <Stack.Screen name='SupportFeedback' component={SupportFeedback}/>
-        <Stack.Screen name='AdminPanel' component={AdminPanel}/>
-        <Stack.Screen name='TermsConditions' component={TermsConditions}/>
-        <Stack.Screen name='AddContacts' component={AddContacts}/>
-        <Stack.Screen name='OneChallenge' component={OneChallenge}/>
-        <Stack.Screen name='Connections' component={Connections}/>
-        <Stack.Screen name='SplashScreen' component={SplashScreen}/>
-        <Stack.Screen name='SplashScreen2' component={SplashScreen2}/>
-        <Stack.Screen name='ChatScreen' component={ChatScreen}/>
+      <Stack.Screen name='Home' component={Goals}/>
+      <Stack.Screen name='Tasks' component={Tasks}/>
       </Stack.Navigator>
     </NavigationContainer>
     
+    </GestureHandlerRootView>
+
     );
 }
 
 export default App;
-
